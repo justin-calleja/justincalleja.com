@@ -1,0 +1,399 @@
+---
+title: "Sequential control flow with Lo-Dash or Underscore.js"
+dateCreated: "2015-03-08"
+formattedDateCreated: Mar 08, 2015
+tags: ["node", "control flow", "lodash"]
+tocEnabled: true
+---
+
+## Intro
+
+This post is based on [Simple async with only underscore](http://daemon.co.za/2012/04/simple-async-with-only-underscore/ "Simple async with only underscore") by [Adrian Rossouw](http://daemon.co.za/portfolio/ "Adrian Rossouw"). Yes, I did read the following disclaimer regarding this approach:
+
+<blockquote><p>I don’t recommend this approach much anymore, because I have come to the conclusion that the async.js module is by far the best tool for the job</p><footer><cite><a href="http://daemon.co.za/2012/04/simple-async-with-only-underscore/">Simple async with only underscore</a></cite></footer></blockquote>
+
+It's hard to disagree with that. [Async.js](https://github.com/caolan/async "async.js") is specifically designed to cater for asynchronous control flow. However, I think there is value in using the approach suggested by Adrian when you're already depending on [Lo-Dash](https://lodash.com/ "Lo-Dash")/[Underscore.js](http://underscorejs.org/ "Underscore.js") and do not want to bring in a separate library to handle a one-off control flow need.
+
+In this post I'll be explaining the suggested solution in more detail. But before doing that, I will give some background so you might want to skip over to [The approach](#toc_2) if you're already familiar with the need for asynchronous control flow in Node.js / [event loop](https://developer.mozilla.org/en-US/docs/Web/JavaScript/EventLoop "event loop") environments.
+
+## The need
+
+### Sync vs Async in a single threaded environment
+
+So what's this all about? Lets set up an example. In an empty directory do the following:
+
+- `npm i inquirer`
+- `vim index.js`
+
+```js
+var inquirer = require("inquirer")
+
+var questions = [
+  {
+    type: "input",
+    name: "username",
+    message: "Enter username",
+  },
+  {
+    type: "password",
+    name: "password",
+    message: "Enter password",
+  },
+]
+
+inquirer.prompt(questions, function(answers) {
+  console.log("answers were:", answers)
+})
+
+console.log("I want this to be done after prompt")
+```
+
+![Sequential execution fail](seq-fail.png "Sequential execution fail")
+
+Nevermind the duplicate "Enter username" prompt - notice that the final `console.log` statement executed before `inquirer.prompt` was done.
+
+The code above assumes that expressing the two function invocations in sequence implies sequential execution. In other (multi-threaded) environments, where threads block on I/O, this is a reasonable assumption to make. In these environments, context switching allows one thread to block on I/O, switch over to another thread to keep processing, and switch back when data to process becomes available from the I/O source in question.
+
+In a single threaded environment, however, you generally don't _want_ to block. For example, imagine uploading a couple of files from a web application. You wouldn't want to "stop the world" while this data is still in transit. Instead, you would want to keep processing - for e.g. the user's input when they decide to stop the upload.
+
+So we can agree that blocking is not what we generally want to do in a single threaded environment. In the user prompt example above, you do not expect `inquirer.prompt` to "stop the world" while it fetches data from the user via [process.stdin](http://nodejs.org/api/process.html#process_process_stdin "process.stdin"). The code `inquirer.prompt` uses to get data from the user does so in an asynchronous manner. It _could_ do the same thing in a synchronous manner instead, but that is not good manners in a single threaded environment. If `inquirer.prompt` fetched its data synchronously and returned it, then the code above would work as expected but `inquirer` is not that selfish. It will wait on the stack for data to come in, allowing the processor to go do something useful in the meantime.
+
+For instance, if we replaced user prompting with a function which reads from disk in a synchronous manner then we get something like this:
+
+```js
+var fs = require("fs")
+var path = require("path")
+
+var data = fs.readFileSync(path.resolve(__dirname, __filename), "utf-8")
+
+console.log("I want this to be done after readFileSync\n", data)
+```
+
+![Sync file reading](sync-file-read.png "Sync file reading")
+
+To summarize, the key points are:
+
+- In a single threaded environment asynchronous I/O becomes essential if you want concurrency.
+- If you have statements which execute asynchronously, the order in which you write your statements does not imply the order in which these statements are executed.
+
+OK, so we know asynchronous I/O is important here, but the order of execution is something we need control over as sometimes we don't really care, but sometimes there's no way around it. This means that we need to be able to express sequential execution when it matters - i.e. "do this _after_ that". If the order of statements won't cut it, what will?
+
+### Callbacks
+
+Well, if the order of statements won't cut it, maybe callbacks, events, Promises, ES6 Generators, or 3rd party libraries such as [Async.js](https://github.com/caolan/async "async.js") will? As you can see, there's no shortage of tools to use. Let's pick callbacks and see where that leads us.
+
+A callback is a function used to effect control flow. You generally pass a callback function to another function which is expected to perform some asynchronous operation and call the callback with the result of the asynchronous operation. This effectively adds another frame on the stack which needs to be cleared before the async-op-performing function itself is removed from the stack.
+
+If you take another look at `inquirer.prompt` above, you will see an example of callback usage. The second argument `inquirer.prompt` takes is a callback function which itself takes an argument which contains the data `inquirer.prompt` fetched from the user.
+
+Callbacks are nice, until they aren't. You might have heard the term "callback hell"?
+
+The point here isn't that you shouldn't use callbacks - it's that you should be careful not to overuse them. Mixu puts it nicely in his online [Node book](http://book.mixu.net/node/ch7.html "Mixu's Node book"):
+
+<blockquote><p>When you start coding with Node.js, it’s a bit like learning programming the first time. Since you want everything to be asynchronous, you use a lot of callbacks without really thinking about how you should structure your code. It’s a bit like being overexcited about the if statement, and using it and only it to write complex programs.</p><footer><cite><a href="http://book.mixu.net/node/ch7.html">Mixu's Node book</a></cite></footer></blockquote>
+
+OK, so with the background taken care of, let's move on to one approach we can take to mitigate callback hell by using [Lo-Dash](https://lodash.com/ "Lo-Dash")/[Underscore.js](http://underscorejs.org/ "Underscore.js"), something you're likely to already be depending on.
+
+## The approach
+
+To start off with, consider the snippet used in [Adrian's post](http://daemon.co.za/2012/04/simple-async-with-only-underscore/ "Simple async control flow using only underscore.js"):
+
+```js
+// generate a callback
+function cb(text) {
+  return function(next) {
+    console.warn(text)
+    next()
+  }
+}
+
+// a list of things to call
+var actions = [cb(1), cb(2), cb(3), cb(4)]
+
+// call the functions in the series array in order
+_(actions).reduceRight(_.wrap, function() {
+  console.warn("done")
+})()
+
+// prints out:
+// ---
+// 1
+// 2
+// 3
+// 4
+// done
+```
+
+The general idea is to store the functions you want to have execute sequentially in an array (`actions`) and use [reduceRight](http://underscorejs.org/#reduceRight "reduceRight") and [wrap](http://underscorejs.org/#wrap "wrap") to give you back a function which you can invoke to kick off the sequential execution of the functions in `actions`.
+
+That's the general idea. Let's start breaking things down. (Note: I am quoting bits and pieces from the [Lo-Dash docs](https://lodash.com/docs "Lo-Dash docs") below).
+
+### \_.reduce
+
+> \_.reduce(collection, [iteratee=\_.identity], [accumulator], [thisArg])
+
+This tells us that `_.reduce` can take 4 arguments, the `collection` to iterate over, the `iteratee` function, the `accumulator` which is the initial value the "reduction" starts with, and `thisArg` which is the `this` binding of `iteratee`.
+
+> The `iteratee` is bound to `thisArg` and invoked with four arguments; (accumulator, value, index|key, collection).
+
+So apart from knowing what `_.reduce` takes, you'll also need to know what the `iteratee` function takes.
+
+1.  > If `accumulator` is not provided the first element of collection is used as the initial value.
+
+    This is referring to `_.reduce`'s 3rd argument. If you don't supply an argument, then the first element of `collection` will be used as the 1st argument in `iteratee`'s first invocation.
+
+2.  `iteratee`'s 2nd argument is `value`, i.e. it's the next value in `collection` which hasn't yet been through `iteratee`.
+
+3.  `iteratee`'s 3rd argument is the **index** of `value` in the `collection` ("index" when the `collection` is an array, or "key" when the `collection` is an object).
+
+4.  `iteratee`'s 4th argument is the `collection` itself (i.e. `_.reduce`'s first argument).
+
+Here's a look at `_.reduce` in action:
+
+```js
+var _ = require("lodash")
+
+var nums = [1, 2, 3, 4, 5]
+
+function sum(accumulator, value, index, collection) {
+  console.log(
+    "acc",
+    accumulator,
+    "value",
+    value,
+    "index",
+    index,
+    "collection",
+    collection,
+  )
+  return accumulator + value
+}
+
+var fromFirstEl = _.reduce(nums, sum)
+console.log("fromFirstEl:", fromFirstEl)
+
+var from5 = _.reduce(nums, sum, 5)
+console.log("from5:", from5)
+
+// acc 1 value 2 index 1 collection [ 1, 2, 3, 4, 5 ]
+// acc 3 value 3 index 2 collection [ 1, 2, 3, 4, 5 ]
+// acc 6 value 4 index 3 collection [ 1, 2, 3, 4, 5 ]
+// acc 10 value 5 index 4 collection [ 1, 2, 3, 4, 5 ]
+// fromFirstEl: 15
+// acc 5 value 1 index 0 collection [ 1, 2, 3, 4, 5 ]
+// acc 6 value 2 index 1 collection [ 1, 2, 3, 4, 5 ]
+// acc 8 value 3 index 2 collection [ 1, 2, 3, 4, 5 ]
+// acc 11 value 4 index 3 collection [ 1, 2, 3, 4, 5 ]
+// acc 15 value 5 index 4 collection [ 1, 2, 3, 4, 5 ]
+// from5: 20
+```
+
+Notice how the value returned from the `iteratee` function (i.e. `sum`) becomes the `iteratee`'s `accumulator` the next time it is invoked on the next item in the `collection`.
+
+Also notice how, in the case of no initial `accumulator`, it's as if `nums` is one element short, and the element taken out of `nums` is used as the initial `accumulator`.
+
+`_.reduceRight` is the exact operation but in reverse:
+
+```js
+var rightFrom10 = _.reduceRight(nums, sum, 10)
+console.log("rightFrom10:", rightFrom10)
+
+// acc 10 value 5 index 4 collection [ 1, 2, 3, 4, 5 ]
+// acc 15 value 4 index 3 collection [ 1, 2, 3, 4, 5 ]
+// acc 19 value 3 index 2 collection [ 1, 2, 3, 4, 5 ]
+// acc 22 value 2 index 1 collection [ 1, 2, 3, 4, 5 ]
+// acc 24 value 1 index 0 collection [ 1, 2, 3, 4, 5 ]
+// rightFrom10: 25
+```
+
+So basically, we now know that `_.reduce` is a function which takes a collection and reduces the values in that collection to a single value based on the logic in its given `iteratee`.
+
+### \_.wrap
+
+Let's now turn our attention to [wrap](https://lodash.com/docs#wrap "wrap").
+
+> \_.wrap(value, wrapper)
+
+> Creates a function that provides `value` to the `wrapper` function as its first argument. Any additional arguments provided to the function are appended to those provided to the wrapper function. The wrapper is invoked with the `this` binding of the created function.
+
+An example is probably better (based off of [Underscore.js's doc](http://underscorejs.org/#wrap "Underscore.js doc") as I felt it was easier than the one given in Lo-Dash's):
+
+```js
+var _ = require("lodash")
+
+function hello(name, surname) {
+  return "hello: " + name + (surname ? " " + surname : "")
+}
+
+var wrappedHello = _.wrap(hello, function(func) {
+  return "before, " + func("moe") + ", after"
+})
+
+console.log(wrappedHello())
+
+var wrappedHello2 = _.wrap(hello, function(func, name) {
+  return "before, " + func(name) + ", after"
+})
+
+console.log(wrappedHello2("joe"))
+
+var wrappedHello3 = _.wrap(hello, function(func, name, surname) {
+  return "before, " + func(name, surname) + ", after"
+})
+
+console.log(wrappedHello3("joe", "doe"))
+
+// before, hello: moe, after
+// before, hello: joe, after
+// before, hello: joe doe, after
+```
+
+Essentially, `wrap` takes the first argument given to it and passes it to it's second argument which is expected to be the wrapper function (in which you can do any logic around `value`). Any arguments you pass to the created wrapper functions (e.g. `wrappedHello2`) get passed as arguments to the `wrapper` function used in `_.wrap`.
+
+### Putting it all together
+
+Revisiting Adrian's example:
+
+```js
+function cb(text) {
+  return function(next) {
+    console.warn(text)
+    next()
+  }
+}
+
+// a list of things to call
+var actions = [cb(1), cb(2), cb(3), cb(4)]
+
+// call the functions in the series array in order
+_.reduceRight(actions, _.wrap, function() {
+  console.warn("done")
+})()
+// the above is equivalent to what's used in Adrian's example:
+// _(actions).reduceRight(_.wrap, function() { console.warn('done') })();
+```
+
+Consider the first reduction:
+
+```js
+// _.wrap is the iteratee
+var reduced1 = _.wrap(
+  // iteratee's accumulator
+  function() {
+    console.warn("done")
+  },
+  // iteratee's value
+  function(next) {
+    console.warn(4)
+    next()
+  },
+)
+// reduced1 = function() {
+//   console.warn(4);
+//   (function() {
+//     console.warn('done');
+//   })();
+// }
+```
+
+The second reduction:
+
+```js
+// _.wrap is the iteratee
+var reduced2 = _.wrap(
+  // iteratee's accumulator is reduced1
+  function() {
+    console.warn(4)
+    ;(function() {
+      console.warn("done")
+    })()
+  },
+  // iteratee's next value
+  function(next) {
+    console.warn(3)
+    next()
+  },
+)
+// reduced2 = function() {
+//   console.warn(3);
+//   (function() {
+//     console.warn(4);
+//     (function() {
+//       console.warn('done');
+//     })();
+//   })();
+// }
+```
+
+etc... etc... until we finally get back a function that wraps all other functions in `actions`. Hopefully, you're starting to see how this thing sticks together.
+
+### Final example
+
+To drive the point home, let's finish this with a less trivial, but completely useless, example:
+
+```js
+var _ = require("lodash")
+var inquirer = require("inquirer")
+var fs = require("fs")
+var path = require("path")
+
+var questions = [
+  {
+    type: "input",
+    name: "username",
+    message: "Enter username",
+  },
+  {
+    type: "password",
+    name: "password",
+    message: "Enter password",
+  },
+]
+
+var actions = [
+  function(next) {
+    inquirer.prompt(questions, function(answers) {
+      console.log("answers:", answers)
+      next(answers)
+    })
+  },
+
+  function(next, answers) {
+    if (answers.password === "sdf") {
+      fs.readFile(path.resolve(__dirname, __filename), "utf-8", function(
+        err,
+        data,
+      ) {
+        if (err) throw err
+
+        var re = new RegExp(answers.username)
+
+        if (re.test(data)) {
+          next("there was a match")
+        } else {
+          next("there was no match")
+        }
+      })
+    }
+  },
+
+  function(next, matchRes) {
+    console.log("matchRes", matchRes)
+    next()
+  },
+]
+
+_.reduceRight(actions, _.wrap, function() {
+  console.log("done")
+})()
+```
+
+You should now have a good idea of what's going on. Note how `next` is always bound to the next function in `actions` which needs to execute after the function in question does. Any arguments after `next` (e.g. `answers` in the second function in `actions`) are passed in when `next` is invoked in a previous function's body (i.e. `next(answers)` in `actions`'s first function).
+
+You can see that we are still using callbacks when using asynchronous functions like `inquirer.prompt` and `fs.readFile`, but we avoid nesting any deeper than the inital callback passed to these asynchronous functions.
+
+Basically, this example asks for a username and password and proceeds to read it's own source code if password is equal to `"sdf"`. Also, assuming you get past the password check, an attempt to match the username against the contents of the file's source code is carried out, and depending on the result, either `"there was a match"` or `"there was no match"` is passed to the next function in `actions`.
+
+Since we're never calling `next` if password does not equal `"sdf"`, we're effectively breaking the chain of wrapped functions.
+
+![example](example.png "example")

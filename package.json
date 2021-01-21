@@ -1,6 +1,6 @@
 {
   "name": "justincalleja.com",
-  "version": "1.0.0",
+  "version": "0.1.0",
   "private": true,
   "description": "justincalleja.com",
   "author": "Justin Calleja",
@@ -8,11 +8,13 @@
     "gatsby"
   ],
   "scripts": {
+    "build": "gatsby build",
+    "clean": "gatsby clean",
+    "dev": "npm run develop",
     "develop": "gatsby develop",
     "start": "gatsby develop",
-    "build": "gatsby build",
     "serve": "gatsby serve",
-    "clean": "gatsby clean"
+    "try": "npm run clean && npm run build && npx serve public"
   },
   "dependencies": {
     "@mdx-js/mdx": "^1.6.22",

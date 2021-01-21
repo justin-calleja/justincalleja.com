@@ -1,0 +1,41 @@
+---
+title: Sample post nothing to see here
+published: false
+excerpt: >
+  This is a sample post to see how styling looks for different elements of a blog post
+  e.g. headers, bullet lists etc…
+  It will appear in the blog entries at development time, but not once the site is built.
+---
+
+## TLDR
+
+If your custom type is:
+
+```ts
+class ImaCustom {
+  constructor(public s: Set<string>, public a: string[]) {}
+}
+```
+
+### Heading 3
+
+- Any existing values in `content.exclude` which are not present in `filePaths` should not be in `result.exclude`
+  - This is a sub item
+- Any existing values in `content.include` which are not present in `filePaths` should not be in `result.include`
+  - This is a sub item
+    - This is another sub item
+- Any existing values in `content.include` which are in `filePaths` are kept in the same order in `result.include`
+  - this is using spaces
+    - also using spaces
+      - this one is with tabs
+        - hello
+
+#### Heading 4
+
+I guess you already know what property based testing is if you're here. Recently, I was testing something… which tbh, I didn't really know how I wanted to work. But in my mind, I could think of certain properties; certain things which had to hold on the datastructure in question when this operation happens. So - I figured I'd reach for that testing approach I know about; think is amazing; but almost never actually use 🤔
+
+Anyway - it didn't take long to find [fast-check](https://github.com/dubzzz/fast-check#readme). I had used [jsverify](https://github.com/jsverify/jsverify) before, but I've forgotten the API and who cares anyway - I just want to code a few properties and get on with my app… maybe actually get it to a usable state 😅
+
+So… I'm searching online:
+
+> Ye, I know more or less what property based testing is. Great - first few examples show how to generate basic types. Cool, found the list of built-in… oh "arbitraries" they're called… hmm fancy that - and I thought I had an arbitrary name. Now if I could only get to the "how to generate your own flippin' types" in the documentation and give these stressed eyeballs a break.

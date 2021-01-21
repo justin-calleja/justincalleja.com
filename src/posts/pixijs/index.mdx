@@ -1,0 +1,96 @@
+---
+published: false
+---
+
+How to make a root container object called the stage
+How to make a renderer
+Using the loader to load images into Pixi’s texture cache
+Making sprites from loaded images, including from tilesets and texture atlases
+
+```js
+renderer = PIXI.autoDetectRenderer(256, 256, {
+  antialias: false,
+  transparent: false,
+  resolution: 1,
+})
+
+renderer.view.style.border = "1px dashed black"
+
+renderer.backgroundColor = 0xffffff
+
+// If you want to find the width or the height of the renderer, use:
+renderer.view.width
+renderer.view.height
+
+// To change the size of the canvas, use the renderer’s resize method, and supply any new width and height values, as follows:
+renderer.resize(512, 512)
+
+// If you want to make the canvas fill the entire window, you can apply this CSS styling:
+renderer.view.style.position = "absolute"
+renderer.view.style.width = window.innerWidth + "px"
+renderer.view.style.height = window.innerHeight + "px"
+renderer.view.style.display = "block"
+// But, if you do that, make sure you also set the default padding and margins to 0 on all your HTML elements with this bit of CSS code:
+// <style>* {padding: 0; margin: 0}</style>
+```
+
+There's a discussion on scaling the canvas even when the window is resized - using `scaleToWindow` function in repo:
+
+https://github.com/Apress/learn-pixi.js.git
+
+## Contianer = stage
+
+You can give your root container any name you like. Call it scene or root, if you prefer. The name stage is just an old but useful convention, and one I’ll be sticking to in this book.
+
+```js
+//Create the renderer
+let renderer = PIXI.autoDetectRenderer(256, 256)
+
+//Add the canvas to the HTML document
+document.body.appendChild(renderer.view)
+
+//Create a container object called the `stage`
+let stage = new PIXI.Container()
+
+//Tell the `renderer` to `render` the `stage`
+renderer.render(stage)
+```
+
+So what do you put on the stage? Special image objects that you can control with code, called sprites. Pixi has a specialized Sprite class that is a versatile way to make game sprites. 3 main ways to create sprites:
+
+- From a single image file
+- from a sub image in a tileset
+- from a texture atlas (with a corresponding tileset)
+
+A WebGL-ready image is called a texture. Before you can make a sprite display an image, you have to convert an ordinary image file into a WebGL texture.
+
+```js
+let texture = PIXI.utils.TextureCache["images/anyImage.png"]
+let sprite = new PIXI.Sprite(texture)
+```
+
+## full example
+
+```js
+//Aliases
+let Container = PIXI.Container,
+  autoDetectRenderer = PIXI.autoDetectRenderer,
+  loader = PIXI.loader,
+  resources = PIXI.loader.resources,
+  Sprite = PIXI.Sprite
+
+//Create the stage and renderer
+let stage = new Container(),
+  renderer = autoDetectRenderer(256, 256)
+document.body.appendChild(renderer.view)
+
+//Load an image and call the `setup` function
+loader.add("images/pixie96x48.png").load(setup)
+
+function setup() {
+  //Create the sprite, add it to the stage and render it
+  let pixie = new Sprite(resources["images/pixie96x48.png"].texture)
+  stage.addChild(pixie)
+  renderer.render(stage)
+}
+```

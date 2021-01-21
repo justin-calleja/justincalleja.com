@@ -1,0 +1,72 @@
+/* in the grid container, reset any styles introduced by blog theme */
+.grid-container, .grid-container * {
+	margin: 0;
+	padding: 0;
+	border: 0;
+	font-size: 100%;
+	font: inherit;
+	vertical-align: baseline;
+}
+
+/* used to clear floating examples */
+.clear {
+  clear: both;
+}
+
+/* styles discussed in post: */
+
+.grid-container, .grid-container * {
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+}
+
+.grid-container {
+  width: 100%;
+  margin: 0 auto; 
+  max-width: 750px;      
+}
+
+[class^='col-'] {
+  float: left; 
+  width: 100%;
+  padding: 10px;
+}
+.col-xsm { width: 50%; }
+
+.outline, .outline *{
+  outline: 1px solid #d6d6d6; 
+}
+
+.row:before, 
+.row:after {
+    content:" ";
+    display: table;
+}
+.row:after {
+    clear:both;
+}
+
+@media screen and (min-width: 480px) {
+  .grid-container.r {
+    background: tomato;
+  }
+  .col-xsm.r  { width: 33.33%;  }
+  .col-sm.r   { width: 50%;     }
+  .col-md.r   { width: 83.33%;  }
+  .col-lg.r   { width: 100%;    }
+  .col-xlg.r  { width: 100%;    }
+
+}
+
+@media screen and (min-width: 768px) {
+  .grid-container.r {
+    background: tan;
+  }
+  .col-xsm.r  { width: 25%;  }
+  .col-sm.r   { width: 33.33%;     }
+  .col-md.r   { width: 50%;  }
+  .col-lg.r   { width: 83.33%;    }
+  .col-xlg.r  { width: 100%;    }
+}
+
