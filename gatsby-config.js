@@ -8,7 +8,6 @@ module.exports = {
     "gatsby-plugin-react-helmet",
     "gatsby-plugin-sharp",
     "gatsby-transformer-sharp",
-    // "gatsby-plugin-sitemap",
     {
       resolve: `gatsby-plugin-mdx`,
       options: {
@@ -76,6 +75,7 @@ module.exports = {
         },
       },
     },
+    // "gatsby-plugin-sitemap",
     // "gatsby-plugin-offline",
     // {
     //   resolve: "gatsby-plugin-manifest",

@@ -1,14 +1,13 @@
 ---
 title: Using plain pg with Nest.js
-dateCreated: 2020-03-26
+dateCreated: "2020-03-26"
 formattedDateCreated: "Mar 26, 2020"
 dateUpdated: ""
 formattedDateUpdated: ""
-tags: [ "node", "nestjs", "pg"]
-categories: [ "programming"]
+tags: ["node", "nestjs", "pg"]
+categories: ["programming"]
 tocEnabled: true
 excerpt: ""
-
 ---
 
 ## Intro
@@ -36,7 +35,7 @@ We’ll use a constants.ts file in /src to be able to import the DI token for ou
 
 ```ts isCopyable
 // src/constants.ts
-export const PG_CONNECTION = 'PG_CONNECTION';
+export const PG_CONNECTION = "PG_CONNECTION"
 ```
 
 The DI token (dependency injection token) is how you’ll declaratively tell the [Inversion of Control (IoC)](https://en.wikipedia.org/wiki/Inversion_of_control) container which dependency you’d like injected. So you’ll use it to pull in a dependency from the container.
@@ -46,16 +45,16 @@ You’ll also use it when you register a provider with the container. Registerin
 Registering a provider looks like this:
 
 ```ts
-import { Module } from '@nestjs/common';
-import { PG_CONNECTION } from '../constants';
+import { Module } from "@nestjs/common"
+import { PG_CONNECTION } from "../constants"
 
 const dbProvider = {
-    provide: PG_CONNECTION,
-    // useValue / useFacotry / useClass: …
-};
+  provide: PG_CONNECTION,
+  // useValue / useFacotry / useClass: …
+}
 
 @Module({
-    providers: [dbProvider],
+  providers: [dbProvider],
 })
 export class DbModule {}
 ```
@@ -65,40 +64,40 @@ i.e. we need an object with the DI token and the way to get the dependency — t
 There’s a couple of ways to specify how to get the dependency in Nest.js. We’ll be using [useValue](https://docs.nestjs.com/fundamentals/custom-providers#value-providers-usevalue):
 
 ```ts
-import { Pool } from 'pg';
+import { Pool } from "pg"
 const dbProvider = {
   provide: PG_CONNECTION,
   useValue: new Pool({
-    user: 'postgres',
-    host: 'localhost',
-    database: 'somedb',
-    password: 'meh',
+    user: "postgres",
+    host: "localhost",
+    database: "somedb",
+    password: "meh",
     port: 5432,
   }),
-};
+}
 ```
 
 Finally, we’ll also include the dbProvider in the DbModule’s exports so we’ll be able to use it in other modules importing `DbModule`:
 
 ```ts
-import { Module } from '@nestjs/common';
-import { Pool } from 'pg';
-import { PG_CONNECTION } from '../constants';
+import { Module } from "@nestjs/common"
+import { Pool } from "pg"
+import { PG_CONNECTION } from "../constants"
 
 const dbProvider = {
-    provide: PG_CONNECTION,
-    useValue: new Pool({
-        user: 'postgres',
-        host: 'localhost',
-        database: 'somedb',
-        password: 'meh',
-        port: 5432,
-    })
-};
+  provide: PG_CONNECTION,
+  useValue: new Pool({
+    user: "postgres",
+    host: "localhost",
+    database: "somedb",
+    password: "meh",
+    port: 5432,
+  }),
+}
 
 @Module({
-    providers: [dbProvider],
-    exports: [dbProvider],
+  providers: [dbProvider],
+  exports: [dbProvider],
 })
 export class DbModule {}
 ```
@@ -109,10 +108,10 @@ You’ll notice that the `AppModule` is already importing `DbModule` (at least i
 
 ```ts
 // src/app.module.ts
-import { Module } from '@nestjs/common';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
-import { DbModule } from './db/db.module';
+import { Module } from "@nestjs/common"
+import { AppController } from "./app.controller"
+import { AppService } from "./app.service"
+import { DbModule } from "./db/db.module"
 
 @Module({
   imports: [DbModule],
@@ -128,36 +127,36 @@ Doing so in our `AppService` looks something like this:
 
 ```ts
 // src/app.service.ts
-import { Injectable, Inject } from '@nestjs/common';
-import { PG_CONNECTION } from './constants';
+import { Injectable, Inject } from "@nestjs/common"
+import { PG_CONNECTION } from "./constants"
 
 @Injectable()
 export class AppService {
   constructor(@Inject(PG_CONNECTION) private conn: any) {}
 
   async getUsers() {
-    const res = await this.conn.query('SELECT * FROM users');
-    return res.rows;
+    const res = await this.conn.query("SELECT * FROM users")
+    return res.rows
   }
 }
 ```
 
-Notice that we annotate `conn` with `Inject` and make it private in the `constructor`. This is significant at it allows Nest to know that *it* should be the one to supply a value for `conn` and it also knows what to inject via the DI token.
+Notice that we annotate `conn` with `Inject` and make it private in the `constructor`. This is significant at it allows Nest to know that _it_ should be the one to supply a value for `conn` and it also knows what to inject via the DI token.
 
 `getUsers` is just a simple query to use as a sanity check. We’ll use it in `AppController`:
 
 ```ts
 // src/app.controller.ts
-import { Controller, Get } from '@nestjs/common';
-import { AppService } from './app.service';
+import { Controller, Get } from "@nestjs/common"
+import { AppService } from "./app.service"
 
 @Controller()
 export class AppController {
   constructor(private readonly appService: AppService) {}
 
-  @Get('users')
+  @Get("users")
   getUsers() {
-    return this.appService.getUsers();
+    return this.appService.getUsers()
   }
 }
 ```
@@ -165,7 +164,7 @@ export class AppController {
 I guess you might be wondering how we’re able to inject `AppService` here without the `Inject` annotation… That’s thanks to a shortcut (or "syntactic sugar" if you prefer). In Nest.js, registering a Provider with a class name:
 
 ```ts
-import { AppService } from './app.service';
+import { AppService } from "./app.service"
 @Module({
   providers: [AppService],
 })
@@ -175,12 +174,14 @@ export class AppModule {}
 … is equivalent to:
 
 ```ts
-import { AppService } from './app.service';
+import { AppService } from "./app.service"
 @Module({
-  providers: [{
-    provider: AppService,
-    useClass: AppService,
-  }],
+  providers: [
+    {
+      provider: AppService,
+      useClass: AppService,
+    },
+  ],
 })
 export class AppModule {}
 ```
