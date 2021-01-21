@@ -28,6 +28,12 @@ const menuItemTexts = {
 const Container = styled.div`
   nav {
     user-select: none;
+    ul {
+      list-style-type: none;
+      a {
+        color: inherit;
+      }
+    }
   }
 `
 

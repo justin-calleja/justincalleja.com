@@ -11,8 +11,8 @@
     "build": "gatsby build",
     "clean": "gatsby clean",
     "dev": "npm run develop",
-    "develop": "gatsby develop",
-    "start": "gatsby develop",
+    "develop": "gatsby develop -H 0.0.0.0",
+    "start": "npm run dev",
     "serve": "gatsby serve",
     "try": "npm run clean && npm run build && npx serve public"
   },
@@ -41,6 +41,6 @@
     "react-helmet": "^6.1.0",
     "react-use-localstorage": "^3.5.3",
     "styled-components": "^5.2.1",
-    "styled-reset": "^2.0.13"
+    "styled-reset": "^2.0.17"
   }
 }
