@@ -2,6 +2,7 @@ module.exports = {
   siteMetadata: {
     title: "justincalleja.com",
     author: "Justin Calleja",
+    siteUrl: "https://justincalleja.com",
   },
   plugins: [
     "gatsby-plugin-styled-components",
@@ -75,7 +76,7 @@ module.exports = {
         },
       },
     },
-    // "gatsby-plugin-sitemap",
+    "gatsby-plugin-sitemap",
     // "gatsby-plugin-offline",
     // {
     //   resolve: "gatsby-plugin-manifest",
