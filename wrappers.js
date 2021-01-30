@@ -14,7 +14,7 @@ export function wrapPageElement({ element, props }) {
 
 const components = {
   code: CodeBlock,
-  ul: props => {
+  ul: (props) => {
     return <ul>{props.children}</ul>
   },
   // Only the title of the post should be an h1.
