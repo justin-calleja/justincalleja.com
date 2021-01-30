@@ -1,4 +1,4 @@
-import React, { useRef } from "react"
+import React from "react"
 import { MDXRenderer } from "gatsby-plugin-mdx"
 import styled, { withTheme } from "styled-components"
 import { graphql } from "gatsby"
@@ -6,7 +6,7 @@ import { getSecondaryHighlightColor } from "~utils/theme"
 import PostMetaData from "~components/PostMetaData"
 import Toc from "~components/Toc"
 import { PostContainer, Container } from "./styles"
-import useScript from "~utils/useScript"
+import Comments from "./Comments"
 
 const Heading = ({ className, tagName, id, children }) => {
   const Tag = tagName
@@ -51,21 +51,6 @@ export const H4 = ({ id, children }) => {
 }
 
 const PostTemplate = ({ className, data, theme }) => {
-  // TODO: use frontmatter to opt into having a comments section
-  // TODO: find a solution for "loading comments". i.e.
-  // when theme is changed, iframe is removed and new script is injected
-  // with new params and it takes some time to load the new iframe.
-  const commentsRef = useRef(null)
-  const attributes = {
-    // TODO: change repo before going live:
-    repo: "justin-calleja/choices",
-    "issue-term": "pathname",
-    label: "comment",
-    theme: theme.name === "dark" ? "github-dark" : "github-light",
-    crossorigin: "anonymous",
-  }
-  useScript("https://utteranc.es/client.js", attributes, commentsRef)
-
   return (
     <Container className={className}>
       <h1>{data.mdx.frontmatter.title}</h1>
@@ -82,7 +67,12 @@ const PostTemplate = ({ className, data, theme }) => {
       ) : null}
       <PostContainer>
         <MDXRenderer>{data.mdx.body}</MDXRenderer>
-        <div className="comments" ref={commentsRef}></div>
+        {/* // TODO: use frontmatter to opt into having a comments section */}
+        <Comments
+          themeName={
+            theme.name === "dark" ? "github-dark-orange" : "github-light"
+          }
+        />
       </PostContainer>
     </Container>
   )

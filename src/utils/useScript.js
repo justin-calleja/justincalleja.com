@@ -1,8 +1,6 @@
 // @ts-check
 import { useEffect } from "react"
 
-// https://stackoverflow.com/a/34425083/990159
-
 /**
  *
  * @param {string} url
