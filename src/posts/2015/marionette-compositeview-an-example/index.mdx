@@ -121,14 +121,24 @@ require.config({
   },
 })
 
-require(["marionette"], function(Marionette) {
+require(["marionette"], function (Marionette) {
   console.log("Marionette:", Marionette)
 })
 ```
 
 If you look inside `app/lib/marionette` you will notice that there are two Marionette scripts we could be pulling in, one in `marionette/lib` and one in `marionette/lib/core`. Both of these depend on [Babysitter](https://github.com/marionettejs/backbone.babysitter "Babysitter") and [Wreqr](https://github.com/marionettejs/backbone.wreqr "Wreqr") but the one in core pulls them in while the one outside core has these dependencies baked into its own source.
 
-<blockquote><p>These pre-requisites are still required for Marionette to run, but this allows you to download them separately and update them independently.</p><footer><cite><a href="http://marionettejs.com/">MarionetteJS</a></cite></footer></blockquote>
+<blockquote>
+  <p>
+    These pre-requisites are still required for Marionette to run, but this
+    allows you to download them separately and update them independently.
+  </p>
+  <footer>
+    <cite>
+      <a href="http://marionettejs.com/">MarionetteJS</a>
+    </cite>
+  </footer>
+</blockquote>
 
 Also, if you open up `marionette/lib/core/backbone.marionette.js` you will notice that it is requiring these pre-requisites using the following aliases:
 
@@ -154,7 +164,7 @@ The last thing we need in place to have something to serve is our index file: `v
 </html>
 ```
 
-The `<Script>` tag pulls in RequireJS from our Bower installed dependencies and configures it with the main.js file defined above. Finally, we can start some kind of server and check our progress:
+The `script` tag pulls in RequireJS from our Bower installed dependencies and configures it with the main.js file defined above. Finally, we can start some kind of server and check our progress:
 
 - `npm install -g live-server`
 - `cd app && live-server`
@@ -172,17 +182,17 @@ We'll start off by defining how our data will be stored as Models and Collection
 ```js
 /*global define*/
 
-define(["backbone"], function(Backbone) {
+define(["backbone"], function (Backbone) {
   "use strict"
 
   var NodeModel = Backbone.Model.extend({
-    initialize: function() {
+    initialize: function () {
       var nodes = this.get("nodes")
       // Covert nodes to a NodeCollection
       this.set("nodes", new NodeCollection(nodes))
     },
 
-    toJSON: function() {
+    toJSON: function () {
       // Call parent's toJSON method
       var data = Backbone.Model.prototype.toJSON.call(this)
       if (data.nodes && data.nodes.toJSON) {
@@ -211,7 +221,7 @@ Also notice that upon initialization, NodeModel will look for a _nodes_ attribut
 With that in place, leave live-server running and change _main.js_ to use TreeNode:
 
 ```js
-require(["tree/TreeNode"], function(TreeNode) {
+require(["tree/TreeNode"], function (TreeNode) {
   console.log("TreeNode.Model:", TreeNode.Model)
   console.log("TreeNode.Collection:", TreeNode.Collection)
 })
@@ -226,7 +236,7 @@ We'll now add the data from which we will be creating our models and collections
 ```js
 /*global define*/
 
-define(function() {
+define(function () {
   "use strict"
 
   return [
@@ -286,7 +296,7 @@ define(function() {
 At this stage, if you want to experiment a bit with what we have, you could create a TreeNode.Collection in main.js like so:
 
 ```js
-require(["tree/TreeNode", "tree/nodeData"], function(TreeNode, nodeData) {
+require(["tree/TreeNode", "tree/nodeData"], function (TreeNode, nodeData) {
   var nodes = new TreeNode.Collection(nodeData)
   window.nodes = nodes
   console.log(nodes)
@@ -307,11 +317,39 @@ This diagram also shows where the Marionette Views come into play. Note that the
 
 A CompositeView is made up of both a model _and_ a collection. It has it's own template, which is the "wrapper template" mentioned in this piece of documentation:
 
-<blockquote><p>A CompositeView extends from CollectionView to be used as a composite view for scenarios where it should represent both a branch and leaf in a tree structure, or for scenarios where a collection needs to be rendered within a wrapper template.</p><footer><cite><a href="http://marionettejs.com/docs/v2.3.2/marionette.compositeview.html">MarionetteJS Docs</a></cite></footer></blockquote>
+<blockquote>
+  <p>
+    A CompositeView extends from CollectionView to be used as a composite view
+    for scenarios where it should represent both a branch and leaf in a tree
+    structure, or for scenarios where a collection needs to be rendered within a
+    wrapper template.
+  </p>
+  <footer>
+    <cite>
+      <a href="http://marionettejs.com/docs/v2.3.2/marionette.compositeview.html">
+        MarionetteJS Docs
+      </a>
+    </cite>
+  </footer>
+</blockquote>
 
 Additionally, if you don't specify what kind of view each element in a CompositeView's collection is, it will be assumed to be the same as the CompositeView in question:
 
-<blockquote><p>The default rendering mode for a CompositeView assumes a hierarchical, recursive structure. If you configure a composite view without specifying a childView, you'll get the same composite view class rendered for each child in the collection.</p><footer><cite><a href="http://marionettejs.com/docs/v2.3.2/marionette.compositeview.html#recursive-by-default">MarionetteJS Docs</a></cite></footer></blockquote>
+<blockquote>
+  <p>
+    The default rendering mode for a CompositeView assumes a hierarchical,
+    recursive structure. If you configure a composite view without specifying a
+    childView, you'll get the same composite view class rendered for each child
+    in the collection.
+  </p>
+  <footer>
+    <cite>
+      <a href="http://marionettejs.com/docs/v2.3.2/marionette.compositeview.html#recursive-by-default">
+        MarionetteJS Docs
+      </a>
+    </cite>
+  </footer>
+</blockquote>
 
 This will make more sense when we take a look at the code below, but for now, keep in mind that a CollectionView renders our top level root nodes. The tree stemming from each root node is recursively rendered and the view used behind the scenes to do this is a CompositeView.
 
@@ -322,7 +360,7 @@ This will make more sense when we take a look at the code below, but for now, ke
 ```js
 /*global define*/
 
-define(["marionette", "ejsTemplates"], function(Marionette, JST) {
+define(["marionette", "ejsTemplates"], function (Marionette, JST) {
   "use strict"
 
   var CompositeView = Marionette.CompositeView.extend({
@@ -334,7 +372,7 @@ define(["marionette", "ejsTemplates"], function(Marionette, JST) {
     // child elements placed into
     childViewContainer: "ul",
 
-    initialize: function() {
+    initialize: function () {
       // grab the child collection from the parent model
       // so that we can render the collection as children
       // of this parent node
@@ -384,7 +422,7 @@ It might be worth repeating that whatever gets rendered here is wrapped up in an
 ```js
 /*global define*/
 
-define(["marionette", "ejsTemplates", "tree/TreeCompositeView"], function(
+define(["marionette", "ejsTemplates", "tree/TreeCompositeView"], function (
   Marionette,
   JST,
   TreeCompositeView,
@@ -402,7 +440,20 @@ define(["marionette", "ejsTemplates", "tree/TreeCompositeView"], function(
 
 The first line in the online doc pretty much sums it up:
 
-<blockquote><p>The `CollectionView` will loop through all of the models in the specified collection, render each of them using a specified `childView`, then append the results of the child view's `el` to the collection view's `el`.</p><footer><cite><a href="http://marionettejs.com/docs/v2.3.2/marionette.collectionview.html">MarionetteJS Docs</a></cite></footer></blockquote>
+<blockquote>
+  <p>
+    The `CollectionView` will loop through all of the models in the specified
+    collection, render each of them using a specified `childView`, then append
+    the results of the child view's `el` to the collection view's `el`.
+  </p>
+  <footer>
+    <cite>
+      <a href="http://marionettejs.com/docs/v2.3.2/marionette.collectionview.html">
+        MarionetteJS Docs
+      </a>
+    </cite>
+  </footer>
+</blockquote>
 
 In our case, this translates to something along the lines of:
 
@@ -428,11 +479,11 @@ require.config({
   },
 })
 
-require(["tree/TreeNode", "tree/nodeData", "tree/TreeCollectionView"], function(
-  TreeNode,
-  nodeData,
-  TreeCollectionView,
-) {
+require([
+  "tree/TreeNode",
+  "tree/nodeData",
+  "tree/TreeCollectionView",
+], function (TreeNode, nodeData, TreeCollectionView) {
   var nodes = new TreeNode.Collection(nodeData)
   var tree = new TreeCollectionView({
     collection: nodes,
@@ -457,7 +508,18 @@ I'm including this section mainly because the pieces it describes are included i
 
 We'll be using [grunt-contrib-requirejs](https://github.com/gruntjs/grunt-contrib-requirejs "grunt-contrib-requirejs") to concatenate and uglify our scripts and [Almond](https://github.com/jrburke/almond "Almond") to do our module loading. In [James](https://github.com/jrburke "jrburke")'s own words, Almond is:
 
-<blockquote><p>A replacement AMD loader for RequireJS. It provides a minimal AMD API footprint that includes loader plugin support. Only useful for built/bundled AMD modules, does not do dynamic loading.</p><footer><cite><a href="https://github.com/jrburke/almond#almond">Almond</a></cite></footer></blockquote>
+<blockquote>
+  <p>
+    A replacement AMD loader for RequireJS. It provides a minimal AMD API
+    footprint that includes loader plugin support. Only useful for built/bundled
+    AMD modules, does not do dynamic loading.
+  </p>
+  <footer>
+    <cite>
+      <a href="https://github.com/jrburke/almond#almond">Almond</a>
+    </cite>
+  </footer>
+</blockquote>
 
 Simply include the following configuration in your Gruntfile.js:
 
