@@ -2,8 +2,8 @@ import React, { useRef } from "react"
 import useScript from "~utils/useScript"
 
 const attributes = {
-  repo: "justin-calleja/choices",
-  //   repo: "justin-calleja/justincalleja.com",
+  //   repo: "justin-calleja/choices",
+  repo: "justin-calleja/justincalleja.com",
   "issue-term": "pathname",
   label: "comment",
   theme: "github-dark",
