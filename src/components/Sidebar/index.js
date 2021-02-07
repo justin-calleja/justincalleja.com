@@ -28,7 +28,7 @@ const Sidebar = styled.div`
   font-family: "Bree Serif", "Open Sans", Arial, Helvetica, sans-serif;
   background-color: ${getSecondaryBackgroundColor};
   color: ${getColor};
-  width: 0;
+  width: ${mobile.width}px;
   position: fixed;
   height: calc(100% - ${mobileHeaderHeight}px);
   top: ${mobileHeaderHeight}px;
@@ -38,12 +38,7 @@ const Sidebar = styled.div`
   padding-right: ${paddingRight}px;
 
   left: -${mobile.width}px;
-  ${({ isOpen }) =>
-    isOpen
-      ? `
-    left: 0;
-    width: ${mobile.width}px`
-      : ""};
+  ${({ isOpen }) => (isOpen ? "left: 0;" : "")};
 
   h2 {
     display: none;

@@ -35,7 +35,7 @@ const Comments = ({ themeName }) => {
     }
   }
 
-  return <div ref={commentsRef}></div>
+  return <div className="comments" ref={commentsRef}></div>
 }
 
 export default Comments

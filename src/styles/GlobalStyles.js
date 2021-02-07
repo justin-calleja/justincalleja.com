@@ -12,7 +12,7 @@ export default createGlobalStyle`
 
   html {
     overflow-x: hidden;
-    scroll-behavior: smooth
+    scroll-behavior: smooth;
     box-sizing: border-box;
   }
 

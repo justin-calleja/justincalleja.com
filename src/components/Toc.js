@@ -156,7 +156,8 @@ const Summary = styled.div`
   fill: ${getBackgroundColor};
   /* transition: background-color ${animDuration} ${animTimingFn}, background-image ${animDuration} ${animTimingFn}, opacity ${animDuration} ${animTimingFn}, color ${animDuration} ${animTimingFn}; */
   /* transition: background-image ${animDuration} ${animTimingFn}, color ${animDuration} ${animTimingFn}; */
-  transition: background ${animDuration} ${animTimingFn}, color ${animDuration} ${animTimingFn};
+  transition: background ${animDuration} ${animTimingFn},
+    color ${animDuration} ${animTimingFn};
   /* opacity: 1; */
   /* transition: border-color ${animDuration} ${animTimingFn}; */
 
@@ -179,8 +180,7 @@ const Summary = styled.div`
       /* background-color: ${getYellowColor({ theme, opacity: 0.5 })}; */
       /* background-color: ${getYellowColor}; */
       /* color: ${getColor}; */
-      `}
-
+    `}
 `
 
 // const C = styled(Collapsable)`
@@ -211,7 +211,7 @@ const Border = styled.div`
 `
 
 const Container = styled.div`
-  margin: 1.6rem 0;
+  margin: 2.4rem 0;
 `
 
 const Toc = ({ children, height, theme }) => {
@@ -240,7 +240,7 @@ const Toc = ({ children, height, theme }) => {
         {/* <C isCollapsed={isCollapsed} initialHeight={height}> */}
         <C2 isCollapsed={isCollapsed} height={height}>
           <TocList>
-            {children.items.map(item => {
+            {children.items.map((item) => {
               return (
                 <li key={item.url}>
                   <a href={item.url} key={item.url}>
@@ -248,7 +248,7 @@ const Toc = ({ children, height, theme }) => {
                   </a>
                   {item.items && item.items.length > 0 ? (
                     <ol>
-                      {item.items.map(i => (
+                      {item.items.map((i) => (
                         <li key={i.url}>
                           <a href={i.url} key={i.url}>
                             {i.title}

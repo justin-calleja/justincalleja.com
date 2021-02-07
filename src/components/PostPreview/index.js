@@ -57,7 +57,7 @@ const PostPreview = ({
         formattedDateUpdated={formattedDateUpdated}
         tags={tags}
       />
-      <div className="excerpt">{excerpt}</div>
+      <div className="excerpt" dangerouslySetInnerHTML={{ __html: excerpt }} />
       <Link className="continue-reading" to={slug}>
         Continue reading…
       </Link>

@@ -34,6 +34,10 @@ export const Container = styled.div`
   .post-meta-data {
     margin-bottom: ${paragraphMb};
   }
+
+  .comments {
+    padding-top: 2.4rem;
+  }
 `
 
 export const PostContainer = styled.div`
@@ -69,6 +73,11 @@ export const PostContainer = styled.div`
     p:last-child {
       margin-bottom: 0;
     }
+  }
+
+  em {
+    color: ${getHighlightColor};
+    font-style: italic;
   }
 
   .gatsby-resp-image-wrapper {
