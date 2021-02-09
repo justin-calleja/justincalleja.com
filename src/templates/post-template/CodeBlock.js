@@ -6,13 +6,14 @@ import styled, { withTheme } from "styled-components"
 import { copyToClipboard } from "~utils/copyToClipboard"
 import { themeNames } from "~utils/theme"
 
-const Pre = styled.pre`
+const Container = styled.div`
   position: relative;
   text-align: left;
   margin: 1.6rem 0;
   padding: 0.5rem;
-  overflow-x: auto;
   border-radius: 4px;
+  word-wrap: normal;
+  overflow-x: auto;
 
   /* Overwrite the margin-bottom on divs set in post-template: */
   && {
@@ -53,7 +54,7 @@ const CodeBlock = ({ children, className, isCopyDisabled, theme }) => {
       theme={theme.name === themeNames.light ? lightTheme : darkTheme}
     >
       {({ className, style, tokens, getLineProps, getTokenProps }) => (
-        <Pre className={className} style={style}>
+        <Container className={className} style={style}>
           {isCopyDisabled ? null : (
             <CopyCode onClick={() => copyToClipboard(trimmedCode)}>
               Copy
@@ -66,7 +67,7 @@ const CodeBlock = ({ children, className, isCopyDisabled, theme }) => {
               ))}
             </div>
           ))}
-        </Pre>
+        </Container>
       )}
     </Highlight>
   )
