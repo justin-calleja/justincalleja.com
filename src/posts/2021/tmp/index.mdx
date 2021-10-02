@@ -1,0 +1,105 @@
+---
+title: TODO:
+dateCreated: 2021-01-20
+formattedDateCreated: Jan 21, 2021
+tags: ["rpg maker", "mz"]
+tocEnabled: true
+excerpt: ""
+published: false
+---
+
+https://www.youtube.com/watch?v=FdABOiXJFqM&list=UUOUwC0sn8jb83Gn3mos5lEg&index=14
+
+In event editor, Script ->
+
+```js
+// this.pluginCommand(name, [arg1, arg2])
+```
+
+```js
+BattleManager.setup(
+  1,
+  true /* to be allowed to escape */,
+  true /* to be allowed to die */,
+)
+$gamePlayer.makeEncounterCount()
+SceneManager.push(Scene_Battle)
+```
+
+Change an enemy HP:
+
+```js
+var m = $gameTroop.members()[ID]
+var d = damage
+var KO = true
+Game_Interpreter.prototype.changeHp.call(this, m, d, KO)
+```
+
+If you don't want to be able to kill enemy?
+
+```js
+var enemyIndex = 0
+$gameTroop.members()[enemyIndex].gainHp(-100)
+```
+
+To transform an enemy into another:
+
+```js
+// first enemy is transformed to whatever enemy has id of 2:
+$gameTroop.members()[0].transform(2)
+```
+
+To show an anmiation on an enemy:
+
+```js
+$gameTroop.members()[0].startAnimation(1, true, 1)
+```
+
+Unfortunately `startAnimation` is not defined in MZ.
+
+## Force action:
+
+```js
+$gameParty.members()[0].forceAction(1, 0)
+BattleManager.forceAction($gameParty.members()[0])
+```
+
+## abort battle
+
+You have to click the first dialog box when battle starts to be able to abort.
+
+```js
+BattleManager.abort()
+```
+
+## Scene_Shop
+
+To make this work you need a list of shop items that will be sold / bought.
+
+## Scene_Name
+
+```js
+SceneManager.push(Scene_Name)
+SceneManager.prepareNextScene(
+  1, // actorId (note: 0 is invalid)
+  8, // name length
+)
+```
+
+## Scene_Menu
+
+```js
+SceneManager.push(Scene_Menu)
+```
+
+## How to create a save file:
+
+```js
+$gameSystem.onBeforeSave()
+var indexWhereToSave = 3
+if (DataManager.saveGame(indexWhereToSave)) {
+  StorageManager.cleanBackup(indexWhereToSave)
+}
+// In MZ I get:
+// Uncaught TypeError: StorageManager.cleanBackup is not a function
+```

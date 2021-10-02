@@ -5,6 +5,7 @@ formattedDateCreated: Feb 09, 2021
 tags: ["react", "styled-components", "css"]
 tocEnabled: true
 excerpt: Inspired by <a href="https://www.joshwcomeau.com/css/css-variables-for-react-devs/" target="_blank">Josh Comeau</a>'s blog post
+published: false
 ---
 
 ## What I'm currently doing
@@ -82,11 +83,11 @@ Even as I was using that approach, I knew it wasn't ideal. The thing is, I had p
    - etc…
 2. It's limited to only 2 color themes and adding more will require touching every one of the color getting functions based on theme.
 
-Problem `1` is the real issue to me. I haven't seen any issues with the site's performance on my machine but it is a relatively small site. It just doesn't feel right that so many changes have to be made to the DOM every time the theme name changes.
+Problem `1` is the real issue to me. I haven't seen any issues with the site's performance on my machine but it is a relatively small site. It just doesn't feel right that so many re-renders have to be made every time the theme name changes.
 
 ## A better way
 
-Anyway, I didn't revisit the issue until I read <a href="https://www.joshwcomeau.com/" target="_blank">Josh Comeau</a>'s awesome blog post: <a href="https://www.joshwcomeau.com/css/css-variables-for-react-devs/" target="_blank">CSS Variables for React Devs</a>. I had a feeling CSS variables would be "an alternative at least" - but I just didn't have time to explore - now I do.
+Anyway, I didn't revisit the issue until I read <a href="https://www.joshwcomeau.com/" target="_blank">Josh Comeau</a>'s awesome blog post: <a href="https://www.joshwcomeau.com/css/css-variables-for-react-devs/" target="_blank">CSS Variables for React Devs</a>. I had a feeling CSS variables would be "an alternative at least" - but I didn't want to lose focus and explore other options when the one I had was at least working.
 
 So lets go off on a bit of a tangent and summarise a section of Josh's post:
 
@@ -188,7 +189,7 @@ In this section, I'd like to tackle:
 - `Sidebar` resizing at different viewports
 - theme color changes based on changes in React state
 
-… all using the approach outlined in Josh's post i.e. I should be able to just use a CSS variable to say what the color / width / font size is and they should change automatically based off of React state; viewport size; and theme configuration. Any changes to the DOM should only happen in one place, the definition (or re-definition) of the CSS variables. To do so, I'll be creating a simple sandbox working environment; the repo for which is: <a href="https://github.com/justin-calleja/css-vars-for-react-devs" target="_blank">css-vars-for-react-devs</a>
+… all using the approach outlined in Josh's post i.e. I should be able to just use a CSS variable to say what the color / width / font size is and they should change automatically based off of React state (the theme's state) and viewport size. Any changes to the DOM should only happen in one place, the definition (or re-definition) of the CSS variables. To do so, I'll be creating a simple sandbox working environment; the repo for which is: <a href="https://github.com/justin-calleja/css-vars-for-react-devs" target="_blank">css-vars-for-react-devs</a>
 
 ### Setup
 
@@ -341,7 +342,7 @@ fontSizes: ['1.6rem', '2rem', '2.4rem'],
 breakpoints: ['768px', '1024px'],
 ```
 
-… in `theme.js` I'm saying I want a `font-size` of `1.6rem` at below my first breakpoint of `768px` (mobile first), `2rem` at `768px` or above etc…
+… in `theme.js` I'm saying I want a `font-size` of `1.6rem` as the "mobile" value (mobile first); and that any other `font-size` values after the first should only kick in at their corresponding breakpoints (`2rem` at `768px` or above etc…).
 
 But - of course - I'm not using a library to make this happen so I'll write some JS for it (CSS in JS 💪):
 
@@ -356,7 +357,7 @@ export const breakpointsToCssVarsStringFactory = (breakpoints, varName) => {
 
     const otherVals = values.slice(1)
     for (let i = 0; i < otherVals.length; i++) {
-      const bp = theme.breakpoints[i]
+      const bp = breakpoints[i]
       if (bp) {
         result += `@media screen and (min-width: ${bp}) { --${varName}: ${otherVals[i]}; }\n`
       }
