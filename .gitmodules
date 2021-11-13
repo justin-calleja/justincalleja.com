@@ -1,0 +1,3 @@
+[submodule "src/posts/2021/godot-card-flipping"]
+	path = src/posts/2021/godot-card-flipping
+	url = git@github.com:justin-calleja/card-flipping.git
