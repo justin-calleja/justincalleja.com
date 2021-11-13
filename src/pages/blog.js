@@ -30,17 +30,20 @@ const getMardownPosts = graphql`
   }
 `
 
-const eligibleNodes = ({ node }) =>
-  !(
+const eligibleNodes = ({ node }) => {
+  if (node.fields.slug.endsWith("README/")) return false
+
+  return !(
     process.env.NODE_ENV === "production" &&
     node.frontmatter.published === false
   )
+}
 
 export default () => (
   <div>
     <StaticQuery
       query={getMardownPosts}
-      render={data => (
+      render={(data) => (
         <>
           {data.allMdx.edges.filter(eligibleNodes).map(({ node }) => {
             return (
