@@ -7,6 +7,10 @@ import { H2, H3, H4 } from "./src/templates/post-template"
 import WarningAlert from "~components/Bootstrap/WarningAlert"
 import ErrorAlert from "~components/Bootstrap/ErrorAlert"
 import useScript from "~utils/useScript"
+import { AudioButton } from "~components/Audio/AudioButton"
+import { Quiz } from "~components/Audio/Quiz"
+import { Table, Td, Th } from "~components/Table/Basic"
+import { Link } from "~components/Utils/Link"
 
 export function wrapPageElement({ element, props }) {
   return <Layout {...props}>{element}</Layout>
@@ -23,6 +27,10 @@ const components = {
   h2: H2,
   h3: H3,
   h4: H4,
+  table: Table,
+  td: Td,
+  th: Th,
+  AudioButton,
   InfoBox: WarningAlert,
   AlertBox: ErrorAlert,
   CurrentYear: () => {
@@ -44,6 +52,8 @@ const components = {
       </span>
     )
   },
+  Quiz,
+  Link,
 }
 
 export function wrapRootElement({ element }) {

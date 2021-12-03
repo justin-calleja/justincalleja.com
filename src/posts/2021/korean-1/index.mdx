@@ -1,0 +1,350 @@
+---
+title: Learning some Korean part 1
+tocEnabled: true
+tags: ["korean"]
+dateCreated: 2021-12-03
+formattedDateCreated: Dec 03, 2021
+excerpt: "Some notes after just starting to learn Korean…"
+---
+
+<Link href="/css/adhoc.css" />
+
+This post, and hopefully others to come, is just going to be me recording my self-study of the Korean langauge. It is not a structured guide for anyone to follow and I will not be recording every detail here either, just what I feel like (for me).
+
+I should probably start with Hangul (`한글`, the writing system) and it's pronunciation.
+
+First off, the English romanization of the sound associated with each character is just an approximation. Only use actual words spoken by natives as the real source of truth re pronunciation.
+
+<blockquote>
+  <p>
+    The spelling changes depending on whether the consonants are positioned at
+    the start or the end of the syllable.
+  </p>
+  <footer>
+    <cite>
+      <a href="https://www.90daykorean.com/how-to-learn-the-korean-alphabet/">
+        Korean Alphabet - Your all-in-one Hangul guide
+      </a>
+    </cite>
+  </footer>
+</blockquote>
+
+<table style="margin-bottom: 16px;">
+  <thead>
+    <tr>
+      <th>Consonant</th>
+      <th>Romanization (initial)</th>
+      <th>Romanization (final)</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>
+        <AudioButton filePath="/audio/korean/giyeok.mp3" fontWeight={700}>
+          ㄱ
+        </AudioButton>
+      </td>
+      <td>g</td>
+      <td>k</td>
+    </tr>
+  </tbody>
+</table>
+
+But this may not even always be the case:
+
+<blockquote>
+  <p>
+    Truth is, none of those letters matches perfectly with the sound of their
+    respective Korean letter. The only way to know exactly how a Korean letter
+    sounds is to listen to it.
+  </p>
+  <footer>
+    <cite>
+      <a href="https://www.howtostudykorean.com/unit0/unit0lesson1/">
+        Korean Word Structure and Basic Letters
+      </a>
+    </cite>
+  </footer>
+</blockquote>
+
+e.g. I found `학교 (hak-kyo)` which uses `k` not `g` but maybe that's because of the previous syllable also ending in `ㄱ`. TODO: to confirm pronunciation.
+
+Point is, the actual pronunciation is king.
+
+## Vowel sounds to work on
+
+I found these sounds similar i.e. hard to distinguish:
+
+<!-- TODO: make a component that only centers for mobile: -->
+
+<div style="text-align: center;">
+  <AudioButton
+    margin="0 8px 0 0"
+    filePath="/audio/korean/eo.mp3"
+    fontWeight={700}
+  >
+    ㅓ
+  </AudioButton>
+  <AudioButton
+    margin="0 8px 0 0"
+    filePath="/audio/korean/eu.mp3"
+    fontWeight={700}
+  >
+    ㅡ
+  </AudioButton>
+  <AudioButton
+    margin="0 8px 0 0"
+    filePath="/audio/korean/o.mp3"
+    fontWeight={700}
+  >
+    ㅗ
+  </AudioButton>
+  <AudioButton filePath="/audio/korean/u.mp3" fontWeight={700}>
+    ㅜ
+  </AudioButton>
+</div>
+
+So here's a quiz for them (note: the quiz is just to get some more familiarity; you need to accumulate vocab to really start getting it):
+
+But before, I found the pronunciation of `ㅗ` to be too similar to a "u", so
+here's another one from <a target="_blank" href="https://zkorean.com/hangul/appearance"> zkorean.com</a> for reference (I cannot use it in the quiz as it would be too obvious due to a change in voice): <AudioButton margin="0 0 0 8px" filePath="/audio/korean/alt-1/o.mp3" fontWeight={700}>ㅗ</AudioButton>
+
+<Quiz
+  items={[
+    { text: "ㅓ eo", filePath: "/audio/korean/eo.mp3" },
+    { text: "ㅡ eu", filePath: "/audio/korean/eu.mp3" },
+    { text: "ㅗ o", filePath: "/audio/korean/o.mp3" },
+    { text: "ㅜ u", filePath: "/audio/korean/u.mp3" },
+  ]}
+/>
+
+Great vid: <a target="_blank" href="https://www.youtube.com/watch?v=g18eplfjlTg">Difference Between 어 and 오 | Korean Pronunciation Practice</a>
+
+This consonant `ㅇ` is a placeholder (since vowels cannot start syllables), however, at the end of a syllable, it is pronounced: <AudioButton filePath="/audio/korean/ng.mp3" fontWeight={700}>ㅇ</AudioButton>
+
+<blockquote>
+  <p>
+    … if the placeholder character ends a particular syllable, it is pronounced
+    "ng" like the "-ing" in English.
+  </p>
+  <footer>
+    <cite>
+      <a href="https://www.90daykorean.com/how-to-learn-the-korean-alphabet/">
+        Korean Alphabet - Your all-in-one Hangul guide
+      </a>
+    </cite>
+  </footer>
+</blockquote>
+
+<blockquote>
+  <p>
+    Within each syllable, we read using the rule left to right, top to bottom.
+    Then we move to the next syllable block.
+  </p>
+  <footer>
+    <cite>
+      <a href="https://www.90daykorean.com/how-to-learn-the-korean-alphabet/">
+        Korean Alphabet - Your all-in-one Hangul guide
+      </a>
+    </cite>
+  </footer>
+</blockquote>
+
+This seems useful re pronunciation of consonant + vowel: https://www.howtostudykorean.com/unit0/unit0lesson1/
+
+e.g. you can find groups like this there:
+
+<div style="text-align: center;">
+  <AudioButton
+    margin="0 8px 0 0"
+    filePath="/audio/korean/b-vowel/bi.m4a"
+    fontSize="2.8rem"
+    fontWeight={700}
+  >
+    비
+  </AudioButton>
+  <AudioButton
+    margin="0 8px 0 0"
+    filePath="/audio/korean/b-vowel/ba.m4a"
+    fontSize="2.8rem"
+    fontWeight={700}
+  >
+    바
+  </AudioButton>
+  <AudioButton
+    margin="0 8px 0 0"
+    filePath="/audio/korean/b-vowel/beo.m4a"
+    fontSize="2.8rem"
+    fontWeight={700}
+  >
+    버
+  </AudioButton>
+  <AudioButton
+    margin="0 8px 0 0"
+    filePath="/audio/korean/b-vowel/beu.m4a"
+    fontSize="2.8rem"
+    fontWeight={700}
+  >
+    브
+  </AudioButton>
+  <AudioButton
+    margin="0 8px 0 0"
+    filePath="/audio/korean/b-vowel/bu.m4a"
+    fontSize="2.8rem"
+    fontWeight={700}
+  >
+    부
+  </AudioButton>
+  <AudioButton
+    margin="0 8px 0 0"
+    filePath="/audio/korean/b-vowel/bo.m4a"
+    fontSize="2.8rem"
+    fontWeight={700}
+  >
+    보
+  </AudioButton>
+</div>
+
+## Vocab for today
+
+<div>
+
+</div>
+
+<table style="margin-bottom: 16px;">
+  <tbody>
+    <tr>
+      <td>
+        <AudioButton
+          margin="0 16px"
+          filePath="/audio/korean/vocab/1/annyeong.mp3"
+          fontSize="2.8rem"
+          fontWeight={700}
+        >
+          안녕
+        </AudioButton>
+      </td>
+      <td>hello (informal)</td>
+    </tr>
+    <tr>
+      <td>
+        <AudioButton
+          margin="0 16px"
+          filePath="/audio/korean/vocab/1/annyeonghaseyo.mp3"
+          fontSize="2.8rem"
+          fontWeight={700}
+        >
+          안녕하세요
+        </AudioButton>
+      </td>
+      <td>hello (standard)</td>
+    </tr>
+    <tr>
+      <td>
+        <AudioButton
+          margin="0 16px"
+          filePath="/audio/korean/vocab/1/kamsahamnida.mp3"
+          fontSize="2.8rem"
+          fontWeight={700}
+        >
+          감사합니다
+        </AudioButton>
+      </td>
+      <td>thank you</td>
+    </tr>
+    <tr>
+      <td>
+        <AudioButton
+          margin="0 16px"
+          filePath="/audio/korean/vocab/1/jwesonghamnida.mp3"
+          fontSize="2.8rem"
+          fontWeight={700}
+        >
+          죄송합니다
+        </AudioButton>
+      </td>
+      <td>sorry</td>
+    </tr>
+    <tr>
+      <td>
+        <AudioButton
+          margin="0 16px"
+          filePath="/audio/korean/vocab/1/hakgyo.ogg"
+          fontSize="2.8rem"
+          fontWeight={700}
+        >
+          학교
+        </AudioButton>
+      </td>
+      <td>school</td>
+    </tr>
+  </tbody>
+</table>
+
+## Resources
+
+Get a dictionary extension for your browser. Started using: <a target="_blank" href="https://chrome.google.com/webstore/detail/toktogi-a-korean-english/domfinmkohodhgghgedfdcmonefafolm/related?hl=en">Toktogi</a>
+
+I've referred to the following sites to create the content for this page / do this study session. Also, it's where I got the audio files from (either directly or after splitting up):
+
+- https://www.90daykorean.com/how-to-learn-the-korean-alphabet/
+- https://www.90daykorean.com/hello-in-korean/
+- https://www.howtostudykorean.com/unit0/unit0lesson1/
+- https://en.wiktionary.org/wiki/%ED%95%99%EA%B5%90
+- https://www.tripzilla.com/korean-air-useful-korean-phrases-travellers/62592
+  - Got audio for some of the vocab
+- https://zkorean.com/hangul/appearance
+  - Got alt pronunciation of `ㅗ`
+
+## Misc
+
+### Design lessons from the Korean alphabet
+
+Found after reading: https://medium.com/@minzikang/design-lessons-from-the-korean-alphabet-383191ee7d4d
+
+Where "character" is "syllable":
+
+<blockquote>
+Every Hangul character is made up of several parts: an initial consonant, a vowel, and an optional final consonant.
+
+The initial consonants are:
+
+ㄱ,ㄲ,ㄴ,ㄷ,ㄸ,ㄹ,ㅁ,ㅂ,ㅃ,ㅅ,ㅆ,ㅇ,ㅈ,ㅉ,ㅊ,ㅋ,ㅌ,ㅍ,ㅎ
+The vowels are:
+
+ㅏ,ㅐ,ㅑ,ㅒ,ㅓ,ㅔ,ㅕ,ㅖ,ㅗ,ㅘ,ㅙ,ㅚ,ㅛ,ㅜ,ㅝ,ㅞ,ㅟ,ㅠ,ㅡ,ㅢ,ㅣ
+And the final consonants are:
+
+ㄱ,ㄲ,ㄳ,ㄴ,ㄵ,ㄶ,ㄷ,ㄹ,ㄺ,ㄻ,ㄼ,ㄽ,ㄾ,ㄿ,ㅀ,ㅁ,ㅂ,ㅄ,ㅅ,ㅆ,ㅇ,ㅈ,ㅊ,ㅋ,ㅌ,ㅍ,ㅎ
+There are three consonants that cannot appear in the final position:
+
+ㄸ,ㅃ,ㅉ
+
+  <footer>
+    <cite>
+      <a href="https://aheui.readthedocs.io/en/latest/specs.en.html">
+        Specification of Aheui — aheui 2019.1 documentation
+      </a>
+    </cite>
+  </footer>
+</blockquote>
+
+### More vocab
+
+Got <a target="_blank" href="https://reword.app/en/ko">reword for Korean</a> just to get a pre-made set of vocab cards with an SRS system.
+
+### The phonetics are challenging
+
+The writing system may be "scientific"; and granted it sure beats learning Kanji; the phonetics of the language are challenging as I'm finding out - also mentioned here:
+
+<a target="_blank" href="https://www.youtube.com/watch?v=TVqJbiSLw-E&t=101s">
+  Korean Pronunciation, Video 1: The Hangul Alphabet and Korean's Consonants
+</a>
+
+> You can get so swept away by the ease of the alphabet that you get totally caught off guard when you run into the hard parts.
+
+🤔 still - can the "hard parts" (which will exist for learning any language e.g. sheer volume of vocab to learn) be as hard as learning the Kanji? I doubt it.
+
+> Very complex spelling rules… telling you when a letter or letter combination will make one sound or another… to master these you're going to want to listen to a lot of words and get practice spelling them.
+
+Great 😞
