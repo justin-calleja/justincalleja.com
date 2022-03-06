@@ -1,11 +1,33 @@
+import Paper from '@mui/material/Paper';
+import Box from '@mui/system/Box';
 import { MDXRemote } from 'next-mdx-remote';
 import { serialize } from 'next-mdx-remote/serialize';
-import { getAllPosts, getPost } from '../../../api';
+import { getLayout } from '../../../components/AppBarLayout';
+import getAllPosts from '../../../utils/getAllPosts';
+import getPost from '../../../utils/getPost';
 import { joinSplitSlug, slugToFilePath, splitSlug } from '../../../utils/slug';
 
 const components = {
   CurrentYear: () => {
     return <span>{new Date().getFullYear()}</span>;
+  },
+  Image: ({ slug, path, alt }: any) => {
+    return (
+      <Paper
+        variant="outlined"
+        sx={{ display: 'flex', justifyContent: 'center', p: 2 }}
+      >
+        <Box
+          component="img"
+          sx={{
+            width: '100%',
+            height: 'auto',
+          }}
+          alt={alt}
+          src={`/posts${slug}${path}`}
+        />
+      </Paper>
+    );
   },
 };
 
@@ -47,7 +69,7 @@ export async function getStaticProps({
   const post = getPost(['title', 'dateCreated', 'content', 'draft'], filePath);
 
   // Overwrite the content:
-  const mdxSource = await serialize(post.content);
+  const mdxSource = await serialize(post.content, { scope: { slug } });
   post.content = mdxSource;
 
   return {
@@ -67,5 +89,7 @@ export async function getStaticPaths() {
     fallback: false,
   };
 }
+
+Post.getLayout = getLayout;
 
 export default Post;

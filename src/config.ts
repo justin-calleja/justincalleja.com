@@ -1,6 +1,6 @@
 export const config = {
-  maxPostsOnBlogHomePage: 2,
-  maxPostsPerPage: 4,
+  maxPostsOnBlogHomePage: 4,
+  maxPostsPerPage: 10,
 };
 
 export default config;

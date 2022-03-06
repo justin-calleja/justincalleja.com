@@ -1,0 +1,280 @@
+---
+title: 'Creating a Ruby on Rails Vagrant box'
+dateCreated: Dec 26, 2015 14:00:00 GMT+0000
+tags: ['ruby', 'rails', 'vagrant']
+tocEnabled: true
+---
+
+# Intro
+
+In this post we'll see how to create a virtual machine running [Ubuntu](http://www.ubuntu.com/) which has everything installed to start developing [Rails](http://rubyonrails.org/) applications.
+
+## Prerequisites
+
+You'll need to have [VirtualBox](https://www.virtualbox.org/wiki/Downloads) and [Vagrant](https://www.vagrantup.com/downloads.html) installed before starting (if you intend to follow along). I'm using VirtualBox version 5.0.10 r104061 and Vagrant version 1.7.4.
+
+# Starting up a VM with Vagrant
+
+Start off by creating an empty directory, e.g. `rails-box`, and `cd` into it. This is where we'll be building our template box containing everything we need to start writing a new Rails application. After building it, we'll be able to install the template on our system and use it whenever we want an Ubuntu VM pre-installed with the software we need to start writing Rails apps.
+
+In order to kick off the process, go ahead and run `vagrant init ubuntu/trusty64` which will give us a `Vagrantfile` specifying which box we want to use (in our case, it's `ubuntu/trusty64`). A box whose name is in the format **vendor/name** means Vagrant will look for this box on [Hashicorp](https://atlas.hashicorp.com/boxes/search)'s servers if it fails to find it on your host machine.
+
+Note, if you don't fancy all the comments in the generated Vagrantfile, feel free to delete the file and generate it again using the **-m** flag: `vagrant init -m ubuntu/trusty64`.
+
+With our Vagrantfile in place, go ahead and start the VM with `vagrant up`. This can take quite some time if you don't already have a template for `ubuntu/trusty64` on your machine. In this case, Vagrant will need to download the box from Hashicorp's servers and store it in your [$VAGRANT_HOME](https://docs.vagrantup.com/v2/other/environmental-variables.html) which by default is `~/.vagrant.d`.
+
+Downloading the box will be the longest part of `vagrant up`. After which, it also needs to extract and install the template box in VirtualBox. Apart from the stdout log output, you'll be able to see when this is done in VirtualBox's GUI Manager as another entry for the new box will be listed (with status "Running").
+
+# Installing software
+
+Now that Ubuntu's running, go ahead and log into the box via ssh with: `vagrant ssh` (run this in the same directory containing your Vagrantfile). Once logged in, if you run `ruby -v` you'll see that it's a bit old (for me it's `ruby 1.9.3p484`).
+
+So the first thing we'll do is upgrade our Ruby. There's a couple of ways of doing this. In the past, I remember (successfully) using [RVM](https://rvm.io/) for this (and more). As I'm just returning to Ruby land after 2 years of meddling in other things, I'm following along [Rails 4 in Action](https://www.manning.com/books/rails-4-in-action), so we'll be using the approach suggested there.
+
+To get started, we need a copy of [ruby-install](https://github.com/postmodern/ruby-install), which you can get by running the following in your ssh session at the command prompt:
+
+```
+~$ wget -O ruby-install-0.5.0.tar.gz https://github.com/postmodern/ruby-install/archive/v0.5.0.tar.gz
+```
+
+I'm using the latest at the time of writing but feel free to get any updated version. You can then simply extract and install:
+
+```
+~$ tar -xzvf ruby-install-0.5.0.tar.gz
+...
+~$ cd ruby-install-0.5.0/
+~/ruby-install-0.5.0$ sudo make install
+```
+
+You should now have `ruby-install` on your PATH and be able to execute it at the command prompt. Go ahead and install the version of Ruby you want with: `ruby-install ruby 2.2.1` (and yes, this does take a while). When it's done, you'll get something like:
+
+> \>\>\> Successfully installed ruby 2.2.1 into /home/vagrant/.rubies/ruby-2.2.1
+
+Cool, but if you `ruby -v`, you'll still see the old version. First off, since this is going to be a template box, it's probably best to clean up after ourselves now that `ruby-install` is, well, installed:
+
+```
+~/ruby-install-0.5.0$ cd ~
+~$ rm -rf ruby-install-0.5.0 src ruby-install-0.5.0.tar.gz
+```
+
+Now, moving on to setting which version of Ruby we want to use. For this we'll use [chruby](https://github.com/postmodern/chruby), and the process is quite similar:
+
+```
+~$ wget -O chruby-0.3.9.tar.gz https://github.com/postmodern/chruby/archive/v0.3.9.tar.gz
+~$ tar -xzvf chruby-0.3.9.tar.gz
+~$ cd chruby-0.3.9/
+~/chruby-0.3.9$ sudo make install
+~/chruby-0.3.9$ cd ..
+~$ rm -rf ./chruby-0.3.9 chruby-0.3.9.tar.gz
+```
+
+After installing chruby in your system, you'll need to source it from one of your startup scripts:
+
+```
+~$ echo -e "\nsource /usr/local/share/chruby/chruby.sh" >> ~/.bashrc
+```
+
+You can also source the `auto.sh` script if you want to enable the automatic switching of Ruby versions based off of the presence/contents of a `.ruby-version` file:
+
+```
+~$ echo "source /usr/local/share/chruby/auto.sh" >> ~/.bashrc
+```
+
+This isn't strictly necessary, but why not. It comes in handy if you're working on a project which requires the use of a particular version of Ruby. You could save a `.ruby-version` file with that particular version as content (in your project's root). Now, every time you `cd` into that project, you don't have to remember to switch to that particular version of Ruby as it's done automatically for you.
+
+Moving on, you can `exit` your ssh session and log in again with `vagrant ssh` to actually source these files. You now have `chruby` on your PATH and running it will list out the Ruby versions you have installed. To finally actually use the version we previously installed, run: `chruby ruby-2.2.1`.
+
+Now you can verify we're using that version of Ruby with `ruby -v`. Since you don't want to manually have to stay doing this every time you log in, add this to your `.bashrc` file or make use of the `auto.sh` feature we enabled:
+
+```
+~$ echo "chruby ruby-2.2.1" >> ~/.bashrc
+~$ # and/or
+~$ sudo sh -c 'echo "ruby-2.2.1" >> /.ruby-version'
+```
+
+It's easiest for us to stick with the `.bashrc` approach but if you opt to use `.ruby-version`, put it in the root directory as shown above. We'll later be using Rails in `/vagrant` which is outside `/home/vagrant` so a `.ruby-version` there wouldn't be picked up by `chruby`.
+
+Now it's Rails's turn:
+
+```
+~$ gem install rails -v 4.2.1
+```
+
+Confirm everything's in order with `rails -v`.
+
+Again, following along the Rails 4 in Action book, install the following header files via apt-get:
+
+```
+~$ sudo apt-get update -y && sudo apt-get install -y libsqlite3-dev libpq-dev libmysqlclient-dev
+```
+
+## Installing a Javascript runtime
+
+The last piece of software we'll need to install is a Javascript runtime. I'll be going with [Node.js](https://nodejs.org/en/) as that's what I'm more familiar with. However, if I `apt-cache policy nodejs` to see which version of Node I'd get if I were to `apt-get install` it, I get back `0.10.25`... not exactly the latest and greatest.
+
+As we've done with Ruby, we'll use tools which will take care of installing and managing our versions of Node. I'm personally somewhat familiar with 2 of these: [nvm](https://github.com/creationix/nvm) and [asdf](https://github.com/HashNuke/asdf), and I'd like to quickly cover basic usage of both here. However, nvm is the more mature of the two from its Github stats (and through personal usage). It is also more specialized in that it's only concerned with catering for Node.js.
+
+asdf's appeal is in its pluggability, as playfully put in the [ballad-of-asdf.md](https://github.com/HashNuke/asdf/blob/master/ballad-of-asdf.md).
+
+### nvm
+
+To install nvm run the following (you will find the URL to the latest version of nvm in its Github [README.md](https://github.com/creationix/nvm)):
+
+```
+~$ curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.29.0/install.sh | bash
+```
+
+Log out and back into a new ssh session and you should be good with `nvm` on your PATH. To install Node via nvm, you'd run something like:
+
+```
+~$ nvm install 5.3.0
+```
+
+You can find the latest version number for Node from [here](https://nodejs.org/dist/). You should be able to `node -v` and get the version now, but if at this point you were to log out and back in to the machine, your session wouldn't have Node on the PATH. In order to fix this, create a `.nvmrc` file like so:
+
+```
+~$ echo "5.3.0" >> ~/.nvmrc
+```
+
+### asdf
+
+If you've followed the nvm instructions, you're good to go. You could install asdf anyway, and even install versions of Node with it - i.e. you can have both nvm and asdf on your system and then choose which one you want to use by sourcing the tool of choice from your `.bashrc`. Uninstalling either of them is simply a matter of not sourcing in `.bashrc` and deleting their home directory (`~/.nvm` or `~/.asdf`).
+
+To get started, install git, clone asdf, and source its script file from your init script:
+
+```
+~$ sudo apt-get install git -y
+~$ git clone https://github.com/HashNuke/asdf.git ~/.asdf
+~$ echo -e '\n. $HOME/.asdf/asdf.sh' >> ~/.bashrc
+```
+
+Log out and back in. You'll then need to install the Node.js plugin with:
+
+```
+~$ asdf plugin-add nodejs https://github.com/HashNuke/asdf-nodejs.git
+```
+
+and then Node itself with:
+
+```
+~$ asdf install nodejs 5.3.0
+```
+
+The same file based setting of version number can be achieved with:
+
+```
+~$ echo "nodejs 5.3.0" >> ~/.tool-versions
+```
+
+# Packaging up our box
+
+At this point, our box seems to be well equipped for Rails development so we'll create a template out of it.
+
+In your host OS (in `Vagrantfile` dir), stop the running VM and package it up with:
+
+```
+$ vagrant halt
+$ vagrant package --output rails.box
+```
+
+When it's done, you'll get `rails.box`, a template box from which you can later re-create the exact same VM with all the software we've installed in it.
+
+This box isn't yet installed in Vagrant - something you can verify with `vagrant box list`. You can install it with:
+
+```
+$ vagrant box add rails ./rails.box
+```
+
+which will add the generated box under the name `rails`.
+
+To use the installed box, go to an empty directory (where you intend to start developing your Rails app), and initialize + start it with:
+
+```
+~/rails-projects$ vagrant init -m rails
+~/rails-projects$ vagrant up
+```
+
+If you now ssh into the new box with `vagrant ssh` you can verify that you have all the software we've previously installed.
+
+# Accessing Rails from the host OS
+
+So far so good. We can now go on any machine, install Virtual Box, Vagrant, and the box we just created, and get a VM with all the software we need to start a Rails project.
+
+That said, lets kick off a vanilla Rails app to demo the first issue you'll have with this setup, namely, accessing your Rails app from a browser running on your host OS.
+
+In your guest OS, go to the default shared directory on any stock Vagrant box, `/vagrant`. In it you will find the `Vagrantfile` we generated with `vagrant init -m rails` above:
+
+```
+~$ cd /vagrant/
+/vagrant$ cat Vagrantfile
+Vagrant.configure(2) do |config|
+  config.vm.box = "rails"
+end
+```
+
+Working here allows us to use our guest OS to execute any Rails commands, and our host OS to author the app with the software we already have installed.
+
+Go ahead and generate a new Rails app with:
+
+```
+/vagrant$ rails new tmpapp
+```
+
+and then start it with:
+
+```
+/vagrant$ cd tmpapp
+/vagrant/tmpapp$ rails server
+```
+
+You will notice that Rails 4.2.1 starts up on `http://localhost:3000`. `localhost` is the guest OS's loopback address, so there's no way you're going to access that endpoint from a browser on your host OS. Even if you were to start Rails listening on `0.0.0.0` for "listen on all IP addresses on this machine", you still wouldn't be able to access Rails from a browser on your host OS because the two aren't on the same network.
+
+To get around this, you _could_ stay port forwarding the ports you're interested in (say, 8080 on the host maps to 3000 on the guest), but that gets annoying really quickly if you later need to open other ports. I'll opt for putting the two on the same private network.
+
+The configuration required to tell Vagrant to set up this private network for us is actually commented out when you generate a `Vagrantfile` without the `-m` option (go ahead and `vagrant init` in an empty directory to generate it again). The line you want uncommented is:
+
+```ruby
+# Create a private network, which allows host-only access to the machine
+# using a specific IP.
+config.vm.network "private_network", ip: "192.168.33.10"
+```
+
+You could go for a `public_network` instead, in which case your VM would be accessible from other devices on the network (not just your host), but I'm not sure whether you can set a static IP for the machine with this option. As you can see below, no IP address is given for this option (this means you'd have to stay checking which IP address is assigned to the VM every time you boot it):
+
+```ruby
+# Create a public network, which generally matched to bridged network.
+# Bridged networks make the machine appear as another physical device on
+# your network.
+# config.vm.network "public_network"
+```
+
+After adding the private network, our `Vagrantfile` looks like this:
+
+```ruby
+Vagrant.configure(2) do |config|
+  config.vm.box = "rails"
+  config.vm.network "private_network", ip: "192.168.33.10"
+end
+```
+
+To put this change into effect, you'll need to restart the VM with `vagrant reload` (run it in the same directory containing your `Vagrantfile` in your host OS).
+
+After logging in again with `vagrant ssh`, running `ifconfig` should show us the new IP address. In fact, you should be able to successfully `ping 192.168.33.10` from the host OS.
+
+If you now `cd` into the Rails app, you can start Rails listening on that IP address (or on 0.0.0.0) with: `rails s -b 192.168.33.10`. After doing this, you should be able to access Rails from your host OS by browsing to `http://192.168.33.10:3000/`.
+
+One last thing. If you read the Rails log output after hitting Rails from your host OS's browser, you'll find:
+
+> Cannot render console from 192.168.33.1! Allowed networks: 127.0.0.1, ::1, 127.0.0.0/127.255.255.255
+
+Our guest's IP address is `192.168.33.10`, and our host's is (automatically set to) `192.168.33.1` i.e. the host's IP address is the same but with `1` for the final octet of the address. If you `ifconfig | grep -C 2 .33.1` on the host OS (assuming you're on a Unixy host), you'll verify this (it's probably `ipconfig` on Windows). Or you could just `ping 192.168.33.1` from the guest.
+
+In any case, Rails seems to be complaining that we're accessing it from the host (`192.168.33.1`), but it renders the console just fine in our browser so that message is just noise to us.
+
+To get rid of it, you can follow the advise in this [SO question](http://stackoverflow.com/questions/29417328/how-to-disable-cannot-render-console-from-on-rails), i.e. add this to `config/environments/development.rb`:
+
+```ruby
+config.web_console.whitelisted_ips = '192.168.33.1'
+```
+
+Unfortunately, this is something you'll need to remember to do everytime you start a new Rails project with this setup.

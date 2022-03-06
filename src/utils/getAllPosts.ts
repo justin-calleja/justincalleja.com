@@ -1,35 +1,9 @@
-import type { PostObj } from './types';
+import type { PostObj } from '../types';
 
-import getFilePaths from './utils/getFilePaths';
-import postsDirectory from './utils/postsDirectory';
-import readMdFileSync from './utils/readMdFileSync';
-import { filePathToSlug } from './utils/slug';
-
-// e.g. reads `filePath` (mdx file) and returns frontmatter data based on supplied
-// `fields`. `"content"` in `fields` means the mdx file ocntent (i.e. not frontmatter):
-// const post = getPost(['title', 'dateCreated', 'content', 'draft'], filePath);
-export function getPost(fields: string[] = [], filePath: string): PostObj {
-  const { content, data } = readMdFileSync(filePath);
-
-  const post = fields.reduce<{ [key: string]: any }>((acc, field) => {
-    if (typeof data[field] !== 'undefined') {
-      acc[field] = data[field];
-    }
-    return acc;
-  }, {});
-
-  if (fields.includes('content')) {
-    post.content = content;
-  }
-
-  return post;
-}
-
-export function getIndexMdxFilePaths(postsDir = postsDirectory): string[] {
-  return getFilePaths(postsDir, ['.mdx']).filter((path) =>
-    path.endsWith('index.mdx'),
-  );
-}
+import getIndexMdxFilePaths from './getIndexMdxFilePaths';
+import getPost from './getPost';
+import postsDirectory from './postsDirectory';
+import { filePathToSlug } from './slug';
 
 /**
  * Reads all the index.mdx files under the given `postsDir` directory,
@@ -62,3 +36,5 @@ export function getAllPosts(
     return post;
   });
 }
+
+export default getAllPosts;

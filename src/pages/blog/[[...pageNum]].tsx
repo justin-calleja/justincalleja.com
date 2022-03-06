@@ -1,14 +1,32 @@
-import type { PostObj } from '../../types';
-import type { BlogPostPagePathParams } from '../../types';
+import type { Theme } from '../../theme';
+import type { PostObj, BlogPostPagePathParams } from '../../types';
 
 import Link from 'next/link';
-import { getAllPosts } from '../../api';
+import Image from 'next/image';
+import { useRouter } from 'next/router';
+import useMediaQuery from '@mui/material/useMediaQuery';
+import useTheme from '@mui/styles/useTheme';
+import Typography from '@mui/material/Typography';
+import Grid from '@mui/material/Grid';
+import Button from '@mui/material/Button';
+import Box from '@mui/material/Box';
+import ChevronRightIcon from '@mui/icons-material/ChevronRight';
+import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
+import getAllPosts from '../../utils/getAllPosts';
 import config from '../../config';
 import blogPostsFilter from '../../utils/blogPostsFilter';
 import getBlogPostPagesPathParams from '../../utils/getBlogPostPagesPathParams';
 import getNumOfPages from '../../utils/getNumOfPages';
 import sortStringDates from '../../utils/sortStringDates';
 import toNumber from '../../utils/toNumber';
+import { getLayout } from '../../components/AppBarLayout';
+import { getRouteByAbsPath } from '../../routes';
+import { BlogIntro } from '../../components/BlogIntro';
+
+import cardScene from '../../mdx/posts/2021/godot-card-flipping/res/card-scene.png';
+
+const blogRoute = getRouteByAbsPath('/blog');
+const blogPostsRoute = getRouteByAbsPath('/blog/posts');
 
 interface PostsListProps {
   numOfPages: number;
@@ -17,44 +35,115 @@ interface PostsListProps {
 }
 
 const PostsList = (props: PostsListProps) => {
+  const router = useRouter();
+  const theme = useTheme<Theme>();
+  const isViewportBelowSm = useMediaQuery(theme.breakpoints.down('sm'));
   const { numOfPages, pageIndex, posts } = props;
 
-  const postEls = posts.map(({ title, excerpt, content, draft, slug }, i) => (
-    <Link key={i} href={`/blog/posts${slug}`}>
-      <a className="post-item">
-        <h3>{title}</h3>
-        {draft && <p style={{ color: 'red' }}>This is still a draft.</p>}
-        <p>{excerpt ? excerpt : `${content.substring(0, 55)}...`}</p>
-      </a>
-    </Link>
-  ));
+  const postEls = posts.map(
+    ({ title, coverImage, excerpt, draft, slug }, i) => (
+      <article key={title}>
+        {coverImage && (
+          <Image
+            src={`${slug}/${coverImage}`}
+            alt="Blog post image"
+            width={500}
+            height={500}
+            // blurDataURL="data:..." automatically provided
+            // placeholder="blur" // Optional blur-up while loading
+          />
+        )}
+        <Link
+          href={`/${blogRoute.path}/${blogPostsRoute.path}${slug}`}
+          passHref
+        >
+          <Typography variant="h5" component="a">
+            {title}
+          </Typography>
+        </Link>
+        {draft && (
+          <Typography variant="body2" style={{ color: 'red' }}>
+            This is still a draft.
+          </Typography>
+        )}
+        {excerpt && <Typography variant="body1">{excerpt}</Typography>}
+      </article>
+    ),
+  );
 
-  const prevHref = pageIndex === 1 ? '/blog' : `/blog/${pageIndex - 1}`;
+  // At pageIndex === 1, previous page is the blog home page (no page number in URL)
+  const prevHref =
+    pageIndex === 0
+      ? null
+      : pageIndex === 1
+      ? '/blog'
+      : `/blog/${pageIndex - 1}`;
   const nextHref = pageIndex + 1 < numOfPages ? `/blog/${pageIndex + 1}` : null;
 
   return (
-    <div
-      style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}
-    >
-      {postEls}
-      <div style={{ marginTop: '16px' }}>
-        {pageIndex > 0 && (
-          <Link href={prevHref}>
-            <a style={{ color: 'blue', textDecoration: 'underline' }}>
-              Previous
-            </a>
-          </Link>
-        )}
-        <span style={{ margin: '0 16px', fontSize: '1.2rem' }}>
-          Page {pageIndex}
-        </span>
-        {nextHref && (
-          <Link href={nextHref}>
-            <a style={{ color: 'blue', textDecoration: 'underline' }}>Next</a>
-          </Link>
-        )}
-      </div>
-    </div>
+    <Grid container spacing={4} pt={2}>
+      {pageIndex === 0 && (
+        <Grid item xs={12}>
+          <BlogIntro />
+        </Grid>
+      )}
+      {postEls.map((postEl, i) => (
+        <Grid item xs={12} md={6} key={i}>
+          {postEl}
+        </Grid>
+      ))}
+      <Grid item container pb={4}>
+        <Grid item xs={12}>
+          <Box
+            display="flex"
+            justifyContent={isViewportBelowSm ? 'center' : 'flex-start'}
+          >
+            {prevHref && (
+              <Button
+                variant="outlined"
+                startIcon={<ChevronLeftIcon />}
+                onClick={() => router.push(prevHref)}
+                sx={{
+                  mr: 2,
+                }}
+              >
+                {`newer${isViewportBelowSm ? '' : ' posts'}`}
+              </Button>
+            )}
+            {nextHref && (
+              <Button
+                variant="outlined"
+                endIcon={<ChevronRightIcon />}
+                onClick={() => router.push(nextHref)}
+              >
+                {`older${isViewportBelowSm ? '' : ' posts'}`}
+              </Button>
+            )}
+            {isViewportBelowSm || numOfPages <= 1 ? null : (
+              <Box
+                sx={{
+                  flexGrow: 1,
+                  alignSelf: 'center',
+                  textAlign: 'right',
+                  pr: 2,
+                }}
+              >
+                <Typography>{`Page ${
+                  pageIndex + 1
+                } of ${numOfPages}`}</Typography>
+              </Box>
+            )}
+          </Box>
+        </Grid>
+        {isViewportBelowSm && numOfPages > 1 ? (
+          <Grid item xs={12} pt={2}>
+            <Typography textAlign="center">{`Page ${
+              pageIndex + 1
+            } of ${numOfPages}`}</Typography>
+          </Grid>
+        ) : null}
+      </Grid>
+    </Grid>
   );
 };
 
@@ -74,8 +163,7 @@ export async function getStaticProps(context: BlogPostPagePathParams) {
     'archive',
     'excerpt',
     'title',
-    // if 'excerpt' is missing, 'content' can be used instead:
-    'content',
+    'coverImage',
   ])
     .filter(blogPostsFilter)
     .sort((postA, postB) =>
@@ -127,5 +215,7 @@ export async function getStaticPaths() {
     fallback: false,
   };
 }
+
+PostsList.getLayout = getLayout;
 
 export default PostsList;

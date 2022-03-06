@@ -1,0 +1,574 @@
+---
+title: 'Vanilla CSS grid'
+dateCreated: Nov 08, 2015 14:00:00 GMT+0000
+tags: ['css']
+tocEnabled: true
+---
+
+<link rel="stylesheet" href="/vanilla-css-grid/styles.css" />
+
+## Intro
+
+Pulling in a CSS framework such as [Bootstrap](http://getbootstrap.com/), or even just it's grid system, can be overkill when all you want is a simple page with a couple of columns in it.
+
+In this post we'll be using plain CSS to get some responsive columns on our page, effectively writing a minimal grid system.
+
+## Setting up the markup
+
+To follow along, you can start with a basic page as shown below:
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width" />
+    <title></title>
+    <link
+      rel="stylesheet"
+      href="//cdnjs.cloudflare.com/ajax/libs/meyer-reset/2.0/reset.css"
+    />
+    <link rel="stylesheet" href="css/styles.css" />
+  </head>
+  <body></body>
+</html>
+```
+
+After pulling in `reset.css` (to remove inconsistencies in default styles across different browsers), we're simply linking to our custom styles in `styles.css`.
+
+Next, you need to decide on a class name to give to your containing element. Frameworks like Bootstrap use the class name "container" so it's best to choose another name just in case you later decide to use such a framework. I'll be using "grid-container":
+
+```html
+<div class="grid-container"></div>
+```
+
+Inside the grid container, we'll be adding rows as shown in the example below:
+
+```html
+<div class="row">
+  <div class="col-xsm">
+    <p>
+      col-xsm 1. Adipisicing delectus nisi sequi placeat amet! Quasi ullam nulla
+      iure saepe velit eos doloremque facere modi? Consectetur nulla possimus
+      sequi?
+    </p>
+  </div>
+  <div class="col-xsm">
+    <p>
+      col-xsm 2. Adipisicing delectus nisi sequi placeat amet! Quasi ullam nulla
+      iure saepe velit eos doloremque facere modi? Consectetur nulla possimus
+      sequi?
+    </p>
+  </div>
+  <div class="col-xsm">
+    <p>
+      col-xsm 3. Adipisicing delectus nisi sequi placeat amet! Quasi ullam nulla
+      iure saepe velit eos doloremque facere modi? Consectetur nulla possimus
+      sequi?
+    </p>
+  </div>
+  <div class="col-xsm">
+    <p>
+      col-xsm 4. Adipisicing delectus nisi sequi placeat amet! Quasi ullam nulla
+      iure saepe velit eos doloremque facere modi? Consectetur nulla possimus
+      sequi?
+    </p>
+  </div>
+</div>
+<div class="row">
+  <div class="col-sm">
+    <p>
+      col-sm 1. Adipisicing delectus nisi sequi placeat amet! Quasi ullam nulla
+      iure saepe velit eos doloremque facere modi? Consectetur nulla possimus
+      sequi?
+    </p>
+  </div>
+  <div class="col-sm">
+    <p>
+      col-sm 2. Adipisicing delectus nisi sequi placeat amet! Quasi ullam nulla
+      iure saepe velit eos doloremque facere modi? Consectetur nulla possimus
+      sequi?
+    </p>
+  </div>
+</div>
+```
+
+Here we have 2 rows, the first made up of 4 _col-xsm_ columns, while the second, of 2 _col-sm_ columns.
+
+## Styles
+
+The first thing we'll do in our `styles.css` is target the grid container, as well as anything within it, and set the `box-sizing` property to `border-box`:
+
+```css
+.grid-container,
+.grid-container * {
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+}
+```
+
+This will include the padding and border in each element's total width and height (so later, when we'll be sepecifying widths in percentages, padding and boarder will be included).
+
+Targetting the grid container again, we can center it by setting it's left and right margins to `auto`. I'm also setting it's max width to `750px` here as I'll be using these styles on this page and that's the max width of my post content. Feel free to increase this for your purposes. Setting the width to `100%` means the grid will take up all available space until the viewport reaches a width of 750px, at which point the grid's width will stop expanding:
+
+```css
+.grid-container {
+  width: 100%;
+  margin: 0 auto;
+  max-width: 750px;
+}
+```
+
+<!-- you could add clearfix hack here or add it later after demoing what can happen without it -->
+
+We'll now target _all_ our columns using an [attribute selector](http://www.w3.org/TR/selectors/#selectors) on classes which begin with "col-". As we're going to start styling with the smallest viewport in mind, all our columns will be 100% wide (except for `col-xsm` which will be 50%). Floating our columns to the left will allow us to lay them out as columns on the page, and adding some padding is in order after resetting our styles:
+
+```css
+[class^='col-'] {
+  float: left;
+  width: 100%;
+  padding: 10px;
+}
+.col-xsm {
+  width: 50%;
+}
+```
+
+Before our first preview, lets go ahead and add an outline around all our elements to get a better idea of the spacing between them:
+
+```css
+.outline,
+.outline * {
+  outline: 1px solid #d6d6d6;
+}
+```
+
+At this point, given the HTML below:
+
+```html
+<div class="grid-container outline">
+  <div class="row-noclearfix">
+    <div class="col-xsm">
+      <p>
+        col-xsm 1. Adipisicing delectus nisi sequi placeat amet! Quasi ullam
+        nulla iure saepe velit eos doloremque facere modi? Consectetur nulla
+        possimus sequi? Sit facilis nulla accusamus veniam at, corrupti
+        cupiditate! Eveniet aliquam aspernatur ipsum vitae molestias similique
+        eum perferendis sunt sit minus. Rem cupiditate optio rem omnis.
+      </p>
+    </div>
+    <div class="col-xsm">
+      <p>
+        col-xsm 2. Adipisicing delectus nisi sequi placeat amet! Quasi ullam
+        nulla iure saepe velit eos doloremque facere modi? Consectetur nulla
+        possimus sequi?
+      </p>
+    </div>
+  </div>
+  <div class="row-noclearfix">
+    <div class="col-xsm">
+      <p>
+        col-xsm 3. Adipisicing delectus nisi sequi placeat amet! Quasi ullam
+        nulla iure saepe velit eos doloremque facere modi? Consectetur nulla
+        possimus sequi?
+      </p>
+    </div>
+    <div class="col-xsm">
+      <p>
+        col-xsm 4. Adipisicing delectus nisi sequi placeat amet! Quasi ullam
+        nulla iure saepe velit eos doloremque facere modi? Consectetur nulla
+        possimus sequi?
+      </p>
+    </div>
+  </div>
+  <div class="row-noclearfix">
+    <div class="col-sm">
+      <p>
+        col-sm 1. Adipisicing delectus nisi sequi placeat amet! Quasi ullam
+        nulla iure saepe velit eos doloremque facere modi? Consectetur nulla
+        possimus sequi?
+      </p>
+    </div>
+    <div class="col-sm">
+      <p>
+        col-sm 2. Adipisicing delectus nisi sequi placeat amet! Quasi ullam
+        nulla iure saepe velit eos doloremque facere modi? Consectetur nulla
+        possimus sequi?
+      </p>
+    </div>
+  </div>
+</div>
+```
+
+we get something like this:
+
+<div className="grid-container outline">
+  <div className="row-noclearfix">
+    <div className="col-xsm">
+      <p>
+        col-xsm 1. Adipisicing delectus nisi sequi placeat amet! Quasi ullam
+        nulla iure saepe velit eos doloremque facere modi? Consectetur nulla
+        possimus sequi? Sit facilis nulla accusamus veniam at, corrupti
+        cupiditate! Eveniet aliquam aspernatur ipsum vitae molestias similique
+        eum perferendis sunt sit minus. Rem cupiditate optio rem omnis.
+      </p>
+    </div>
+    <div className="col-xsm">
+      <p>
+        col-xsm 2. Adipisicing delectus nisi sequi placeat amet! Quasi ullam
+        nulla iure saepe velit eos doloremque facere modi? Consectetur nulla
+        possimus sequi?
+      </p>
+    </div>
+  </div>
+  <div className="row-noclearfix">
+    <div className="col-xsm">
+      <p>
+        col-xsm 3. Adipisicing delectus nisi sequi placeat amet! Quasi ullam
+        nulla iure saepe velit eos doloremque facere modi? Consectetur nulla
+        possimus sequi?
+      </p>
+    </div>
+    <div className="col-xsm">
+      <p>
+        col-xsm 4. Adipisicing delectus nisi sequi placeat amet! Quasi ullam
+        nulla iure saepe velit eos doloremque facere modi? Consectetur nulla
+        possimus sequi?
+      </p>
+    </div>
+  </div>
+  <div className="row-noclearfix">
+    <div className="col-sm">
+      <p>
+        col-sm 1. Adipisicing delectus nisi sequi placeat amet! Quasi ullam
+        nulla iure saepe velit eos doloremque facere modi? Consectetur nulla
+        possimus sequi?
+      </p>
+    </div>
+    <div className="col-sm">
+      <p>
+        col-sm 2. Adipisicing delectus nisi sequi placeat amet! Quasi ullam
+        nulla iure saepe velit eos doloremque facere modi? Consectetur nulla
+        possimus sequi?
+      </p>
+    </div>
+  </div>
+</div>
+<div className="clear" />
+
+As you can see, the second row starting with `col-xsm` 3 is not in place. The reason this is happening is becuase we have not cleared our floats. So in order to fix this, we can add the following [clearfix hack](http://nicolasgallagher.com/micro-clearfix-hack/):
+
+```css
+.row:before,
+.row:after {
+  content: ' ';
+  display: table;
+}
+.row:after {
+  clear: both;
+}
+```
+
+After changing the row classes back to "row" in the example above, we get the desired effect:
+
+<div className="grid-container outline">
+  <div className="row">
+    <div className="col-xsm">
+      <p>
+        col-xsm 1. Adipisicing delectus nisi sequi placeat amet! Quasi ullam
+        nulla iure saepe velit eos doloremque facere modi? Consectetur nulla
+        possimus sequi? Sit facilis nulla accusamus veniam at, corrupti
+        cupiditate! Eveniet aliquam aspernatur ipsum vitae molestias similique
+        eum perferendis sunt sit minus. Rem cupiditate optio rem omnis.
+      </p>
+    </div>
+    <div className="col-xsm">
+      <p>
+        col-xsm 2. Adipisicing delectus nisi sequi placeat amet! Quasi ullam
+        nulla iure saepe velit eos doloremque facere modi? Consectetur nulla
+        possimus sequi?
+      </p>
+    </div>
+  </div>
+  <div className="row">
+    <div className="col-xsm">
+      <p>
+        col-xsm 3. Adipisicing delectus nisi sequi placeat amet! Quasi ullam
+        nulla iure saepe velit eos doloremque facere modi? Consectetur nulla
+        possimus sequi?
+      </p>
+    </div>
+    <div className="col-xsm">
+      <p>
+        col-xsm 4. Adipisicing delectus nisi sequi placeat amet! Quasi ullam
+        nulla iure saepe velit eos doloremque facere modi? Consectetur nulla
+        possimus sequi?
+      </p>
+    </div>
+  </div>
+  <div className="row">
+    <div className="col-sm">
+      <p>
+        col-sm 1. Adipisicing delectus nisi sequi placeat amet! Quasi ullam
+        nulla iure saepe velit eos doloremque facere modi? Consectetur nulla
+        possimus sequi?
+      </p>
+    </div>
+    <div className="col-sm">
+      <p>
+        col-sm 2. Adipisicing delectus nisi sequi placeat amet! Quasi ullam
+        nulla iure saepe velit eos doloremque facere modi? Consectetur nulla
+        possimus sequi?
+      </p>
+    </div>
+  </div>
+</div>
+
+### Adding media queries
+
+So far we've been styling with mobile in mind, which is why we've specified all our columns to be 100% wide except for our extra small ones (`col-xsm`) which are 50% wide. It's now time to change that, but before doing so, we need to figure out at which breakpoints we want our column widths to change. I'll be using `min-width`s of 480px and 768px:
+
+```css
+@media screen and (min-width: 480px) {
+  .grid-container.r {
+    background: tomato;
+  }
+}
+
+@media screen and (min-width: 768px) {
+  .grid-container.r {
+    background: tan;
+  }
+}
+```
+
+This means something like: "when the browser width is greater than or equal to 480px, apply the styles in the first media query; then when it gets greater or equal to 768px, override/add with the styles in the second media query".
+
+You will notice I'm applying the styles only to elements which have both the class of `grid-container` as well as the class `r` on them. I'm doing this in order to leave previous examples on this page uneffected, and I'll be doing the same when making our columns responsive as we go forward. Obviously, you should remove the `.r` part in your selectors and avoid littering your HTML with these extra classes on your own pages.
+
+One other thing to note as we go forward. When resizing Chrome with the developer tools open, you will notice "width x height" dimensions given in the top right of the browser. Make sure you're at 100% zoom of the page if you want the width shown in Chrome to match up to the breakpoints used in your media queries.
+
+Ok, so lets quickly check that our media queries are working:
+
+```html
+<div class="grid-container r">
+  <p>Sit autem iure eum voluptates possimus. Voluptas illo quod dolorem?</p>
+</div>
+```
+
+<div className="grid-container r">
+  <p>Sit autem iure eum voluptates possimus. Voluptas illo quod dolorem?</p>
+</div>
+
+<!-- keep as div followed by br -->
+
+<div className="clear" />
+<br />
+
+At a viewport of over 768px wide, you should see the lorem ipsum above with a `tan` background. At over 480px but less than 768px it should be `tomato`, and at under 480px neither will apply leaving us back with our mobile styles.
+
+With that in place, we can go ahead and fill in our desired column widths:
+
+```css
+@media screen and (min-width: 480px) {
+  .grid-container.r {
+    background: tomato;
+  }
+  .col-xsm.r {
+    width: 33.33%;
+  }
+  .col-sm.r {
+    width: 50%;
+  }
+  .col-md.r {
+    width: 83.33%;
+  }
+  .col-lg.r {
+    width: 100%;
+  }
+  .col-xlg.r {
+    width: 100%;
+  }
+}
+
+@media screen and (min-width: 768px) {
+  .grid-container.r {
+    background: tan;
+  }
+  .col-xsm.r {
+    width: 25%;
+  }
+  .col-sm.r {
+    width: 33.33%;
+  }
+  .col-md.r {
+    width: 50%;
+  }
+  .col-lg.r {
+    width: 83.33%;
+  }
+  .col-xlg.r {
+    width: 100%;
+  }
+}
+```
+
+We're setting `col-xsm` to take up 1/3 of my `max-width` of 750px (my blog post width) when the viewport's width is between 480px and 767px inclusive. It's going to change to be 25% that width when the viewport is 768px wide or wider, and it's going to go back to 50% when the viewport is 479px wide or less.
+
+Try changing the browser's width to see the result in the following:
+
+```html
+<div class="grid-container r">
+  <div class="row">
+    <div class="col-xsm r">
+      <p>
+        col-xsm 1. Adipisicing delectus nisi sequi placeat amet! Quasi ullam
+        nulla iure saepe velit eos doloremque facere modi? Consectetur nulla
+        possimus sequi? Sit facilis nulla accusamus veniam at, corrupti
+        cupiditate! Eveniet aliquam aspernatur ipsum vitae molestias similique
+        eum perferendis sunt sit minus. Rem cupiditate optio rem omnis.
+      </p>
+    </div>
+    <div class="col-xsm r">
+      <p>
+        col-xsm 2. Adipisicing delectus nisi sequi placeat amet! Quasi ullam
+        nulla iure saepe velit eos doloremque facere modi? Consectetur nulla
+        possimus sequi?
+      </p>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-sm r">
+      <p>
+        col-sm 1. Adipisicing delectus nisi sequi placeat amet! Quasi ullam
+        nulla iure saepe velit eos doloremque facere modi? Consectetur nulla
+        possimus sequi? Consectetur alias quos minima quae at! Consequuntur
+        repellendus laboriosam laborum fugiat similique pariatur. Quidem
+        repellat necessitatibus sed saepe voluptatum obcaecati modi maxime cum
+        vero autem. Odit molestiae labore laudantium odit!
+      </p>
+    </div>
+    <div class="col-sm r">
+      <p>
+        col-sm 2. Adipisicing delectus nisi sequi placeat amet! Quasi ullam
+        nulla iure saepe velit eos doloremque facere modi? Consectetur nulla
+        possimus sequi?
+      </p>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md r">
+      <p>
+        col-md 1. Adipisicing delectus nisi sequi placeat amet! Quasi ullam
+        nulla iure saepe velit eos doloremque facere modi? Consectetur nulla
+        possimus sequi? Consectetur alias quos minima quae at! Consequuntur
+        repellendus laboriosam laborum fugiat similique pariatur. Quidem
+        repellat necessitatibus sed saepe voluptatum obcaecati modi maxime cum
+        vero autem. Odit molestiae labore laudantium odit!
+      </p>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-lg r">
+      <p>
+        col-lg 1. Adipisicing delectus nisi sequi placeat amet! Quasi ullam
+        nulla iure saepe velit eos doloremque facere modi? Consectetur nulla
+        possimus sequi? Consectetur alias quos minima quae at! Consequuntur
+        repellendus laboriosam laborum fugiat similique pariatur. Quidem
+        repellat necessitatibus sed saepe voluptatum obcaecati modi maxime cum
+        vero autem. Odit molestiae labore laudantium odit!
+      </p>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-xlg r">
+      <p>
+        col-xlg 1. Adipisicing delectus nisi sequi placeat amet! Quasi ullam
+        nulla iure saepe velit eos doloremque facere modi? Consectetur nulla
+        possimus sequi? Consectetur alias quos minima quae at! Consequuntur
+        repellendus laboriosam laborum fugiat similique pariatur. Quidem
+        repellat necessitatibus sed saepe voluptatum obcaecati modi maxime cum
+        vero autem. Odit molestiae labore laudantium odit!
+      </p>
+    </div>
+  </div>
+</div>
+```
+
+<div className="grid-container r">
+  <div className="row">
+    <div className="col-xsm r">
+      <p>
+        col-xsm 1. Adipisicing delectus nisi sequi placeat amet! Quasi ullam
+        nulla iure saepe velit eos doloremque facere modi? Consectetur nulla
+        possimus sequi? Sit facilis nulla accusamus veniam at, corrupti
+        cupiditate! Eveniet aliquam aspernatur ipsum vitae molestias similique
+        eum perferendis sunt sit minus. Rem cupiditate optio rem omnis.
+      </p>
+    </div>
+    <div className="col-xsm r">
+      <p>
+        col-xsm 2. Adipisicing delectus nisi sequi placeat amet! Quasi ullam
+        nulla iure saepe velit eos doloremque facere modi? Consectetur nulla
+        possimus sequi?
+      </p>
+    </div>
+  </div>
+  <div className="row">
+    <div className="col-sm r">
+      <p>
+        col-sm 1. Adipisicing delectus nisi sequi placeat amet! Quasi ullam
+        nulla iure saepe velit eos doloremque facere modi? Consectetur nulla
+        possimus sequi? Consectetur alias quos minima quae at! Consequuntur
+        repellendus laboriosam laborum fugiat similique pariatur. Quidem
+        repellat necessitatibus sed saepe voluptatum obcaecati modi maxime cum
+        vero autem. Odit molestiae labore laudantium odit!
+      </p>
+    </div>
+    <div className="col-sm r">
+      <p>
+        col-sm 2. Adipisicing delectus nisi sequi placeat amet! Quasi ullam
+        nulla iure saepe velit eos doloremque facere modi? Consectetur nulla
+        possimus sequi?
+      </p>
+    </div>
+  </div>
+  <div className="row">
+    <div className="col-md r">
+      <p>
+        col-md 1. Adipisicing delectus nisi sequi placeat amet! Quasi ullam
+        nulla iure saepe velit eos doloremque facere modi? Consectetur nulla
+        possimus sequi? Consectetur alias quos minima quae at! Consequuntur
+        repellendus laboriosam laborum fugiat similique pariatur. Quidem
+        repellat necessitatibus sed saepe voluptatum obcaecati modi maxime cum
+        vero autem. Odit molestiae labore laudantium odit!
+      </p>
+    </div>
+  </div>
+  <div className="row">
+    <div className="col-lg r">
+      <p>
+        col-lg 1. Adipisicing delectus nisi sequi placeat amet! Quasi ullam
+        nulla iure saepe velit eos doloremque facere modi? Consectetur nulla
+        possimus sequi? Consectetur alias quos minima quae at! Consequuntur
+        repellendus laboriosam laborum fugiat similique pariatur. Quidem
+        repellat necessitatibus sed saepe voluptatum obcaecati modi maxime cum
+        vero autem. Odit molestiae labore laudantium odit!
+      </p>
+    </div>
+  </div>
+  <div className="row">
+    <div className="col-xlg r">
+      <p>
+        col-xlg 1. Adipisicing delectus nisi sequi placeat amet! Quasi ullam
+        nulla iure saepe velit eos doloremque facere modi? Consectetur nulla
+        possimus sequi? Consectetur alias quos minima quae at! Consequuntur
+        repellendus laboriosam laborum fugiat similique pariatur. Quidem
+        repellat necessitatibus sed saepe voluptatum obcaecati modi maxime cum
+        vero autem. Odit molestiae labore laudantium odit!
+      </p>
+    </div>
+  </div>
+</div>
+<div className="clear" />
