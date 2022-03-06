@@ -10,3 +10,7 @@ Unexpected character `!` (U+0021) before name, expected a character that can sta
 ```
 
 I can use the suggestion of using `{/* text */}` for comments... but need to find an editor plugin that highlights appropriately.
+
+```bash
+sed -i '' -E "s/\!\[(.+)\]\(res(.+)\)/<Image slug=\{slug\} path=\"\2\" alt=\"\1\" \/>/g" /Users/justincalleja/web-presence/next-js-based/src/mdx/posts/2021/godot-card-flipping/index.mdx
+```

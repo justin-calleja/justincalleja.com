@@ -23,11 +23,11 @@ Make 2 cards. One flippable via a button close-by; and another card that can its
 
 The first scene, `res://scenes/card/card.tscn`, will have a `TextureRect` (named "Node2D" below, but it's actually of type `TextureRect`) with an AnimationPlayer. The `Control.Rect.Size` will have an `x` of `170` and a y of `245`. The `Pivot Offset` is set at half the `x`, at `85`. This will be important when we animate the `rect_scale.x`. If we don't change it, the animation will happen from the left side of the card.
 
-<Image slug={slug} path="/card-scene.png" alt="The card scene" />
+<Image path="/card-scene.png" alt="The card scene" />
 
 Next, for the `AnimationPlayer`:
 
-![Card animation setup](res/card-animation-setup.png)
+<Image path="/card-animation-setup.png" alt="Card animation setup" />
 
 1. Create a new animation called "flip".
 1. Adjust the duration to `0.2` seconds.
@@ -87,13 +87,13 @@ func flip():
 
 Add a new root node e.g. `Node2D`, and "Instance child scene" to instanciate a node from the `res://scenes/card/card.tscn` scene, and name it `Club10`.
 
-![Textures for Club 10 card](res/club10-textures.png)
+<Image path="/club10-textures.png" alt="Textures for Club 10 card" />
 
 Setting the `TextureRect` texture is just so we can see it in the Godot editor. When executed, the `Front Texture` and `Back Texture` will take effect.
 
 Next add a button somewhere and give it some text like "Flip" (feel free to increase its size). We'll need to use the `pressed()` signal and attach it to a function in the `tmp` scene's root node, which doesn't have a script yet, so add one for it:
 
-![Button in tmp scene](res/button-in-tmp-scene.png)
+<Image path="/button-in-tmp-scene.png" alt="Button in tmp scene" />
 
 ```py
 extends Node2D
