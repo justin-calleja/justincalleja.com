@@ -1,4 +1,7 @@
-import MuiMarkdown from '../../../mui-markdown/src/MuiMarkdown';
+import type { Theme } from '../../../theme';
+
+import useMediaQuery from '@mui/material/useMediaQuery';
+import useTheme from '@mui/styles/useTheme';
 import Typography from '@mui/material/Typography';
 import Paper from '@mui/material/Paper';
 import Box from '@mui/system/Box';
@@ -8,37 +11,8 @@ import { getLayout } from '../../../components/AppBarLayout';
 import getAllPosts from '../../../utils/getAllPosts';
 import getPost from '../../../utils/getPost';
 import { joinSplitSlug, slugToFilePath, splitSlug } from '../../../utils/slug';
-
-const components = {
-  CurrentYear: () => {
-    return <span>{new Date().getFullYear()}</span>;
-  },
-  Image: ({ slug, path, alt }: any) => {
-    return (
-      <Paper
-        variant="outlined"
-        sx={{ display: 'flex', justifyContent: 'center', p: 2 }}
-      >
-        <a
-          href={`/posts${slug}${path}`}
-          target="_blank"
-          rel="noreferrer noopener"
-        >
-          <Box
-            component="img"
-            sx={{
-              width: '100%',
-              maxWidth: 590,
-              height: 'auto',
-            }}
-            alt={alt}
-            src={`/posts${slug}${path}`}
-          />
-        </a>
-      </Paper>
-    );
-  },
-};
+import getMdComponents from '../../../utils/getMdComponents';
+import MuiMarkdown from '../../../mui-markdown/src/MuiMarkdown';
 
 interface PostProps {
   post: {
@@ -55,11 +29,14 @@ const Post = (props: PostProps) => {
     slug,
   } = props;
 
+  const theme = useTheme<Theme>();
+  const isViewportBelowMd = useMediaQuery(theme.breakpoints.down('md'));
+  const isViewportBelowSm = useMediaQuery(theme.breakpoints.down('sm'));
+  const components = getMdComponents({ isViewportBelowSm, isViewportBelowMd });
+
   return (
     <div>
-      <Typography variant="h4" component="h1">
-        {title}
-      </Typography>
+      <Typography variant="blogPostH1">{title}</Typography>
       <div>
         Created on:<span style={{ marginLeft: '4px' }}>{dateCreated}</span>
       </div>
