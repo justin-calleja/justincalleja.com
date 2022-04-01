@@ -33,17 +33,23 @@ The gist is:
 
 1. Create a project e.g. "FishingEvent".
 1. Add a map with some water in it and set the player's starting position to somewhere close to the water:
-   ![Add "Fishing Village"](add-fishing-village.png)
+   <Image path="/add-fishing-village.png" alt="Add 'Fishing Village'" />
 1. Pick and apply a `Region Id` (e.g. 1) to anywhere you want the player to be able to fish at.
    - Note how you need to be in "Map" mode and that you select the **R** tab.
-     ![Select region id](select-region-id.png)
-     ![Setting the region id of applicable regions](setting-region-ids.png)
+     <Image path="/select-region-id.png" alt="Select region id" />
+     <Image
+       path="/setting-region-ids.png"
+       alt="Setting the region id of applicable regions"
+     />
 
 ## Create and equip the "Fishing Rod"
 
 1. From `Database ➜ Items`, (possibly change the maximum number of items), and add a "Fishing Rod" item, and (optionally) two fish items e.g. "Fish A" and "Fish B". I'm following the [original source material](https://www.xehryn.com/tutorials/fishing-regions) and choosing an item type of **Key Item** and setting the scope to **None** and occasion to **Always** for the "Fishing Rod".
    - Icons don't matter - they're just fillers.
-     ![Create the Fishing Rod](create-fishing-rod-and-fish.png)
+     <Image
+       path="/create-fishing-rod-and-fish.png"
+       alt="Create the Fishing Rod"
+     />
 1. **Equip the Fishing Rod by adding an autorun event:** On scene start, in order to equip the player with the "Fishing Rod"; change to "Event mode" for the map, and place an event by double clicking on a tile which won't be interacted with (see e.g. in screenshot below).
    - Set the event's Trigger to **Autorun**
    - Double click first line of the event's "Contents" and choose `Party ➜ Change Items` from the first tab of the new window.
@@ -52,8 +58,14 @@ The gist is:
      - The reason for doing this is so that a new event page can be created with a condition to be active when the self switch A is **ON**. This prevents the event from triggering the next time we load this scene i.e. it prevents the event from gifting the player a "Fishing Rod" over and over again.
    - The first page of the event only needs the `Change Items` and `Control Self Switch`. Next; add a "New Event Page" by clicking the button with the same name.
    - Finally, set the new page's condition to self switch **A**. No contents are necessary.
-     ![Give the player the fishing rod on start](give-player-fishing-rod-on-start.png)
-     ![Set the control self switch A](set-control-self-switch.png)
+     <Image
+       path="/give-player-fishing-rod-on-start.png"
+       alt="Give the player the fishing rod on start"
+     />
+     <Image
+       path="/set-control-self-switch.png"
+       alt="Set the control self switch A"
+     />
 
 At this point you should be able to play the game and check that you have a "Fishing Rod" under `Item ➜ Key Item`.
 
@@ -69,7 +81,7 @@ Now to implement the:
 
 In `Database`, add a common event: "Try Fishing", and add a **script** as it's first line in "Contents":
 
-![Add script to common event](add-script.png)
+<Image path="/add-script.png" alt="Add script to common event" />
 
 ### Script to store the region id of tile in front of player in game variable 3
 
@@ -114,7 +126,7 @@ $gameVariables.setValue(3, region);
 
 And if I try using this version instead:
 
-![Truncated script](truncated-script.png)
+<Image path="/truncated-script.png" alt="Truncated script" />
 
 Looks like I only get a max of 12 lines of code to put there…
 
@@ -130,11 +142,14 @@ Note the last line in the snippet - `$gameVariables.setValue(3, region)` - that'
 
 … looks something like this:
 
-![The rest of the common event's contents](finishing-common-event-contents.png)
+<Image
+  path="/finishing-common-event-contents.png"
+  alt="The rest of the common event's contents"
+/>
 
 To get the first check:
 
-![Check if region id is 0](if-region-id-is-0.png)
+<Image path="/if-region-id-is-0.png" alt="Check if region id is 0" />
 
 Note the creation of the variable at slot number `0003` - that I named "RegionId". That one was chosen to line up with the population of that variable in our previous script: `$gameVariables.setValue(3, region)`.
 
@@ -164,7 +179,7 @@ The next `if` can be to check for a region id of `1` using the same approach as 
   </footer>
 </blockquote>
 
-![Setting the fish id](setting-the-fish-id.png)
+<Image path="/setting-the-fish-id.png" alt="Setting the fish id" />
 
 See [original source material](https://www.xehryn.com/tutorials/fishing-regions) for how to get a random fish id from a list using this script:
 
@@ -177,19 +192,25 @@ $gameVariables.setValue(4, fid);
 
 The last content of the "Try Fishing" common event will be a call to another common event which currently isn't defined yet. There's still an option to choose from a drop down list of empty common events, so I'll just pick the second one in the list and "Try Fishing"'s contents should now look something like this:
 
-![Final "Try Fishing" common event](final-try-fishing-contents.png)
+<Image
+  path="/final-try-fishing-contents.png"
+  alt="Final 'Try Fishing' common event"
+/>
 
 ## Add "Try Fishing" as an effect of using "Fishing Rod"
 
 Now that "Try Fishing" is defined, it can be added as an effect of using the "Fishing Rod" (in `Database ➜ Items`):
 
-![Using the "Try Fishing" common event](using-try-fishing-common-event.png)
+<Image
+  path="/using-try-fishing-common-event.png"
+  alt="Using the 'Try Fishing' common event"
+/>
 
 ## Add another common event named "Fishing"
 
 Finally, name the 2nd common event to something sensible like "Fishing" and show what's in variable number `4` with `\V[4]`:
 
-![The "Fishing" common event](fishing-common-event.png)
+<Image path="/fishing-common-event.png" alt="The 'Fishing' common event" />
 
 You should now be able to play test the sample and get "Can't fish here..." or "You caught a fish with id 5" depending on where you use the fishing rod.
 
@@ -256,7 +277,7 @@ You can simply edit the object with `name` `Try Fishing` (or `id` `1` if you use
 
 Save and accept RPG Maker's reload popup window. Then go back to `Database ➜ Common Events` and you should now see that "Try Fishing" now includes all the required code:
 
-![Fixed code in common events UI](fixed-code.png)
+<Image path="/fixed-code.png" alt="Fixed code in common events UI" />
 
 Running the game won't crash now (as opposed to what results when we copy/paste the longer version of the code using RPG Maker's `Script` input for Common Events).
 
@@ -326,11 +347,17 @@ need to match. Users of the plugin will see the text for the `@text` annotation 
 
 To use it, first enable the plugin by going to `Tools ➜ Plugin Manager` and double clicking on one of the empty rows. Then select it from the window that pops up after clicking on "Name":
 
-![Add the new plugin via the Plugin Manager](add-myplugin.png)
+<Image
+  path="/add-myplugin.png"
+  alt="Add the new plugin via the Plugin Manager"
+/>
 
 I went ahead and created a new Common Event to test it:
 
-![The common event called "Try Fishing 2"](try-fishing-2.png)
+<Image
+  path="/try-fishing-2.png"
+  alt="The common event called 'Try Fishing 2'"
+/>
 
 Basically, I've replaced the existing "Script" with a:
 

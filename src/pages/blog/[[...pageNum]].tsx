@@ -2,7 +2,8 @@ import type { Theme } from '../../theme';
 import type { PostObj, BlogPostPagePathParams } from '../../types';
 
 import Link from 'next/link';
-import Image from 'next/image';
+// import Image from 'next/image';
+import Image from '../../components/Image';
 import { useRouter } from 'next/router';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import useTheme from '@mui/styles/useTheme';
@@ -23,8 +24,6 @@ import { getLayout } from '../../components/AppBarLayout';
 import { getRouteByAbsPath } from '../../routes';
 import { BlogIntro } from '../../components/BlogIntro';
 
-import cardScene from '../../mdx/posts/2021/godot-card-flipping/res/card-scene.png';
-
 const blogRoute = getRouteByAbsPath('/blog');
 const blogPostsRoute = getRouteByAbsPath('/blog/posts');
 
@@ -40,36 +39,44 @@ const PostsList = (props: PostsListProps) => {
   const isViewportBelowSm = useMediaQuery(theme.breakpoints.down('sm'));
   const { numOfPages, pageIndex, posts } = props;
 
-  const postEls = posts.map(
-    ({ title, coverImage, excerpt, draft, slug }, i) => (
-      <article key={title}>
-        {coverImage && (
-          <Image
-            src={`${slug}/${coverImage}`}
-            alt="Blog post image"
-            width={500}
-            height={500}
-            // blurDataURL="data:..." automatically provided
-            // placeholder="blur" // Optional blur-up while loading
-          />
-        )}
-        <Link
-          href={`/${blogRoute.path}/${blogPostsRoute.path}${slug}`}
-          passHref
+  const postEls = posts.map(({ title, coverImage, excerpt, draft, slug }) => {
+    return (
+      <Link
+        key={title}
+        href={`/${blogRoute.path}/${blogPostsRoute.path}${slug}`}
+        passHref
+      >
+        <Box
+          sx={{
+            '&:hover': {
+              cursor: 'pointer',
+            },
+          }}
         >
-          <Typography variant="h5" component="a">
-            {title}
-          </Typography>
-        </Link>
-        {draft && (
-          <Typography variant="body2" style={{ color: 'red' }}>
-            This is still a draft.
-          </Typography>
-        )}
-        {excerpt && <Typography variant="body1">{excerpt}</Typography>}
-      </article>
-    ),
-  );
+          <article>
+            <Image
+              imgSrc={
+                coverImage ? `/posts${slug}/${coverImage}` : '/images/react.png'
+              }
+              linkHref={`/public/posts/${slug}`}
+              alt="Cover image"
+              width={310}
+              height={170}
+            />
+            <Typography variant="h5" component="a">
+              {title}
+            </Typography>
+            {draft && (
+              <Typography variant="body2" style={{ color: 'red' }}>
+                This is still a draft.
+              </Typography>
+            )}
+            {excerpt && <Typography variant="body1">{excerpt}</Typography>}
+          </article>
+        </Box>
+      </Link>
+    );
+  });
 
   // At pageIndex === 1, previous page is the blog home page (no page number in URL)
   const prevHref =

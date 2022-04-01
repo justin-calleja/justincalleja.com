@@ -1,8 +1,4 @@
-import type { TypographyProps } from '@mui/material';
-
-import Typography from '@mui/material/Typography';
-import Paper from '@mui/material/Paper';
-import Box from '@mui/system/Box';
+import BlogPostImage from '../components/BlogPostImage';
 
 export const getMdComponents = ({
   isViewportBelowSm = false,
@@ -15,31 +11,7 @@ export const getMdComponents = ({
     CurrentYear: () => {
       return <span>{new Date().getFullYear()}</span>;
     },
-    Image: ({ slug, path, alt }: any) => {
-      return (
-        <Paper
-          variant="outlined"
-          sx={{ display: 'flex', justifyContent: 'center', p: 2 }}
-        >
-          <a
-            href={`/posts${slug}${path}`}
-            target="_blank"
-            rel="noreferrer noopener"
-          >
-            <Box
-              component="img"
-              sx={{
-                width: '100%',
-                maxWidth: 590,
-                height: 'auto',
-              }}
-              alt={alt}
-              src={`/posts${slug}${path}`}
-            />
-          </a>
-        </Paper>
-      );
-    },
+    Image: BlogPostImage,
     //     h2: {
     //       component: Typography,
     //       props: {

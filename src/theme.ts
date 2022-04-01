@@ -83,4 +83,4 @@ const themeWithSmallerFont = responsiveFontSizes(
 // Set blogPostH1's responsive font sizes based on themeWithSmallerFont.
 theme.typography.blogPostH1 = { ...themeWithSmallerFont.typography.h1 };
 
-console.log('theme:', theme);
+// console.log('theme:', theme);

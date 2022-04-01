@@ -1,6 +1,6 @@
 const hexToRgb = (hexCode: string) => {
   let hex = hexCode;
-  hex = hex.replaceAll('#', '');
+  hex = hex.replace('#', '');
 
   if (hex.length === 3) {
     hex = hex

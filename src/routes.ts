@@ -51,55 +51,6 @@ export const routes = [
   //   },
 ];
 
-export const tmproutes = [
-  {
-    name: 'Home',
-    path: '/',
-    activeIndex: 1,
-    subRoutes: [
-      {
-        name: 'Blog Home',
-        path: 'blog',
-        isIncludedInNav: false,
-        subRoutes: [
-          {
-            name: 'Blog Page',
-            path: ':number',
-            isIncludedInNav: false,
-            subRoutes: [],
-          },
-          {
-            name: 'Blog Posts',
-            path: 'posts',
-            isIncludedInNav: false,
-            subRoutes: [
-              {
-                name: 'Blog Post Year',
-                path: ':year',
-                isIncludedInNav: false,
-                subRoutes: [
-                  {
-                    name: 'Blog Post Slug',
-                    path: ':slug',
-                    isIncludedInNav: false,
-                    subRoutes: [],
-                  },
-                ],
-              },
-            ],
-          },
-        ],
-      },
-      //   {
-      //     name: '',
-      //     path: '',
-      //     isIncludedInNav: true,
-      //     subRoutes: [],
-      //   },
-    ],
-  },
-];
-
 type RouteDict = { [path: string]: Route };
 type AddRouteToDictFactory = (
   prefix?: string,
