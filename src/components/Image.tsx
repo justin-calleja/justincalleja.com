@@ -1,4 +1,3 @@
-import Paper from '@mui/material/Paper';
 import Box from '@mui/system/Box';
 
 export interface ImageProps {
@@ -21,10 +20,7 @@ export const Image = ({
   target,
 }: ImageProps) => {
   return (
-    <Paper
-      variant="outlined"
-      sx={{ display: 'flex', justifyContent: 'center', p: 2 }}
-    >
+    <Box display="flex" justifyContent="center">
       <a href={linkHref || imgSrc} target={target} rel="noreferrer noopener">
         <Box
           component="img"
@@ -33,7 +29,7 @@ export const Image = ({
           src={imgSrc}
         />
       </a>
-    </Paper>
+    </Box>
   );
 };
 

@@ -1,3 +1,4 @@
+import Paper from '@mui/material/Paper';
 import Image from './Image';
 
 export interface BlogPostImageProps {
@@ -7,7 +8,11 @@ export interface BlogPostImageProps {
 }
 
 export const BlogPostImage = ({ slug, path, alt }: BlogPostImageProps) => {
-  return <Image imgSrc={`/posts${slug}${path}`} alt={alt} />;
+  return (
+    <Paper variant="outlined" sx={{ p: 2 }}>
+      <Image imgSrc={`/posts${slug}${path}`} alt={alt} />
+    </Paper>
+  );
 };
 
 export default BlogPostImage;

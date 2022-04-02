@@ -4,7 +4,7 @@ tocEnabled: true
 tags: ['godot']
 dateCreated: Nov 25, 2021 14:00:00 GMT+0000
 excerpt: 'This post covers the use of tweening position to deal cards and tweening modulation to create a "selected card" effect.'
-coverImage: glowing-logic.png
+coverImage: pressed-signal.png
 ---
 
 ## Repo
@@ -19,7 +19,7 @@ This project builds off of the work started in ["Card flipping" post](../godot-c
 
 Create a new scene e.g. `tweening.tscn`, and pull in a `card.tscn` node and a `Button`. The card is going to represent the position of our deck of cards so we can set it's `TextureRect.texture` to the back card png image. Attach a script on the root node e.g. `tweening.gd`, extending `Node2D` and preloading the textures we'll need when we create a new card (dealt from the deck), as well as getting a ref to other nodes we'll be using. The `x_offset` is how much space we'll be leaving between each successively dealt card, and the `Node2D` named `DealPosition` is the position we'll be dealing the first card to (set this at some reasonable position on the canvas):
 
-![Getting started](res/getting-started.png)
+<Image path="/getting-started.png" alt="Getting started" />
 
 The `CardTween` node is just a custom script I made that `extends Tween`. Add a `card_tween.gd` script with this for now:
 
@@ -55,7 +55,10 @@ func _on_deal_pressed():
 
 We disable the button and deal 3 cards on click, but we still need to map the signal to this function - you can do that by selecting the Button node and going to the `Node` tab in the inspector and then doing the mapping for the `pressed` signal.
 
-![Mapping the pressed signal to a function](res/pressed-signal.png)
+<Image
+  path="/pressed-signal.png"
+  alt="Mapping the pressed signal to a function"
+/>
 
 The `deal_cards` function takes a number of cards to deal; creates a card at the deck's position; tweens the card i.e. moves it to the target position; and calls itself with one less card to deal, obviously breaking the recursion when there's no more cards to deal:
 
@@ -108,7 +111,10 @@ After tweening (moving) the card, I'm waiting for the movement to finish before 
 
 To get the glow effect working, we first add a `WorldEnvironment` node to the scene; (1) create an "Environment"; (2) change the `Background.Mode` to `Canvas`; (3) enable `Glow`; (4) optionally change `Blend Mode` to `Additive` for more glow and maybe tweak the `Strength`:
 
-![Changes made to the WorldEnvironment settings](res/world-env-changes.png)
+<Image
+  path="/world-env-changes.png"
+  alt="Changes made to the WorldEnvironment settings"
+/>
 
 At this point, we are able to change a texture's raw value for a color channel to over `1` to get a glow effect on it. All that's left is to animate this color change over time to different values on the correct card and remove and apply to another card on player input.
 
@@ -145,7 +151,32 @@ To stop the glow, I'm removing the existing tweens on the given Card and changin
 
 With regards to glowing, as seen from the code below, I'm basically changing the color (modulate) from "high" to "low" or vice versa by choosing a raw color value which exceeds `1` which will give us the glow effect thanks to the `WorldEnvironment` changes we made:
 
-![Code used to tween modulation for glow effect](res/glowing-logic.png)
+```gd
+export var glow_high_color = Color(1.2, 1.2, 1.2, 1)
+export var glow_low_color = Color(1.1, 1.1, 1.1, 1)
+export var glow_off_color = Color(1, 1, 1, 1)
+export var glow_duration = 0.4
+
+
+func glow_high(card: TextureRect, duration: float = glow_duration) -> void:
+	glow(card, card.modulate, glow_high_color, duration)
+
+
+func glow_low(card: TextureRect, duration: float = glow_duration) -> void:
+	glow(card, card.modulate, glow_low_color, duration)
+
+
+func glow_off(card: TextureRect) -> void:
+	remove(card)
+	card.modulate = glow_off_color
+
+
+func glow(card: TextureRect, start_color: Color, end_color: Color, duration: float = glow_duration) -> void:
+	interpolate_property(
+		card, "modulate", start_color, end_color, duration, Tween.TRANS_SINE, Tween.EASE_IN_OUT
+	)
+	start()
+```
 
 Back to where we left off after selecting a card; at the end of `select_card_by_index`, we call `start_glow_card` which basically just starts glowing at a high value and sets a flag to keep track of this:
 

@@ -8,31 +8,56 @@ import { createTheme, responsiveFontSizes } from '@mui/material/styles';
 export interface Theme extends MuiTheme {}
 
 declare module '@mui/material/Typography' {
-  // Add 'blogPostH1' as a possible `variant` prop value on <Typography /> component
   interface TypographyPropsVariantOverrides {
-    blogPostH1: true;
+    // blogPostH1: true;
+    smallerH1: true;
+    smallerH2: true;
+    smallerH3: true;
+    smallerH4: true;
+    smallerH5: true;
+    smallerH6: true;
   }
 }
 
 declare module '@mui/material/styles' {
   interface TypographyVariants {
-    blogPostH1: CSSProperties;
+    // blogPostH1: CSSProperties;
+    // smaller: CSSProperties;
+    smallerH1: CSSProperties;
+    smallerH2: CSSProperties;
+    smallerH3: CSSProperties;
+    smallerH4: CSSProperties;
+    smallerH5: CSSProperties;
+    smallerH6: CSSProperties;
   }
 
   // allow configuration using `createTheme`
   interface TypographyVariantsOptions {
-    blogPostH1?: CSSProperties;
+    // blogPostH1?: CSSProperties;
+    // smaller?: CSSProperties;
+    smallerH1?: CSSProperties;
+    smallerH2?: CSSProperties;
+    smallerH3?: CSSProperties;
+    smallerH4?: CSSProperties;
+    smallerH5?: CSSProperties;
+    smallerH6?: CSSProperties;
   }
 }
+
+const fontFamily = `"Montserrat", "Helvetica", "Arial", sans-serif`;
 
 export const theme: Theme = responsiveFontSizes(
   createTheme({
     typography: {
+      // fontFamily: `"Roboto", "Helvetica", "Arial", sans-serif`,
+      // fontFamily: `"Montserrat", "Roboto", "Helvetica", "Arial", sans-serif`,
+      fontFamily,
       fontSize: 14,
       body1: {
-        fontSize: '1.2rem',
+        fontSize: '1.4rem',
       },
     },
+    // secondaryTypography: {},
     palette: {
       primary: {
         main: '#313552',
@@ -75,12 +100,35 @@ export const theme: Theme = responsiveFontSizes(
 const themeWithSmallerFont = responsiveFontSizes(
   createTheme({
     typography: {
-      fontSize: 11,
+      fontFamily,
+      fontSize: 8,
     },
   }),
 );
 
-// Set blogPostH1's responsive font sizes based on themeWithSmallerFont.
-theme.typography.blogPostH1 = { ...themeWithSmallerFont.typography.h1 };
+// console.log('>>>', themeWithSmallerFont.typography);
+theme.typography.smallerH1 = themeWithSmallerFont.typography.h1;
+theme.typography.smallerH2 = themeWithSmallerFont.typography.h2;
+theme.typography.smallerH3 = themeWithSmallerFont.typography.h3;
+theme.typography.smallerH4 = themeWithSmallerFont.typography.h4;
+theme.typography.smallerH5 = themeWithSmallerFont.typography.h5;
+theme.typography.smallerH6 = themeWithSmallerFont.typography.h6;
 
-// console.log('theme:', theme);
+// {
+//   ...theme.typography,
+//   // h1: { ...themeWithSmallerFont.typography.h1 },
+//   // h1: themeWithSmallerFont.typography.h2,
+//   // ...themeWithSmallerFont.typography.h3,
+//   // ...themeWithSmallerFont.typography.h4,
+//   // ...themeWithSmallerFont.typography.h5,
+//   // ...themeWithSmallerFont.typography.h6,
+//   fontFamily: theme.typography.fontFamily,
+// };
+
+// Set blogPostH1's responsive font sizes based on themeWithSmallerFont.
+// theme.typography.blogPostH1 = {
+//   ...themeWithSmallerFont.typography.h1,
+//   fontFamily: theme.typography.fontFamily,
+// };
+
+console.log('theme.spacing:', theme.spacing);

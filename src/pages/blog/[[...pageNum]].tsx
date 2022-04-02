@@ -60,10 +60,10 @@ const PostsList = (props: PostsListProps) => {
               }
               linkHref={`/public/posts/${slug}`}
               alt="Cover image"
-              width={310}
-              height={170}
+              width={340}
+              height={180}
             />
-            <Typography variant="h5" component="a">
+            <Typography variant="h5" component="p" pt={2} pb={1}>
               {title}
             </Typography>
             {draft && (

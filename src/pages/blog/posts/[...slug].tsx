@@ -31,15 +31,19 @@ const Post = (props: PostProps) => {
 
   const theme = useTheme<Theme>();
   const isViewportBelowMd = useMediaQuery(theme.breakpoints.down('md'));
-  const isViewportBelowSm = useMediaQuery(theme.breakpoints.down('sm'));
-  const components = getMdComponents({ isViewportBelowSm, isViewportBelowMd });
+  // const isViewportBelowSm = useMediaQuery(theme.breakpoints.down('sm'));
+  const components = getMdComponents();
 
   return (
     <div>
-      <Typography variant="blogPostH1">{title}</Typography>
-      <div>
-        Created on:<span style={{ marginLeft: '4px' }}>{dateCreated}</span>
-      </div>
+      <Box pb={isViewportBelowMd ? 2 : 4}>
+        <Typography variant="smallerH1" component="h1">
+          {title}
+        </Typography>
+        <div>
+          Created on:<span style={{ marginLeft: '4px' }}>{dateCreated}</span>
+        </div>
+      </Box>
       {/* <MDXRemote {...content} components={components} /> */}
       <MuiMarkdown
         overrides={{
