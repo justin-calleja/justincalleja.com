@@ -3,7 +3,7 @@ import type { NextPageWithLayout } from '../types';
 import Head from 'next/head';
 import Image from 'next/image';
 import styles from '../styles/Home.module.css';
-import { getLayout } from '../components/AppBarLayout';
+import { getLayout } from '../components/Layout';
 
 const HomePage: NextPageWithLayout = () => {
   return (

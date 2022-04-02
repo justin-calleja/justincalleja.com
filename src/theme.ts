@@ -131,4 +131,4 @@ theme.typography.smallerH6 = themeWithSmallerFont.typography.h6;
 //   fontFamily: theme.typography.fontFamily,
 // };
 
-console.log('theme.spacing:', theme.spacing);
+// console.log('theme:', theme);

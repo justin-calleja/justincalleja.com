@@ -20,7 +20,7 @@ import getBlogPostPagesPathParams from '../../utils/getBlogPostPagesPathParams';
 import getNumOfPages from '../../utils/getNumOfPages';
 import sortStringDates from '../../utils/sortStringDates';
 import toNumber from '../../utils/toNumber';
-import { getLayout } from '../../components/AppBarLayout';
+import { getLayout } from '../../components/Layout';
 import { getRouteByAbsPath } from '../../routes';
 import { BlogIntro } from '../../components/BlogIntro';
 

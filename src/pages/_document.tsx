@@ -13,19 +13,10 @@ export default function Document() {
           href="https://fonts.gstatic.com"
           crossOrigin="true"
         />
-        {/* <link
+        <link
           href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap"
           rel="stylesheet"
-        /> */}
-        <link
-          href="https://fonts.googleapis.com/css2?family=family=GoogleMontserrat:wght@400;600;700&display=swap"
-          rel="stylesheet"
         />
-
-        {/* <link
-          rel="stylesheet"
-          href="https://fonts.googleapis.com/css?family=Montserrat:300,400,500,700&display=swap"
-        /> */}
       </Head>
       <body>
         <Main />

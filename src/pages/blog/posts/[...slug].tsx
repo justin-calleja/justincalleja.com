@@ -7,7 +7,7 @@ import Paper from '@mui/material/Paper';
 import Box from '@mui/system/Box';
 // import { MDXRemote } from 'next-mdx-remote';
 // import { serialize } from 'next-mdx-remote/serialize';
-import { getLayout } from '../../../components/AppBarLayout';
+import { getLayout } from '../../../components/Layout';
 import getAllPosts from '../../../utils/getAllPosts';
 import getPost from '../../../utils/getPost';
 import { joinSplitSlug, slugToFilePath, splitSlug } from '../../../utils/slug';

@@ -10,7 +10,7 @@ import NextLink from 'next/link';
 import { useRouter } from 'next/router';
 import { Container } from './Container';
 
-export function AppBar() {
+export const AppBar = () => {
   const router = useRouter();
   const theme = useTheme<Theme>();
   //   const isViewportBelowMd = useMediaQuery(theme.breakpoints.down('md'));
@@ -41,4 +41,4 @@ export function AppBar() {
       </MuiAppBar>
     </Box>
   );
-}
+};
