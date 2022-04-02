@@ -33,21 +33,6 @@ export const AppBarLayout = (props: AppBarLayoutProps) => {
       </Box>
     </>
   );
-  // return (
-  //   <Box display={isViewportAboveMd ? 'flex' : 'block'}>
-  //     {isViewportAboveMd ? (
-  //       <Drawer isExpanded={isViewportAboveLg} />
-  //     ) : (
-  //       <AppBar {...rest} />
-  //     )}
-  //     <Container
-  //       maxWidth={isViewportAboveLg ? 'md' : isViewportAboveMd ? 'sm' : 'lg'}
-  //       sx={{ pt: 2 }}
-  //     >
-  //       {children}
-  //     </Container>
-  //   </Box>
-  // );
 };
 
 export const getLayout: LayoutFunction = (page) => (
