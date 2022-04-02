@@ -63,15 +63,25 @@ const PostsList = (props: PostsListProps) => {
               width={340}
               height={180}
             />
-            <Typography variant="h5" component="p" pt={2} pb={1}>
+            <Typography
+              variant="h3"
+              pt={2}
+              pb={1}
+              fontWeight={500}
+              textAlign="center"
+            >
               {title}
             </Typography>
             {draft && (
-              <Typography variant="body2" style={{ color: 'red' }}>
+              <Typography variant="body1" style={{ color: 'red' }}>
                 This is still a draft.
               </Typography>
             )}
-            {excerpt && <Typography variant="body1">{excerpt}</Typography>}
+            {excerpt && (
+              <Typography variant="body1" textAlign="center">
+                {excerpt}
+              </Typography>
+            )}
           </article>
         </Box>
       </Link>
@@ -87,6 +97,8 @@ const PostsList = (props: PostsListProps) => {
       : `/blog/${pageIndex - 1}`;
   const nextHref = pageIndex + 1 < numOfPages ? `/blog/${pageIndex + 1}` : null;
 
+  const buttonVariant = 'body1';
+
   return (
     <Grid container spacing={4} pt={2}>
       {pageIndex === 0 && (
@@ -95,7 +107,7 @@ const PostsList = (props: PostsListProps) => {
         </Grid>
       )}
       {postEls.map((postEl, i) => (
-        <Grid item xs={12} md={6} key={i}>
+        <Grid item sm={12} md={12} lg={6} key={i} sx={{ width: '100%' }}>
           {postEl}
         </Grid>
       ))}
@@ -114,7 +126,9 @@ const PostsList = (props: PostsListProps) => {
                   mr: 2,
                 }}
               >
-                {`newer${isViewportBelowSm ? '' : ' posts'}`}
+                <Typography variant={buttonVariant}>
+                  {`newer${isViewportBelowSm ? '' : ' posts'}`}
+                </Typography>
               </Button>
             )}
             {nextHref && (
@@ -123,7 +137,9 @@ const PostsList = (props: PostsListProps) => {
                 endIcon={<ChevronRightIcon />}
                 onClick={() => router.push(nextHref)}
               >
-                {`older${isViewportBelowSm ? '' : ' posts'}`}
+                <Typography variant={buttonVariant}>
+                  {`older${isViewportBelowSm ? '' : ' posts'}`}
+                </Typography>
               </Button>
             )}
             {isViewportBelowSm || numOfPages <= 1 ? null : (
@@ -144,7 +160,7 @@ const PostsList = (props: PostsListProps) => {
         </Grid>
         {isViewportBelowSm && numOfPages > 1 ? (
           <Grid item xs={12} pt={2}>
-            <Typography textAlign="center">{`Page ${
+            <Typography variant="body1" textAlign="center">{`Page ${
               pageIndex + 1
             } of ${numOfPages}`}</Typography>
           </Grid>

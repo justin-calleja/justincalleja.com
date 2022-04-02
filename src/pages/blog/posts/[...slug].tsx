@@ -3,10 +3,7 @@ import type { Theme } from '../../../theme';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import useTheme from '@mui/styles/useTheme';
 import Typography from '@mui/material/Typography';
-import Paper from '@mui/material/Paper';
 import Box from '@mui/system/Box';
-// import { MDXRemote } from 'next-mdx-remote';
-// import { serialize } from 'next-mdx-remote/serialize';
 import { getLayout } from '../../../components/Layout';
 import getAllPosts from '../../../utils/getAllPosts';
 import getPost from '../../../utils/getPost';
@@ -31,20 +28,18 @@ const Post = (props: PostProps) => {
 
   const theme = useTheme<Theme>();
   const isViewportBelowMd = useMediaQuery(theme.breakpoints.down('md'));
-  // const isViewportBelowSm = useMediaQuery(theme.breakpoints.down('sm'));
   const components = getMdComponents();
 
   return (
     <div>
       <Box pb={isViewportBelowMd ? 2 : 4}>
-        <Typography variant="smallerH1" component="h1">
+        <Typography variant="h1" fontWeight={400}>
           {title}
         </Typography>
         <div>
           Created on:<span style={{ marginLeft: '4px' }}>{dateCreated}</span>
         </div>
       </Box>
-      {/* <MDXRemote {...content} components={components} /> */}
       <MuiMarkdown
         overrides={{
           ...components,
@@ -66,10 +61,6 @@ export async function getStaticProps({
   const filePath = slugToFilePath(slug);
 
   const post = getPost(['title', 'dateCreated', 'content', 'draft'], filePath);
-
-  // Overwrite the content:
-  // const mdxSource = await serialize(post.content, { scope: { slug } });
-  // post.content = mdxSource;
 
   return {
     props: { post, slug },

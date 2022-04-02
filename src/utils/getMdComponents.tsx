@@ -12,7 +12,7 @@ export const getMdComponents = () => {
     h2: {
       component: Typography,
       props: {
-        variant: 'smallerH2',
+        variant: 'h2',
         component: 'h2',
         gutterBottom: true,
       } as TypographyProps,
@@ -20,7 +20,7 @@ export const getMdComponents = () => {
     h3: {
       component: Typography,
       props: {
-        variant: 'smallerH3',
+        variant: 'h3',
         component: 'h3',
         gutterBottom: true,
       } as TypographyProps,
@@ -28,7 +28,7 @@ export const getMdComponents = () => {
     h4: {
       component: Typography,
       props: {
-        variant: 'smallerH4',
+        variant: 'h4',
         component: 'h4',
         gutterBottom: true,
       } as TypographyProps,
@@ -36,7 +36,7 @@ export const getMdComponents = () => {
     h5: {
       component: Typography,
       props: {
-        variant: 'smallerH5',
+        variant: 'h5',
         component: 'h5',
         gutterBottom: true,
       } as TypographyProps,
@@ -44,7 +44,7 @@ export const getMdComponents = () => {
     h6: {
       component: Typography,
       props: {
-        variant: 'smallerH6',
+        variant: 'h6',
         component: 'h6',
         gutterBottom: true,
       } as TypographyProps,

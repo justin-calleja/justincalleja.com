@@ -1,29 +1,22 @@
-import type { Theme } from '../theme';
-
 import MuiAppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
+import Container from '@mui/material/Container';
 import Typography from '@mui/material/Typography';
-import useMediaQuery from '@mui/material/useMediaQuery';
-import useTheme from '@mui/styles/useTheme';
 import NextLink from 'next/link';
 import { useRouter } from 'next/router';
-import { Container } from './Container';
 
 export const AppBar = () => {
   const router = useRouter();
-  const theme = useTheme<Theme>();
-  //   const isViewportBelowMd = useMediaQuery(theme.breakpoints.down('md'));
-  const isViewportBelowSm = useMediaQuery(theme.breakpoints.down('sm'));
 
   return (
     <Box sx={{ flexGrow: 1 }}>
       <MuiAppBar enableColorOnDark position="static">
-        <Container>
+        <Container maxWidth="lg">
           <Toolbar>
             <NextLink href="/">
               <Typography
-                variant="h6"
+                variant="h4"
                 component="div"
                 sx={{
                   flexGrow: 1,
@@ -33,7 +26,7 @@ export const AppBar = () => {
                   },
                 }}
               >
-                {`${isViewportBelowSm ? 'Home' : 'Justin Calleja'}`}
+                Justin Calleja
               </Typography>
             </NextLink>
           </Toolbar>
