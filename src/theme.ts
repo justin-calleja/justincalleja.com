@@ -1,4 +1,5 @@
 import type { Theme as MuiTheme } from '@mui/material/styles/createTheme';
+import type { TypographyOptions } from '@mui/material/styles/createTypography';
 // import type { CSSProperties } from 'react';
 
 import { createTheme, responsiveFontSizes } from '@mui/material/styles';
@@ -50,8 +51,7 @@ export const theme: Theme = responsiveFontSizes(
   createTheme({
     typography: {
       fontFamily,
-      // use 8 to reduce the size of the large headings:
-      fontSize: 9,
+      fontSize: 16,
       // Overwrite the body fonts to bump them up:
       body1: {
         fontSize: '1.4rem',
@@ -62,8 +62,9 @@ export const theme: Theme = responsiveFontSizes(
     },
     palette: {
       primary: {
-        main: '#313552',
-        contrastText: '#fff',
+        // main: '#313552',
+        main: '#282A36',
+        contrastText: '#eee',
       },
       secondary: {
         main: '#B8405E',
@@ -99,40 +100,22 @@ export const theme: Theme = responsiveFontSizes(
   }),
 );
 
-const themeWithSmallerFont = responsiveFontSizes(
-  createTheme({
-    typography: {
-      fontFamily,
-      fontSize: 8,
-    },
-  }),
-);
+const createResponsiveTypography = (typography: TypographyOptions) =>
+  responsiveFontSizes(createTheme({ typography }));
 
-theme.typography.h1 = themeWithSmallerFont.typography.h1;
+theme.typography.h1 = createResponsiveTypography({
+  fontFamily,
+  fontSize: 8,
+}).typography.h1;
 
-// console.log('>>>', themeWithSmallerFont.typography);
-// theme.typography.smallerH1 = themeWithSmallerFont.typography.h1;
-// theme.typography.smallerH2 = themeWithSmallerFont.typography.h2;
-// theme.typography.smallerH3 = themeWithSmallerFont.typography.h3;
-// theme.typography.smallerH4 = themeWithSmallerFont.typography.h4;
-// theme.typography.smallerH5 = themeWithSmallerFont.typography.h5;
-// theme.typography.smallerH6 = themeWithSmallerFont.typography.h6;
+const themeWithSmallerFont = createResponsiveTypography({
+  fontFamily,
+  fontSize: 9,
+});
+theme.typography.h2 = themeWithSmallerFont.typography.h2;
+theme.typography.h3 = themeWithSmallerFont.typography.h3;
+theme.typography.h4 = themeWithSmallerFont.typography.h4;
+theme.typography.h5 = themeWithSmallerFont.typography.h5;
+theme.typography.h6 = themeWithSmallerFont.typography.h6;
 
-// {
-//   ...theme.typography,
-//   // h1: { ...themeWithSmallerFont.typography.h1 },
-//   // h1: themeWithSmallerFont.typography.h2,
-//   // ...themeWithSmallerFont.typography.h3,
-//   // ...themeWithSmallerFont.typography.h4,
-//   // ...themeWithSmallerFont.typography.h5,
-//   // ...themeWithSmallerFont.typography.h6,
-//   fontFamily: theme.typography.fontFamily,
-// };
-
-// Set blogPostH1's responsive font sizes based on themeWithSmallerFont.
-// theme.typography.blogPostH1 = {
-//   ...themeWithSmallerFont.typography.h1,
-//   fontFamily: theme.typography.fontFamily,
-// };
-
-// console.log('theme:', theme);
+console.log('theme:', theme);

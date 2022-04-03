@@ -15,6 +15,7 @@ export const getMdComponents = () => {
         variant: 'h2',
         component: 'h2',
         gutterBottom: true,
+        fontWeight: '500',
       } as TypographyProps,
     },
     h3: {
@@ -23,6 +24,7 @@ export const getMdComponents = () => {
         variant: 'h3',
         component: 'h3',
         gutterBottom: true,
+        fontWeight: '500',
       } as TypographyProps,
     },
     h4: {
@@ -31,6 +33,7 @@ export const getMdComponents = () => {
         variant: 'h4',
         component: 'h4',
         gutterBottom: true,
+        fontWeight: '500',
       } as TypographyProps,
     },
     h5: {
@@ -39,6 +42,7 @@ export const getMdComponents = () => {
         variant: 'h5',
         component: 'h5',
         gutterBottom: true,
+        fontWeight: '500',
       } as TypographyProps,
     },
     h6: {
@@ -47,6 +51,7 @@ export const getMdComponents = () => {
         variant: 'h6',
         component: 'h6',
         gutterBottom: true,
+        fontWeight: '500',
       } as TypographyProps,
     },
   };

@@ -30,14 +30,23 @@ const Post = (props: PostProps) => {
   const isViewportBelowMd = useMediaQuery(theme.breakpoints.down('md'));
   const components = getMdComponents();
 
+  const dateFormatter = new Intl.DateTimeFormat('en-GB', {
+    year: 'numeric',
+    month: 'short',
+    day: 'numeric',
+  });
+
   return (
     <div>
       <Box pb={isViewportBelowMd ? 2 : 4}>
-        <Typography variant="h1" fontWeight={400}>
+        <Typography variant="h1" fontWeight={500}>
           {title}
         </Typography>
         <div>
-          Created on:<span style={{ marginLeft: '4px' }}>{dateCreated}</span>
+          Created on:
+          <span style={{ marginLeft: '4px' }}>
+            {dateFormatter.format(new Date(dateCreated))}
+          </span>
         </div>
       </Box>
       <MuiMarkdown

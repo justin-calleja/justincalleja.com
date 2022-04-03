@@ -24,7 +24,9 @@ export const AppBarLayout = (props: AppBarLayoutProps) => {
     <>
       {!isViewportAboveMd && <AppBar {...rest} />}
       <Box display="flex">
-        {isViewportAboveMd && <Drawer isExpanded={isViewportAboveLg} />}
+        {isViewportAboveMd && (
+          <Drawer isExpanded={isViewportAboveLg} variant="permanent" />
+        )}
         <Container
           sx={{ pt: 2 }}
           maxWidth={isViewportAboveXl ? 'lg' : isViewportAboveLg ? 'md' : 'lg'}
