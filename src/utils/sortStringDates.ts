@@ -8,7 +8,7 @@
  * @returns number
  */
 
-export const sortStringDates = (dateStrA, dateStrB) => {
+export const sortStringDates = (dateStrA: string, dateStrB: string) => {
   if (!dateStrA) {
     // If B is defined but A isn't; A before B to keep drafts first
     return !dateStrB ? 0 : -1;

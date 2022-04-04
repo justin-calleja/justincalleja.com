@@ -1,4 +1,4 @@
-export function getNumOfPages({ total, postsOnFirstPage, postsPerPage }) {
+export function getNumOfPages({ total, postsOnFirstPage, postsPerPage }: any) {
   let remainingNumOfPosts = total - postsOnFirstPage;
 
   return remainingNumOfPosts <= 0

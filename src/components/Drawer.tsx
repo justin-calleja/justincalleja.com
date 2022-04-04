@@ -1,7 +1,7 @@
 import type { DrawerProps as MuiDrawerProps } from '@mui/material/Drawer';
 import type { ReactNode } from 'react';
 
-import NextLink from 'next/link';
+import Link from 'next/link';
 import MuiDrawer from '@mui/material/Drawer';
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
@@ -17,12 +17,12 @@ export interface DrawerProps extends MuiDrawerProps {
 export interface DrawerItemProps {
   children: ReactNode;
   href: string;
-  onClick?: MuiDrawerProps['onClose'];
+  onClick?: (...args: any) => void;
 }
 
 const DrawerItem = ({ children, href, onClick }: DrawerItemProps) => {
   return (
-    <NextLink href={href}>
+    <Link href={href} passHref>
       <ListItem button onClick={onClick}>
         <ListItemText
           primary={children}
@@ -31,7 +31,7 @@ const DrawerItem = ({ children, href, onClick }: DrawerItemProps) => {
           }}
         />
       </ListItem>
-    </NextLink>
+    </Link>
   );
 };
 
