@@ -23,7 +23,7 @@ export const AppBarLayout = (props: AppBarLayoutProps) => {
   return (
     <>
       {!isViewportAboveMd && <AppBar {...rest} />}
-      <Box display="flex">
+      <Box display="flex" sx={{ color: 'inherit' }}>
         {isViewportAboveMd && (
           <Drawer isExpanded={isViewportAboveLg} variant="permanent" />
         )}

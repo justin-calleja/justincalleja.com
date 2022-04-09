@@ -6,18 +6,21 @@ import Link from 'next/link';
 import MuiDrawer from '@mui/material/Drawer';
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
+import ListItemButton from '@mui/material/ListItemButton';
 import ListItemText from '@mui/material/ListItemText';
+import ToggleColorModeBtn from './ToggleColorModeBtn';
+import useColorMode from '../utils/useColorMode';
 
 export interface DrawerProps extends MuiDrawerProps {
   isExpanded?: boolean;
 }
 
-export interface DrawerItemProps {
-  children: ReactNode;
+export type ListLinkProps = {
   href: string;
+  children: ReactNode;
   isSelected?: boolean;
   onClick?: (...args: any) => void;
-}
+};
 
 const contractedWidth = 160;
 const expandedWidth = 260;
@@ -40,25 +43,27 @@ const selectedListItemStyles = {
   },
 };
 
-const DrawerItem = ({
-  children,
-  href,
-  isSelected,
-  onClick,
-}: DrawerItemProps) => {
+const ListLink = ({ children, href, isSelected, onClick }: ListLinkProps) => {
   return (
     <Link href={href} passHref>
       <ListItem
-        button
-        onClick={onClick}
-        sx={{ ...(isSelected && selectedListItemStyles) }}
+        sx={{
+          ...(isSelected && selectedListItemStyles),
+          py: 2,
+        }}
       >
-        <ListItemText
-          primary={children}
-          primaryTypographyProps={{
-            color: 'primary.contrastText',
-          }}
-        />
+        <ListItemButton onClick={onClick}>
+          <ListItemText
+            sx={{
+              textAlign: 'center',
+            }}
+            primaryTypographyProps={{
+              color: 'primary.contrastText',
+            }}
+          >
+            {children}
+          </ListItemText>
+        </ListItemButton>
       </ListItem>
     </Link>
   );
@@ -66,7 +71,9 @@ const DrawerItem = ({
 
 export const Drawer = ({ isExpanded, children, ...rest }: DrawerProps) => {
   const router = useRouter();
+  const colorMode = useColorMode();
   const width = isExpanded ? expandedWidth : contractedWidth;
+
   return (
     <MuiDrawer
       anchor="left"
@@ -84,27 +91,30 @@ export const Drawer = ({ isExpanded, children, ...rest }: DrawerProps) => {
     >
       {children}
       <List>
-        <DrawerItem
+        <ListLink
           href="/"
           onClick={rest.onClose}
           isSelected={router.pathname === '/'}
         >
           Home
-        </DrawerItem>
-        <DrawerItem
+        </ListLink>
+        <ListLink
           href="/blog"
           onClick={rest.onClose}
           isSelected={router.pathname.startsWith('/blog')}
         >
           Blog
-        </DrawerItem>
-        {/* <DrawerItem
-          href="/projects"
-          onClick={rest.onClose}
-          isSelected={router.pathname.startsWith('/projects')}
+        </ListLink>
+        <ListItem
+          sx={{
+            color: 'primary.contrastText',
+            pt: 6,
+          }}
         >
-          Projects
-        </DrawerItem> */}
+          <ListItemButton onClick={colorMode?.toggleColorMode}>
+            <ToggleColorModeBtn sx={{ mx: 'auto' }} />
+          </ListItemButton>
+        </ListItem>
       </List>
     </MuiDrawer>
   );
