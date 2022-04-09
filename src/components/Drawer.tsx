@@ -1,14 +1,12 @@
 import type { DrawerProps as MuiDrawerProps } from '@mui/material/Drawer';
 import type { ReactNode } from 'react';
 
+import { useRouter } from 'next/router';
 import Link from 'next/link';
 import MuiDrawer from '@mui/material/Drawer';
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import ListItemText from '@mui/material/ListItemText';
-
-const contractedWidth = 160;
-const expandedWidth = 260;
 
 export interface DrawerProps extends MuiDrawerProps {
   isExpanded?: boolean;
@@ -17,13 +15,44 @@ export interface DrawerProps extends MuiDrawerProps {
 export interface DrawerItemProps {
   children: ReactNode;
   href: string;
+  isSelected?: boolean;
   onClick?: (...args: any) => void;
 }
 
-const DrawerItem = ({ children, href, onClick }: DrawerItemProps) => {
+const contractedWidth = 160;
+const expandedWidth = 260;
+
+const selectedListItemStyles = {
+  backgroundColor: 'primary.light',
+  '&:hover': {
+    backgroundColor: 'primary.light',
+  },
+  '::after': {
+    display: 'block',
+    position: 'absolute',
+    right: '0px',
+    bottom: '0px',
+    content: '""',
+    width: '4px',
+    height: '100%',
+    margin: '0px auto',
+    backgroundColor: 'secondary.main',
+  },
+};
+
+const DrawerItem = ({
+  children,
+  href,
+  isSelected,
+  onClick,
+}: DrawerItemProps) => {
   return (
     <Link href={href} passHref>
-      <ListItem button onClick={onClick}>
+      <ListItem
+        button
+        onClick={onClick}
+        sx={{ ...(isSelected && selectedListItemStyles) }}
+      >
         <ListItemText
           primary={children}
           primaryTypographyProps={{
@@ -36,6 +65,7 @@ const DrawerItem = ({ children, href, onClick }: DrawerItemProps) => {
 };
 
 export const Drawer = ({ isExpanded, children, ...rest }: DrawerProps) => {
+  const router = useRouter();
   const width = isExpanded ? expandedWidth : contractedWidth;
   return (
     <MuiDrawer
@@ -54,15 +84,27 @@ export const Drawer = ({ isExpanded, children, ...rest }: DrawerProps) => {
     >
       {children}
       <List>
-        <DrawerItem href="/" onClick={rest.onClose}>
+        <DrawerItem
+          href="/"
+          onClick={rest.onClose}
+          isSelected={router.pathname === '/'}
+        >
           Home
         </DrawerItem>
-        <DrawerItem href="/blog" onClick={rest.onClose}>
+        <DrawerItem
+          href="/blog"
+          onClick={rest.onClose}
+          isSelected={router.pathname.startsWith('/blog')}
+        >
           Blog
         </DrawerItem>
-        <DrawerItem href="/" onClick={rest.onClose}>
+        {/* <DrawerItem
+          href="/projects"
+          onClick={rest.onClose}
+          isSelected={router.pathname.startsWith('/projects')}
+        >
           Projects
-        </DrawerItem>
+        </DrawerItem> */}
       </List>
     </MuiDrawer>
   );
