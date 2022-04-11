@@ -22,13 +22,14 @@ export const colorModeLSKey = 'colorMode';
 
 export const ThemeProvider = ({ children }: ThemeProviderProps) => {
   const prefersDarkMode = useMediaQuery('(prefers-color-scheme: dark)');
-  const [mode, setMode] = useState<PaletteMode>(
-    prefersDarkMode ? 'dark' : 'light',
-  );
+  const [mode, setMode] = useState<PaletteMode>('light');
 
   const colorMode = useMemo(
     () => ({
       toggleColorMode: () => {
+        // Running toggleColorMode means the user explicitly wants to
+        // set the colorMode, so in here (rather than a useEffect dependent on mode)
+        // we set the mode in local storage.
         setMode((prevMode) => {
           const newMode = prevMode === 'light' ? 'dark' : 'light';
           localStorage.setItem(colorModeLSKey, newMode);
@@ -45,11 +46,12 @@ export const ThemeProvider = ({ children }: ThemeProviderProps) => {
     const colorModeLS = localStorage.getItem(
       colorModeLSKey,
     ) as PaletteMode | null;
-    if (colorModeLS !== null) {
-      // colorModeLS was retreived from LS so no need to also set LS.
+    if (colorModeLS === null) {
+      setMode(prefersDarkMode ? 'dark' : 'light');
+    } else {
       setMode(colorModeLS);
     }
-  }, []);
+  }, [prefersDarkMode]);
 
   return (
     <ColorModeContext.Provider value={colorMode}>
