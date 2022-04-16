@@ -42,6 +42,10 @@ export const ThemeProvider = ({ children }: ThemeProviderProps) => {
 
   const theme = useMemo(() => createTheme(getPalette(mode)), [mode]);
 
+  // if (typeof window !== 'undefined') {
+  //   window.theme = theme;
+  // }
+
   useEffect(() => {
     const colorModeLS = localStorage.getItem(
       colorModeLSKey,

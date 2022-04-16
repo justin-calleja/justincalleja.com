@@ -52,6 +52,30 @@ export interface Theme extends MuiTheme {}
 //   }
 // }
 
+declare module '@mui/material/styles' {
+  interface Palette {
+    primaryAlt?: Palette['primary'];
+  }
+
+  // allow configuration using `createTheme`
+  interface PaletteOptions {
+    primaryAlt?: PaletteOptions['primary'];
+  }
+}
+
+// Let Mui's AppBar know about the new primaryAlt color.
+declare module '@mui/material/AppBar' {
+  interface AppBarPropsColorOverrides {
+    primaryAlt: true;
+  }
+}
+
+// declare module '@mui/material/Button' {
+//   interface ButtonPropsColorOverrides {
+//     primaryAlt: true;
+//   }
+// }
+
 const secondaryMain = '#d6acff';
 const contrastText = '#f8f8f2';
 // const secondaryMain = '#ff6e6e'
@@ -71,30 +95,24 @@ export const getPalette = (mode: PaletteMode) => ({
           },
         }
       : {
-          primary: {
-            main: '#343746',
+          // Use a dark primaryAlt because this is the color I want
+          // for the navigation. That way, most of the app is using
+          // a dark color
+          primaryAlt: {
+            main: '#282A36',
             contrastText,
+          },
+          // Use a white primary so most UI components will work well
+          // with a dark background:
+          primary: {
+            main: '#f8f8f2',
           },
           secondary: {
             main: secondaryMain,
           },
-          // divider,
-          // divider: deepOrange[700],
-          // background: {
-          //   default: deepOrange[900],
-          //   paper: deepOrange[900],
-          // },
-          // text: {
-          //   primary: '#fff',
-          //   secondary: grey[500],
-          // },
         }),
   },
 });
-
-// export const theme: Theme = responsiveFontSizes(
-//   createMuiTheme(),
-// );
 
 const createResponsiveTypography = (typography: TypographyOptions) =>
   responsiveFontSizes(createMuiTheme({ typography }));
@@ -128,18 +146,18 @@ export const createTheme = (options?: ThemeOptions): Theme => {
               fontSize: '1.2rem',
             },
           },
-          palette: {
-            primary: {
-              // main: '#313552',
-              main: '#282A36',
-              contrastText: '#eee',
-            },
-            secondary: {
-              main: '#B8405E',
-              // main: '#EEE6CE',
-            },
-            // mode: 'dark',
-          },
+          // palette: {
+          //   primary: {
+          //     // main: '#313552',
+          //     main: '#282A36',
+          //     contrastText: '#eee',
+          //   },
+          //   secondary: {
+          //     main: '#B8405E',
+          //     // main: '#EEE6CE',
+          //   },
+          //   // mode: 'dark',
+          // },
           // E.g. of overwriting global component styles:
           // import sx from '@mui/system/sx';
           // components: {
@@ -170,7 +188,30 @@ export const createTheme = (options?: ThemeOptions): Theme => {
   theme.typography.h5 = themeWithSmallerFont.typography.h5;
   theme.typography.h6 = themeWithSmallerFont.typography.h6;
 
+  if (theme.palette.primaryAlt?.main) {
+    // augment the primaryAlt.main color so you have light, dark, and contrastText added:
+    theme.palette.primaryAlt = theme.palette.augmentColor({
+      color: theme.palette.primaryAlt,
+    });
+  }
+
   return theme;
 };
 
-// console.log('theme:', theme);
+export const getPrimary = (theme: Theme) => {
+  return theme.palette.primaryAlt ? 'primaryAlt' : 'primary';
+};
+
+export const getPrimaryLight = (theme: Theme) => {
+  return theme.palette.primaryAlt ? 'primaryAlt.light' : 'primary.light';
+};
+
+export const getPrimaryDark = (theme: Theme) => {
+  return theme.palette.primaryAlt ? 'primaryAlt.dark' : 'primary.dark';
+};
+
+export const getPrimaryContrastText = (theme: Theme) => {
+  return theme.palette.primaryAlt
+    ? 'primaryAlt.contrastText'
+    : 'primary.contrastText';
+};

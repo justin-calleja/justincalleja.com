@@ -1,15 +1,18 @@
+import type { Theme } from 'theme';
 import type { DrawerProps as MuiDrawerProps } from '@mui/material/Drawer';
 import type { ReactNode } from 'react';
 
 import { useRouter } from 'next/router';
 import Link from 'next/link';
 import MuiDrawer from '@mui/material/Drawer';
+import useTheme from '@mui/styles/useTheme';
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemText from '@mui/material/ListItemText';
 import ToggleColorModeBtn from './ToggleColorModeBtn';
 import useColorMode from '../utils/useColorMode';
+import { getPrimaryLight, getPrimaryDark, getPrimaryContrastText } from 'theme';
 
 export interface DrawerProps extends MuiDrawerProps {
   isExpanded?: boolean;
@@ -25,10 +28,13 @@ export type ListLinkProps = {
 const contractedWidth = 160;
 const expandedWidth = 260;
 
-const selectedListItemStyles = {
-  backgroundColor: 'primary.light',
+const selectedListItemStyles = (theme: Theme) => ({
+  backgroundColor: getPrimaryLight(theme),
+  '& .MuiTypography-root': {
+    fontWeight: 700,
+  },
   '&:hover': {
-    backgroundColor: 'primary.light',
+    backgroundColor: getPrimaryLight(theme),
   },
   '::after': {
     display: 'block',
@@ -41,14 +47,17 @@ const selectedListItemStyles = {
     margin: '0px auto',
     backgroundColor: 'secondary.main',
   },
-};
+});
 
 const ListLink = ({ children, href, isSelected, onClick }: ListLinkProps) => {
+  const theme = useTheme<Theme>();
+
   return (
     <Link href={href} passHref>
       <ListItem
+        className="fmlfml"
         sx={{
-          ...(isSelected && selectedListItemStyles),
+          ...(isSelected && selectedListItemStyles(theme)),
           py: 2,
         }}
       >
@@ -56,9 +65,6 @@ const ListLink = ({ children, href, isSelected, onClick }: ListLinkProps) => {
           <ListItemText
             sx={{
               textAlign: 'center',
-            }}
-            primaryTypographyProps={{
-              color: 'primary.contrastText',
             }}
           >
             {children}
@@ -72,6 +78,7 @@ const ListLink = ({ children, href, isSelected, onClick }: ListLinkProps) => {
 export const Drawer = ({ isExpanded, children, ...rest }: DrawerProps) => {
   const router = useRouter();
   const colorMode = useColorMode();
+  const theme = useTheme<Theme>();
   const width = isExpanded ? expandedWidth : contractedWidth;
 
   return (
@@ -84,7 +91,8 @@ export const Drawer = ({ isExpanded, children, ...rest }: DrawerProps) => {
           width,
           flexShrink: 0,
           boxSizing: 'border-box',
-          backgroundColor: 'primary.main',
+          backgroundColor: getPrimaryDark(theme),
+          color: getPrimaryContrastText(theme),
         },
       }}
       {...rest}
@@ -107,7 +115,6 @@ export const Drawer = ({ isExpanded, children, ...rest }: DrawerProps) => {
         </ListLink>
         <ListItem
           sx={{
-            color: 'primary.contrastText',
             pt: 6,
           }}
         >
