@@ -1,6 +1,3 @@
-import type { Theme } from 'theme';
-import type { SlideProps } from '@mui/material/Slide';
-
 import { useState } from 'react';
 import MuiAppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
@@ -16,6 +13,9 @@ import Drawer from './Drawer';
 import ToggleColorModeBtn from './ToggleColorModeBtn';
 import useColorMode from '../utils/useColorMode';
 import { getPrimary, getPrimaryContrastText } from 'theme';
+
+import type { Theme } from 'theme';
+import type { SlideProps } from '@mui/material/Slide';
 
 function HideOnScroll({ children }: { children: SlideProps['children'] }) {
   const trigger = useScrollTrigger();
@@ -36,11 +36,7 @@ export const AppBar = () => {
     <Box sx={{ flexGrow: 1 }}>
       <Drawer isExpanded open={isOpen} onClose={() => setIsOpen(false)} />
       <HideOnScroll>
-        <MuiAppBar
-          enableColorOnDark
-          color={getPrimary(theme)}
-          position="static"
-        >
+        <MuiAppBar enableColorOnDark color={getPrimary(theme)}>
           <Container maxWidth="lg">
             <Toolbar>
               <Typography variant="h4" component="div" sx={{ flexGrow: 1 }}>
