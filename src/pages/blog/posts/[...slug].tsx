@@ -1,5 +1,5 @@
-import type { Theme } from '../../../theme';
-
+import { MDXRemote } from 'next-mdx-remote';
+import { serialize } from 'next-mdx-remote/serialize';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import useTheme from '@mui/styles/useTheme';
 import Typography from '@mui/material/Typography';
@@ -8,13 +8,19 @@ import { getLayout } from '../../../components/Layout';
 import getAllPosts from '../../../utils/getAllPosts';
 import getPost from '../../../utils/getPost';
 import { joinSplitSlug, slugToFilePath, splitSlug } from '../../../utils/slug';
-import getMdComponents from '../../../utils/getMdComponents';
-import MuiMarkdown from '../../../mui-markdown/src/MuiMarkdown';
+import BlogPostImage from 'components/BlogPostImage';
+import PreBlock from 'components/mdx/PreBlock';
+import dracula from 'prism-react-renderer/themes/dracula';
+import nightOwlLight from 'prism-react-renderer/themes/nightOwlLight';
+
+import type { MDXRemoteSerializeResult } from 'next-mdx-remote';
+import type { Theme } from '../../../theme';
+import Blockquote from 'components/mdx/Blockquote';
 
 interface PostProps {
   post: {
     title: string;
-    content: string;
+    content: MDXRemoteSerializeResult<Record<string, unknown>>;
     dateCreated: string;
   };
   slug: string;
@@ -28,7 +34,6 @@ const Post = (props: PostProps) => {
 
   const theme = useTheme<Theme>();
   const isViewportBelowMd = useMediaQuery(theme.breakpoints.down('md'));
-  const components = getMdComponents();
 
   const dateFormatter = new Intl.DateTimeFormat('en-GB', {
     year: 'numeric',
@@ -49,14 +54,55 @@ const Post = (props: PostProps) => {
           </span>
         </div>
       </Box>
-      <MuiMarkdown
-        overrides={{
-          ...components,
-          Image: (props) => <components.Image {...props} slug={slug} />,
+      <MDXRemote
+        {...content}
+        components={{
+          CurrentYear: () => {
+            return <span>{new Date().getFullYear()}</span>;
+          },
+          Image: (props: any) => <BlogPostImage {...props} slug={slug} />,
+          InfoBox: (props: any) => {
+            return <div {...props} />;
+          },
+          Blockquote: (props) => {
+            return <Blockquote {...props} />;
+          },
+          blockquote: (props) => {
+            return <Blockquote {...props} />;
+          },
+          pre: (props) => {
+            console.log('in pre component with props:', props);
+
+            return (
+              // @ts-ignore
+              <PreBlock
+                theme={theme.palette.mode === 'light' ? nightOwlLight : dracula}
+                {...props}
+              />
+            );
+          },
+          h2: (props) => {
+            // @ts-ignore
+            return <Typography variant="h2" fontWeight={500} {...props} />;
+          },
+          h3: (props) => {
+            // @ts-ignore
+            return <Typography variant="h3" fontWeight={500} {...props} />;
+          },
+          h4: (props) => {
+            // @ts-ignore
+            return <Typography variant="h4" fontWeight={500} {...props} />;
+          },
+          h5: (props) => {
+            // @ts-ignore
+            return <Typography variant="h5" fontWeight={500} {...props} />;
+          },
+          h6: (props) => {
+            // @ts-ignore
+            return <Typography variant="h6" fontWeight={500} {...props} />;
+          },
         }}
-      >
-        {content}
-      </MuiMarkdown>
+      />
     </div>
   );
 };
@@ -70,6 +116,10 @@ export async function getStaticProps({
   const filePath = slugToFilePath(slug);
 
   const post = getPost(['title', 'dateCreated', 'content', 'draft'], filePath);
+
+  // Overwrite the content:
+  const mdxSource = await serialize(post.content, { scope: { slug } });
+  post.content = mdxSource;
 
   return {
     props: { post, slug },
