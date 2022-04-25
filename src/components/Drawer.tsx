@@ -6,6 +6,7 @@ import { useRouter } from 'next/router';
 import Link from 'next/link';
 import MuiDrawer from '@mui/material/Drawer';
 import useTheme from '@mui/styles/useTheme';
+import useMediaQuery from '@mui/material/useMediaQuery';
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import ListItemButton from '@mui/material/ListItemButton';
@@ -79,6 +80,7 @@ export const Drawer = ({ isExpanded, children, ...rest }: DrawerProps) => {
   const router = useRouter();
   const colorMode = useColorMode();
   const theme = useTheme<Theme>();
+  const isViewportAboveMd = useMediaQuery(theme.breakpoints.up('md'));
   const width = isExpanded ? expandedWidth : contractedWidth;
 
   return (
@@ -113,15 +115,17 @@ export const Drawer = ({ isExpanded, children, ...rest }: DrawerProps) => {
         >
           Blog
         </ListLink>
-        <ListItem
-          sx={{
-            pt: 6,
-          }}
-        >
-          <ListItemButton onClick={colorMode?.toggleColorMode}>
-            <ToggleColorModeBtn sx={{ mx: 'auto' }} />
-          </ListItemButton>
-        </ListItem>
+        {isViewportAboveMd && (
+          <ListItem
+            sx={{
+              pt: 6,
+            }}
+          >
+            <ListItemButton onClick={colorMode?.toggleColorMode}>
+              <ToggleColorModeBtn sx={{ mx: 'auto' }} />
+            </ListItemButton>
+          </ListItem>
+        )}
       </List>
     </MuiDrawer>
   );

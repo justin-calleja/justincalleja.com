@@ -2,8 +2,7 @@ import type { Theme } from '../../theme';
 import type { PostObj, BlogPostPagePathParams } from '../../types';
 
 import Link from 'next/link';
-// import Image from '../../components/Image';
-import Image from 'next/image';
+import Image from '../../components/Image';
 import { useRouter } from 'next/router';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import useTheme from '@mui/styles/useTheme';
@@ -27,21 +26,6 @@ import { BlogIntro } from '../../components/BlogIntro';
 
 const blogRoute = getRouteByAbsPath('/blog');
 const blogPostsRoute = getRouteByAbsPath('/blog/posts');
-
-// // Pixel GIF code adapted from https://stackoverflow.com/a/33919020/266535
-// const keyStr =
-//   'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=';
-
-// const triplet = (e1, e2, e3) =>
-//   keyStr.charAt(e1 >> 2) +
-//   keyStr.charAt(((e1 & 3) << 4) | (e2 >> 4)) +
-//   keyStr.charAt(((e2 & 15) << 2) | (e3 >> 6)) +
-//   keyStr.charAt(e3 & 63);
-
-// const rgbDataURL = (r, g, b) =>
-//   `data:image/gif;base64,R0lGODlhAQABAPAA${
-//     triplet(0, r, g) + triplet(b, 255, 255)
-//   }/yH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==`;
 
 interface PostsListProps {
   numOfPages: number;
@@ -71,32 +55,14 @@ const PostsList = ({ numOfPages, pageIndex, posts }: PostsListProps) => {
           }}
         >
           <article>
-            <Box display="flex" justifyContent="center" component="article">
-              <Image
-                src={
-                  coverImage
-                    ? `/posts${slug}/${coverImage}`
-                    : '/images/react.png'
-                }
-                alt="Cover image"
-                // placeholder="blur"
-                // blurDataURL={rgbDataURL(237, 181, 6)}
-                width={340}
-                height={180}
-              />
-            </Box>
-
-            {/* <Image
-                imgSrc={
-                  coverImage
-                    ? `/posts${slug}/${coverImage}`
-                    : '/images/react.png'
-                }
-                linkHref={`/public/posts/${slug}`}
-                alt="Cover image"
-                width={340}
-                height={180}
-              /> */}
+            <Image
+              imgSrc={
+                coverImage ? `/posts${slug}/${coverImage}` : '/images/react.png'
+              }
+              alt="Cover image"
+              width={340}
+              height={180}
+            />
             <Typography
               variant="h3"
               pt={2}
