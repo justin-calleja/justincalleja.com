@@ -1,0 +1,19 @@
+# Query: myref:
+# Including: ./mysite
+
+5 results - 5 files
+
+mysite • layouts/partials/head.html:
+  2:   {{/* myref: overwrite theme partials/head.html */}}
+
+mysite • themes/mytheme/layouts/_default/baseof.html:
+  7:       {{/* myref: baseof main block */}} {{- block "main" . }}{{- end }}
+
+mysite • themes/mytheme/layouts/partials/footer.html:
+  1: {{/* myref: theme partials/footer.html */}}
+
+mysite • themes/mytheme/layouts/partials/head.html:
+  1: {{/* myref: theme partials/head.html */}}
+
+mysite • themes/mytheme/layouts/partials/header.html:
+  1: {{/* myref: theme partials/header.html */}}

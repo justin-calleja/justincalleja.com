@@ -1,8 +1,8 @@
 ---
 dateCreated: Oct 25, 2014 14:00:00 GMT+0000
 tags:
-- go
-- viper
+  - go
+  - viper
 title: Using Viper for some Go basics
 tocEnabled: true
 ---

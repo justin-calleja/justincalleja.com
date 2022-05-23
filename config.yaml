@@ -1,4 +1,42 @@
 baseURL: http://example.org/
 languageCode: en-us
-theme: mytheme
+theme: hugo-theme-terminal
 title: My New Hugo Site
+
+markup:
+  goldmark:
+    renderer:
+      unsafe: true
+  tableOfContents:
+    endLevel: 5
+    ordered: false
+    startLevel: 2
+
+params:
+  centerTheme: true
+  contentTypeName: posts
+  fullWidthTheme: false
+  showMenuItems: 2
+  themeColor: green
+
+languages:
+  en:
+    copyright: ''
+    keywords: ''
+    menuMore: Show more
+    readMore: Read more
+    readOtherPosts: Read other posts
+    subtitle: A simple, retro theme for Hugo
+    title: Terminal
+    params:
+      logo:
+        logoHomeLink: /
+        logoText: Terminal
+    menu:
+      main:
+        - identifier: about
+          name: About
+          url: /about
+        - identifier: showcase
+          name: Showcase
+          url: /showcase
