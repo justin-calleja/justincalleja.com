@@ -4,6 +4,10 @@ theme: hugo-theme-terminal
 title: My New Hugo Site
 enableGitInfo: true
 
+module:
+  imports:
+    - path: github.com/justin-calleja/days-of-go/day-1
+
 markup:
   goldmark:
     renderer:
