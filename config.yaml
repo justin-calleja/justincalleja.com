@@ -2,6 +2,7 @@ baseURL: http://example.org/
 languageCode: en-us
 theme: hugo-theme-terminal
 title: My New Hugo Site
+enableGitInfo: true
 
 markup:
   goldmark:
@@ -14,10 +15,11 @@ markup:
 
 params:
   centerTheme: true
-  contentTypeName: posts
+  # contentTypeName: blog
   fullWidthTheme: false
   showMenuItems: 2
   themeColor: green
+  showLastUpdated: true
 
 languages:
   en:
