@@ -22,7 +22,7 @@ params:
   centerTheme: true
   # contentTypeName: blog
   fullWidthTheme: false
-  showMenuItems: 2
+  showMenuItems: 4
   themeColor: green
   showLastUpdated: true
 
@@ -41,9 +41,18 @@ languages:
         logoText: Terminal
     menu:
       main:
+        - identifier: blog
+          name: Blog
+          url: /blog
+          weight: 10
+        - identifier: series
+          name: Series
+          url: /series
+          weight: 20
         - identifier: about
           name: About
           url: /about
-        - identifier: showcase
-          name: Showcase
-          url: /showcase
+          weight: 30
+
+taxonomies:
+  tag: tags
