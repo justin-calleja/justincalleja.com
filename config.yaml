@@ -49,10 +49,14 @@ languages:
           name: Series
           url: /series
           weight: 20
+        - identifier: tips
+          name: Tips
+          url: /tips
+          weight: 30
         - identifier: about
           name: About
           url: /about
-          weight: 30
+          weight: 40
 
 taxonomies:
   tag: tags

@@ -7,6 +7,6 @@ replace github.com/justin-calleja/days-of-go => /Users/justincalleja/github/days
 replace github.com/justin-calleja/hugo-theme-terminal => /Users/justincalleja/github/hugo-theme-terminal
 
 require (
-	github.com/justin-calleja/days-of-go v0.0.0-20220529110123-9ce9a92931dc // indirect
-	github.com/justin-calleja/hugo-theme-terminal v0.0.0-20220529140438-25a6a39fd190 // indirect
+	github.com/justin-calleja/days-of-go v0.0.0-20220530224524-df1df3fcbf02 // indirect
+	github.com/justin-calleja/hugo-theme-terminal v0.0.0-20220530224501-f058477d8dfc // indirect
 )
