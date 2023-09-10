@@ -22,6 +22,7 @@ export interface Post {
   excerpt?: string;
   /**  */
   image?: string;
+  isImageShownInSinglePost?: boolean;
 
   /**  */
   category?: string;
