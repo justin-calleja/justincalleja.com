@@ -16,7 +16,7 @@
     color: var(--aw-color-text-page);
   }
   .text-muted {
-    color: var(--aw-color-text-muted);
+    color: rgb(var(--aw-color-text-muted) / 66%);
   }
 }
 
