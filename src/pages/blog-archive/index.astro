@@ -1,64 +1,137 @@
 ---
+import { twMerge } from 'tailwind-merge';
 import merge from 'lodash.merge';
 import List from '~/components/blog-archive/List.astro';
-// import type { ImageMetadata } from 'astro';
+import Heading from '~/components/blog-archive/Heading.astro';
 import Layout from '~/layouts/PageLayout.astro';
-// import SinglePost from '~/components/blog/SinglePost.astro';
-// import ToBlogLink from '~/components/blog/ToBlogLink.astro';
-
-// import { getCanonical, getPermalink } from '~/utils/permalinks';
-import {
-  getStaticPathsBlogPost,
-  // blogPostRobots
-} from '~/utils/blog';
-// import { findImage } from '~/utils/images';
 
 export const prerender = true;
 
-export async function getStaticPaths() {
-  return await getStaticPathsBlogPost();
-}
+const metadata = merge({
+  title: 'Blog Archive',
+  description: 'Contains links to archived blog posts',
+});
 
-// const { post } = Astro.props;
-
-// const url = getCanonical(getPermalink(post.permalink, 'post'));
-// const image = (await findImage(post.image)) as ImageMetadata | undefined;
-
-const metadata = merge(
-  {
-    title: 'Blog Archive',
-    description: 'Contains links to archived blog posts',
-  }
-  // { ...(post?.metadata ? { ...post.metadata, canonical: post.metadata?.canonical || url } : {}) }
-);
+const yearSectionBaseClassNames =
+  'mt-0 mb-2 px-5 sm:px-6 items-center';
+  // 'flex justify-between flex-col sm:flex-row max-w-3xl mx-auto mt-0 mb-2 px-5 sm:px-6 sm:items-center';
 ---
 
 <Layout metadata={metadata}>
   <section class="py-8 sm:py-16 lg:py-20 mx-auto">
-    <article>
-      <div class="flex justify-between flex-col sm:flex-row max-w-3xl mx-auto mt-0 mb-2 px-4 sm:px-6 sm:items-center">
-        <List
-          archivedPosts={[
-            {
-              link: 'https://github.com/justin-calleja/justincalleja.com/blob/archive-1/src/posts/2014/setting-up-karma-with-mocha-chai-and-requirejs/index.mdx',
-              title: 'Setting up Karma with Mocha, Chai, and RequireJS',
-            },
-            {
-              link: 'https://github.com/justin-calleja/justincalleja.com/blob/archive-1/src/posts/2014/taking-the-express-route-out/taking-the-express-route-out.mdx',
-              title: 'Taking the Express route out',
-            },
+    <div class={yearSectionBaseClassNames}>
+      <Heading>2014</Heading>
+      <List
+        archivedPosts={[
+          {
+            link: 'https://github.com/justin-calleja/justincalleja.com/blob/archive-1/src/posts/2014/setting-up-karma-with-mocha-chai-and-requirejs/index.mdx',
+            title: 'Setting up Karma with Mocha, Chai, and RequireJS',
+          },
+          {
+            link: 'https://github.com/justin-calleja/justincalleja.com/blob/archive-1/src/posts/2014/taking-the-express-route-out/taking-the-express-route-out.mdx',
+            title: 'Taking the Express route out',
+          },
 
-            {
-              link: 'https://github.com/justin-calleja/justincalleja.com/blob/archive-1/src/posts/2014/to-mock-a-mongoose/index.mdx',
-              title: 'To mock a Mongoose',
-            },
-            {
-              link: 'https://github.com/justin-calleja/justincalleja.com/blob/archive-1/src/posts/2014/using-viper-for-some-go-basics/using-viper-for-some-go-basics.mdx',
-              title: 'Using Viper for some Go basics',
-            },
-          ]}
-        />
-      </div>
-    </article>
+          {
+            link: 'https://github.com/justin-calleja/justincalleja.com/blob/archive-1/src/posts/2014/to-mock-a-mongoose/index.mdx',
+            title: 'To mock a Mongoose',
+          },
+          {
+            link: 'https://github.com/justin-calleja/justincalleja.com/blob/archive-1/src/posts/2014/using-viper-for-some-go-basics/using-viper-for-some-go-basics.mdx',
+            title: 'Using Viper for some Go basics',
+          },
+        ]}
+      />
+    </div>
+
+    <div class={twMerge(yearSectionBaseClassNames, 'mt-4 sm:mt-8')}>
+      <Heading>2015</Heading>
+      <List
+        archivedPosts={[
+          {
+            link: 'https://github.com/justin-calleja/justincalleja.com/blob/archive-1/src/posts/2015/getting-started-with-assemble/index.mdx',
+            title: 'Getting started with Assemble',
+          },
+          {
+            link: 'https://github.com/justin-calleja/justincalleja.com/blob/archive-1/src/posts/2015/grunt-watch-those-templates/index.mdx',
+            title: 'Grunt watch those templates',
+          },
+
+          {
+            link: 'https://github.com/justin-calleja/justincalleja.com/blob/archive-1/src/posts/2015/marionette-compositeview-an-example/index.mdx',
+            title: 'Marionette CompositeView an example',
+          },
+          {
+            link: 'https://github.com/justin-calleja/justincalleja.com/blob/archive-1/src/posts/2015/ruby-on-rails-vagrant-box/ruby-on-rails-vagrant-box.mdx',
+            title: 'Creating a Ruby on Rails Vagrant box',
+          },
+          {
+            link: 'https://github.com/justin-calleja/justincalleja.com/blob/archive-1/src/posts/2015/sequential-control-flow-with-lodash-or-underscore/index.mdx',
+            title: 'Sequential control flow with Lo-Dash or Underscore.js',
+          },
+          {
+            link: 'https://github.com/justin-calleja/justincalleja.com/blob/archive-1/src/posts/2015/vanilla-css-grid/index.mdx',
+            title: 'Vanilla CSS grid',
+          },
+          {
+            link: 'https://github.com/justin-calleja/justincalleja.com/blob/archive-1/src/posts/2015/war-in-jar/index.mdx',
+            title: 'War in jar with Maven',
+          },
+        ]}
+      />
+    </div>
+
+    <div class={twMerge(yearSectionBaseClassNames, 'mt-4 sm:mt-8')}>
+      <Heading>2016</Heading>
+      <List
+        archivedPosts={[
+          {
+            link: 'https://github.com/justin-calleja/justincalleja.com/blob/archive-1/src/posts/2016/elixir-streams-reload/index.mdx',
+            title: 'Elixir Streams reload',
+          },
+          {
+            link: 'https://github.com/justin-calleja/justincalleja.com/blob/archive-1/src/posts/2016/serving-a-webpack-bundle-in-spring-boot/index.mdx',
+            title: 'Serving a Webpack bundle in Spring Boot',
+          },
+          {
+            link: 'https://github.com/justin-calleja/justincalleja.com/blob/archive-1/src/posts/2016/trying-out-typescript/index.mdx',
+            title: 'Trying out Typescript',
+          },
+        ]}
+      />
+    </div>
+
+    <div class={twMerge(yearSectionBaseClassNames, 'mt-4 sm:mt-8')}>
+      <Heading>2020</Heading>
+      <List
+        archivedPosts={[
+          {
+            link: 'https://github.com/justin-calleja/justincalleja.com/blob/archive-1/src/posts/2020/generate-your-own-types-in-fast-check/index.mdx',
+            title: 'Generate your own types in fast-check',
+          },
+          {
+            link: 'https://github.com/justin-calleja/justincalleja.com/blob/archive-1/src/posts/2020/using-plain-pg-with-nestjs/index.mdx',
+            title: 'Using plain pg with Nest.js',
+          },
+        ]}
+      />
+    </div>
+
+    <div class={twMerge(yearSectionBaseClassNames, 'mt-4 sm:mt-8')}>
+      <Heading>2020</Heading>
+      <List
+        archivedPosts={[
+          {
+            link: 'https://github.com/justin-calleja/justincalleja.com/blob/archive-1/src/posts/2021/css-vars-for-react-devs/index.mdx',
+            title: 'CSS Variables for React Devs (an example)',
+            // TODO: add note not to bother reading.
+          },
+          {
+            link: 'https://github.com/justin-calleja/justincalleja.com/blob/archive-1/src/posts/2021/fishing-regions-step-by-step/index.mdx',
+            title: 'Fishing Regions - step by step',
+          },
+        ]}
+      />
+    </div>
   </section>
 </Layout>
