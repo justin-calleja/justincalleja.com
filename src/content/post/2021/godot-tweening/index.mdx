@@ -152,7 +152,7 @@ With regards to glowing, as seen from the code below, I'm basically changing the
 
 Back to where we left off after selecting a card; at the end of `select_card_by_index`, we call `start_glow_card` which basically just starts glowing at a high value and sets a flag to keep track of this:
 
-```gd
+```py
 func start_glow_card(card: Card):
 	is_glow_high = true
 	tween.glow_high(card)
@@ -175,7 +175,7 @@ When the tween completes (something we have yet to hook up), `_on_tween_complete
 
 Finally, we can add a `_input` function to handle user input of `"ui_right"` to select the card to the right of the currently selected one (move right) and loop back; `"ui_left"` to move left and loop back; and `"ui_select"` (space bar key) to just `flip` the card - a feature we added in the: ["Card flipping" post](../godot-card-flipping):
 
-```gd
+```py
 func _input(event):
 	if selected_card == null:
 		return
