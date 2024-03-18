@@ -88,3 +88,7 @@
 .dd *:first-child {
   margin-top: 0;
 }
+
+body {
+  font-size: 18px;
+}

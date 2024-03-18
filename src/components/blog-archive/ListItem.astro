@@ -1,0 +1,38 @@
+---
+import type { ArchivedPost } from '~/types';
+
+export interface Props {
+  archivedPost: ArchivedPost;
+}
+
+const {
+  archivedPost: { link, title },
+} = Astro.props;
+// const image = (await findImage(post.image)) as ImageMetadata | undefined;
+
+// const link = APP_BLOG?.post?.isEnabled ? getPermalink(post.permalink, 'post') : '';
+---
+
+<article class={`max-w-md mx-auto md:max-w-none grid gap-6 md:gap-8`}>
+  <div class="mt-2">
+    <header>
+      <!-- <div class="mb-1">
+        <span class="text-sm">
+          <Icon name="tabler:clock" class="w-3.5 h-3.5 inline-block -mt-0.5 dark:text-gray-400" />
+          <time datetime={String(post.publishDate)} class="inline-block">{getFormattedDate(post.publishDate)}</time>
+        </span>
+      </div> -->
+      <h2 class="text-xl sm:text-2xl font-bold leading-tight mb-2 font-heading dark:text-slate-300">
+        {
+          link ? (
+            <a class="hover:text-muted transition ease-in duration-200" href={link}>
+              {title}
+            </a>
+          ) : (
+            title
+          )
+        }
+      </h2>
+    </header>
+  </div>
+</article>
