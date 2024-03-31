@@ -1,7 +1,36 @@
 # Redirects from what the browser requests to what we serve
-/blog/posts/2020/generate-your-own-types-in-fast-check        https://github.com/justin-calleja/justincalleja.com/blob/archive-1/src/posts/2020/generate-your-own-types-in-fast-check/index.mdx
-/blog/posts/2021/fishing-regions-step-by-step                 https://github.com/justin-calleja/justincalleja.com/blob/archive-1/src/posts/2021/fishing-regions-step-by-step/index.mdx
-/blog/posts/2016/elixir-streams-reload                        https://github.com/justin-calleja/justincalleja.com/blob/archive-1/src/posts/2016/elixir-streams-reload/index.mdx
-/blog/posts/2015/getting-started-with-assemble                https://github.com/justin-calleja/justincalleja.com/blob/archive-1/src/posts/2015/getting-started-with-assemble/index.mdx
-/blog/posts/2021/next-js-blog-routes/                         https://github.com/justin-calleja/justincalleja.com/blob/archive-1/src/posts/2021/next-js-blog-routes/index.mdx
-/blog/posts/2015/war-in-jar/                                  https://github.com/justin-calleja/justincalleja.com/blob/archive-1/src/posts/2015/war-in-jar/index.mdx
+
+/blog/posts/2021/godot-card-flipping                                        /blog/posts/godot-card-flipping
+/blog/godot-card-flipping                                                   /blog/posts/godot-card-flipping
+
+/blog/posts/2021/godot-tweening                                             /blog/posts/godot-tweening
+
+/blog/posts/2014/setting-up-karma-with-mocha-chai-and-requirejs             https://github.com/justin-calleja/justincalleja.com/blob/archive-1/src/posts/2014/setting-up-karma-with-mocha-chai-and-requirejs/index.mdx
+
+/blog/posts/2014/taking-the-express-route-out/taking-the-express-route-out  https://github.com/justin-calleja/justincalleja.com/blob/archive-1/src/posts/2014/taking-the-express-route-out/taking-the-express-route-out.mdx
+
+/2014/12/14/to-mock-a-mongoose                                              https://github.com/justin-calleja/justincalleja.com/blob/archive-1/src/posts/2014/to-mock-a-mongoose/index.mdx
+
+/blog/posts/2015/marionette-compositeview-an-example/                       https://github.com/justin-calleja/justincalleja.com/blob/archive-1/src/posts/2015/marionette-compositeview-an-example/index.mdx
+
+/2016/04/17/serving-a-webpack-bundle-in-spring-boot                         https://github.com/justin-calleja/justincalleja.com/blob/archive-1/src/posts/2016/serving-a-webpack-bundle-in-spring-boot/index.mdx
+
+/blog/posts/2020/using-plain-pg-with-nestjs                                 https://github.com/justin-calleja/justincalleja.com/blob/archive-1/src/posts/2020/using-plain-pg-with-nestjs/index.mdx
+
+/blog/posts/2015/vanilla-css-grid                                           https://github.com/justin-calleja/justincalleja.com/blob/archive-1/src/posts/2015/vanilla-css-grid/index.mdx
+
+/blog/posts/2020/generate-your-own-types-in-fast-check                      https://github.com/justin-calleja/justincalleja.com/blob/archive-1/src/posts/2020/generate-your-own-types-in-fast-check/index.mdx
+
+/blog/posts/2021/fishing-regions-step-by-step                               https://github.com/justin-calleja/justincalleja.com/blob/archive-1/src/posts/2021/fishing-regions-step-by-step/index.mdx
+
+/blog/posts/2016/elixir-streams-reload                                      https://github.com/justin-calleja/justincalleja.com/blob/archive-1/src/posts/2016/elixir-streams-reload/index.mdx
+
+/blog/posts/2015/getting-started-with-assemble                              https://github.com/justin-calleja/justincalleja.com/blob/archive-1/src/posts/2015/getting-started-with-assemble/index.mdx
+
+/blog/posts/2021/next-js-blog-routes/                                       https://github.com/justin-calleja/justincalleja.com/blob/archive-1/src/posts/2021/next-js-blog-routes/index.mdx
+
+/blog/posts/2015/war-in-jar/                                                https://github.com/justin-calleja/justincalleja.com/blob/archive-1/src/posts/2015/war-in-jar/index.mdx
+
+/blog/posts/2021/korean-1                                                   https://github.com/justin-calleja/justincalleja.com/blob/archive-1/src/posts/2021/korean-1/index.mdx
+
+/blog/posts/2015/ruby-on-rails-vagrant-box/ruby-on-rails-vagrant-box        https://github.com/justin-calleja/justincalleja.com/blob/archive-1/src/posts/2015/ruby-on-rails-vagrant-box/ruby-on-rails-vagrant-box.mdx
