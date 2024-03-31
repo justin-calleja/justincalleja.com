@@ -12,9 +12,8 @@ const metadata = merge({
   description: 'Contains links to archived blog posts',
 });
 
-const yearSectionBaseClassNames =
-  'mt-0 mb-2 px-5 sm:px-6 items-center';
-  // 'flex justify-between flex-col sm:flex-row max-w-3xl mx-auto mt-0 mb-2 px-5 sm:px-6 sm:items-center';
+const yearSectionBaseClassNames = 'mt-0 mb-2 px-5 sm:px-6 items-center';
+// 'flex justify-between flex-col sm:flex-row max-w-3xl mx-auto mt-0 mb-2 px-5 sm:px-6 sm:items-center';
 ---
 
 <Layout metadata={metadata}>
@@ -118,7 +117,7 @@ const yearSectionBaseClassNames =
     </div>
 
     <div class={twMerge(yearSectionBaseClassNames, 'mt-4 sm:mt-8')}>
-      <Heading>2020</Heading>
+      <Heading>2021</Heading>
       <List
         archivedPosts={[
           {
@@ -129,6 +128,10 @@ const yearSectionBaseClassNames =
           {
             link: 'https://github.com/justin-calleja/justincalleja.com/blob/archive-1/src/posts/2021/fishing-regions-step-by-step/index.mdx',
             title: 'Fishing Regions - step by step',
+          },
+          {
+            link: 'https://github.com/justin-calleja/justincalleja.com/blob/archive-1/src/posts/2021/next-js-blog-routes/index.mdx',
+            title: 'How to create routes for blog with Next.js',
           },
         ]}
       />
