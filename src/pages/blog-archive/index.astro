@@ -18,26 +18,58 @@ const yearSectionBaseClassNames = 'mt-0 mb-2 px-5 sm:px-6 items-center';
 
 <Layout metadata={metadata}>
   <section class="py-8 sm:py-16 lg:py-20 mx-auto">
-    <div class={yearSectionBaseClassNames}>
-      <Heading>2014</Heading>
+    <div class={twMerge(yearSectionBaseClassNames, 'mt-4 sm:mt-8')}>
+      <Heading>2021</Heading>
       <List
         archivedPosts={[
           {
-            link: 'https://github.com/justin-calleja/justincalleja.com/blob/archive-1/src/posts/2014/setting-up-karma-with-mocha-chai-and-requirejs/index.mdx',
-            title: 'Setting up Karma with Mocha, Chai, and RequireJS',
+            link: 'https://github.com/justin-calleja/justincalleja.com/blob/archive-1/src/posts/2021/css-vars-for-react-devs/index.mdx',
+            title: 'CSS Variables for React Devs (an example)',
+            // TODO: add note not to bother reading.
           },
           {
-            link: 'https://github.com/justin-calleja/justincalleja.com/blob/archive-1/src/posts/2014/taking-the-express-route-out/taking-the-express-route-out.mdx',
-            title: 'Taking the Express route out',
+            link: 'https://github.com/justin-calleja/justincalleja.com/blob/archive-1/src/posts/2021/fishing-regions-step-by-step/index.mdx',
+            title: 'Fishing Regions - step by step',
           },
+          {
+            link: 'https://github.com/justin-calleja/justincalleja.com/blob/archive-1/src/posts/2021/next-js-blog-routes/index.mdx',
+            title: 'How to create routes for blog with Next.js',
+          },
+        ]}
+      />
+    </div>
 
+    <div class={twMerge(yearSectionBaseClassNames, 'mt-4 sm:mt-8')}>
+      <Heading>2020</Heading>
+      <List
+        archivedPosts={[
           {
-            link: 'https://github.com/justin-calleja/justincalleja.com/blob/archive-1/src/posts/2014/to-mock-a-mongoose/index.mdx',
-            title: 'To mock a Mongoose',
+            link: 'https://github.com/justin-calleja/justincalleja.com/blob/archive-1/src/posts/2020/generate-your-own-types-in-fast-check/index.mdx',
+            title: 'Generate your own types in fast-check',
           },
           {
-            link: 'https://github.com/justin-calleja/justincalleja.com/blob/archive-1/src/posts/2014/using-viper-for-some-go-basics/using-viper-for-some-go-basics.mdx',
-            title: 'Using Viper for some Go basics',
+            link: 'https://github.com/justin-calleja/justincalleja.com/blob/archive-1/src/posts/2020/using-plain-pg-with-nestjs/index.mdx',
+            title: 'Using plain pg with Nest.js',
+          },
+        ]}
+      />
+    </div>
+
+    <div class={twMerge(yearSectionBaseClassNames, 'mt-4 sm:mt-8')}>
+      <Heading>2016</Heading>
+      <List
+        archivedPosts={[
+          {
+            link: 'https://github.com/justin-calleja/justincalleja.com/blob/archive-1/src/posts/2016/elixir-streams-reload/index.mdx',
+            title: 'Elixir Streams reload',
+          },
+          {
+            link: 'https://github.com/justin-calleja/justincalleja.com/blob/archive-1/src/posts/2016/serving-a-webpack-bundle-in-spring-boot/index.mdx',
+            title: 'Serving a Webpack bundle in Spring Boot',
+          },
+          {
+            link: 'https://github.com/justin-calleja/justincalleja.com/blob/archive-1/src/posts/2016/trying-out-typescript/index.mdx',
+            title: 'Trying out Typescript',
           },
         ]}
       />
@@ -80,58 +112,26 @@ const yearSectionBaseClassNames = 'mt-0 mb-2 px-5 sm:px-6 items-center';
       />
     </div>
 
-    <div class={twMerge(yearSectionBaseClassNames, 'mt-4 sm:mt-8')}>
-      <Heading>2016</Heading>
+    <div class={yearSectionBaseClassNames}>
+      <Heading>2014</Heading>
       <List
         archivedPosts={[
           {
-            link: 'https://github.com/justin-calleja/justincalleja.com/blob/archive-1/src/posts/2016/elixir-streams-reload/index.mdx',
-            title: 'Elixir Streams reload',
+            link: 'https://github.com/justin-calleja/justincalleja.com/blob/archive-1/src/posts/2014/setting-up-karma-with-mocha-chai-and-requirejs/index.mdx',
+            title: 'Setting up Karma with Mocha, Chai, and RequireJS',
           },
           {
-            link: 'https://github.com/justin-calleja/justincalleja.com/blob/archive-1/src/posts/2016/serving-a-webpack-bundle-in-spring-boot/index.mdx',
-            title: 'Serving a Webpack bundle in Spring Boot',
+            link: 'https://github.com/justin-calleja/justincalleja.com/blob/archive-1/src/posts/2014/taking-the-express-route-out/taking-the-express-route-out.mdx',
+            title: 'Taking the Express route out',
           },
-          {
-            link: 'https://github.com/justin-calleja/justincalleja.com/blob/archive-1/src/posts/2016/trying-out-typescript/index.mdx',
-            title: 'Trying out Typescript',
-          },
-        ]}
-      />
-    </div>
 
-    <div class={twMerge(yearSectionBaseClassNames, 'mt-4 sm:mt-8')}>
-      <Heading>2020</Heading>
-      <List
-        archivedPosts={[
           {
-            link: 'https://github.com/justin-calleja/justincalleja.com/blob/archive-1/src/posts/2020/generate-your-own-types-in-fast-check/index.mdx',
-            title: 'Generate your own types in fast-check',
+            link: 'https://github.com/justin-calleja/justincalleja.com/blob/archive-1/src/posts/2014/to-mock-a-mongoose/index.mdx',
+            title: 'To mock a Mongoose',
           },
           {
-            link: 'https://github.com/justin-calleja/justincalleja.com/blob/archive-1/src/posts/2020/using-plain-pg-with-nestjs/index.mdx',
-            title: 'Using plain pg with Nest.js',
-          },
-        ]}
-      />
-    </div>
-
-    <div class={twMerge(yearSectionBaseClassNames, 'mt-4 sm:mt-8')}>
-      <Heading>2021</Heading>
-      <List
-        archivedPosts={[
-          {
-            link: 'https://github.com/justin-calleja/justincalleja.com/blob/archive-1/src/posts/2021/css-vars-for-react-devs/index.mdx',
-            title: 'CSS Variables for React Devs (an example)',
-            // TODO: add note not to bother reading.
-          },
-          {
-            link: 'https://github.com/justin-calleja/justincalleja.com/blob/archive-1/src/posts/2021/fishing-regions-step-by-step/index.mdx',
-            title: 'Fishing Regions - step by step',
-          },
-          {
-            link: 'https://github.com/justin-calleja/justincalleja.com/blob/archive-1/src/posts/2021/next-js-blog-routes/index.mdx',
-            title: 'How to create routes for blog with Next.js',
+            link: 'https://github.com/justin-calleja/justincalleja.com/blob/archive-1/src/posts/2014/using-viper-for-some-go-basics/using-viper-for-some-go-basics.mdx',
+            title: 'Using Viper for some Go basics',
           },
         ]}
       />
