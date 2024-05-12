@@ -1,0 +1,26 @@
+---
+import Toc from '~/components/blog/Toc.astro';
+
+const { headings } = Astro.props;
+---
+
+<div>
+  <Toc headings={headings} />
+  <div id="blog-post-content">
+    <slot />
+  </div>
+
+  <style is:inline>
+    details summary {
+      cursor: pointer;
+    }
+
+    #toc ul {
+      margin: 2px 0;
+    }
+
+    #toc ul li {
+      margin: 0;
+    }
+  </style>
+</div>

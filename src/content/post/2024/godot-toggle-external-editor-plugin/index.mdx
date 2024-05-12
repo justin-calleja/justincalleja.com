@@ -1,0 +1,210 @@
+---
+publishDate: 2024-03-19
+slug: /godot-toggle-external-editor-plugin
+title: ToggleExternalEditorPlugin Godot plugin
+image: 'https://raw.githubusercontent.com/justin-calleja/justincalleja.com/host-assets/public/res/blog/2024/godot-toggle-external-editor-plugin/enable-external-editor-godot-plugin.jpg'
+# tocEnabled: true
+tags: ['godot']
+layout: '~/layouts/TocLayout.astro'
+# dateCreated: 2021-11-25
+# formattedDateCreated: Nov 25, 2021
+excerpt: 'todo ...'
+---
+
+import Note from '../../../../components/widgets/Note.astro';
+
+## Goal
+
+The goal for this blog post is to go over the [Godot](https://godotengine.org/) plugin: [ToggleExternalEditorPlugin](https://github.com/cuppar/ToggleExternalEditorPlugin/tree/master) - and then extend it a little to be able to toggle another (project) settings.
+
+## ToggleExternalEditorPlugin
+
+### What does this plugin do?
+
+The idea is to be able to access the:
+
+```
+Editor -> Editor Settings -> Text Editor -> External -> Use External Editor
+```
+
+setting (checkbox) from a dedicated "dock" (or whatever it's technically called). Basically, the checkbox circled in red below toggles the same setting the one in blue does but it's a little more convenient to get to. The area in which the red checkbox is in, is the "dock" created by this plugin:
+
+![enable exteranl editor screenshot](https://raw.githubusercontent.com/justin-calleja/justincalleja.com/host-assets/public/res/blog/2024/godot-toggle-external-editor-plugin/enable-external-editor-godot-plugin.jpg)
+
+### Why?
+
+This is a legit use case in my opinion (as oppose to the setting I'll be adding - which is less legit and meant mainly for the purpose of education).
+
+When developing scripts in Godot, it can often be benefitial to do so in an editor you are familiar with (for obvious reasons like feature support and your own knowledge of said editor). However, even with some official Godot extension installed for your editor of choice, some features will only be available to the in-built Gdscript editor in Godot. E.g. dragging and dropping nodes from the "Scenes" dock to the in-built Gdscript editor in Godot - automatically create `@onready` variables.
+
+In summary, it can be useful to use both the internal editor provided by Godot, as well as an external one - and you may actually be doing the switch often depending on circumstance.
+
+### How does this plugin work?
+
+#### Plugin installation
+
+First of all, you should know how to install a Godot plugin and enable it if you don't already. There's more than one way of installing but at the end of the day, you need to end up with a `res://addons` directory (folder), with the plugin you want in your Godot project inside this directory. So in the [ToggleExternalEditorPlugin](https://github.com/cuppar/ToggleExternalEditorPlugin) repo can be downloaded from Github via cloning or zip download, and the `addons/toggle_external_editor` copied into your Godot project's `res://addons` directory.
+
+The same thing happens when you look up this plugin via Godot's own `AssetLib` tab (right next to the `Script` tab) - and download it from there.
+
+Once you have a plugin installed (in your `addons` directory), you then need to enable it by going to Project -> Project Settings -> Plugins - and then tick the checkbox for "Enable" next to the plugin in question.
+
+<Note prefix="Side note">
+  When working on a plugin yourself and you want e.g. some logic in `_ready` function to run again - you will need to
+  find the plugin you're working on in this same place and disable / enable it again.
+</Note>
+
+#### Files in this plugin explained
+
+##### plugin.cfg
+
+This is just some meta data about the plugin - with the most relevant entry for our understanding being the `script` entry which points to the entry point of the plugin - what will run when enabled.
+
+```
+[plugin]
+
+name="Toggle External Editor"
+description="A checkbox dock used to toggle external editor."
+author="Cuppar"
+version="1.0"
+script="toggle_external_editor.gd"
+```
+
+##### toggle_external_editor.gd
+
+```py
+@tool
+extends EditorPlugin
+
+var dock
+
+func _enter_tree():
+	# Initialization of the plugin goes here.
+	# Load the dock scene and instantiate it.
+	dock = preload("toggle_external_editor_dock.tscn").instantiate()
+
+	# Add the loaded scene to the docks.
+	add_control_to_dock(DOCK_SLOT_LEFT_UR, dock)
+	# Note that LEFT_UL means the left of the editor, upper-left dock.
+
+
+func _exit_tree():
+	# Clean-up of the plugin goes here.
+	# Remove the dock.
+	remove_control_from_docks(dock)
+	# Erase the control from the memory.
+	dock.free()
+```
+
+You can read up on `@tool` here: [running_code_in_the_editor](https://docs.godotengine.org/en/stable/tutorials/plugins/running_code_in_the_editor.html). Basically it allows the script to run in the editor (in Godot as you're working on your project).
+
+The `_enter_tree` and `_exit_tree` methods are found on all [Nodes](https://docs.godotengine.org/en/4.2/classes/class_node.html#method-descriptions). On entering the scene tree, we're using [EditorPlugin](https://docs.godotengine.org/en/4.2/classes/class_editorplugin.html)'s `add_control_to_dock` to add an instance of our `toggle_external_editor_dock.tscn` scene to the left dock. We can call `add_control_to_dock` because we are extending `EditorPlugin` at the top of the script.
+
+##### toggle_external_editor_dock.tscn
+
+The scene tree looks like the below:
+
+![toggle_external_editor_dock scene tree](https://raw.githubusercontent.com/justin-calleja/justincalleja.com/host-assets/public/res/blog/2024/godot-toggle-external-editor-plugin/toggle_external_editor_dock_scene_tree.png)
+
+It's rooted with a [Control](https://docs.godotengine.org/en/4.2/classes/class_control.html) node and uses an [HBoxContainer](https://docs.godotengine.org/en/4.2/classes/class_hboxcontainer.html#class-hboxcontainer) to horizontally arrange the [CheckBox](https://docs.godotengine.org/en/4.2/classes/class_checkbox.html) and [LinkButton](https://docs.godotengine.org/en/4.2/classes/class_linkbutton.html) (latter being wrapped in a [MarginContainer](https://docs.godotengine.org/en/4.2/classes/class_margincontainer.html) to make some space between it and the check box).
+
+##### toggle_external_editor_dock.gd
+
+This is the script attached to the root node of [toggle_external_editor_dock.tscn](#toggle_external_editor_docktscn):
+
+```py
+@tool
+extends Control
+
+const USE_EXTERNAL_EDITOR_SETTING_STRING: String = "text_editor/external/use_external_editor"
+
+var settings = EditorInterface.get_editor_settings()
+var is_enable_external_editor := settings.get(USE_EXTERNAL_EDITOR_SETTING_STRING)
+@onready var check_box: CheckBox = $HBoxContainer/CheckBox
+
+func _ready() -> void:
+	check_box.button_pressed = is_enable_external_editor
+
+
+func _on_link_button_pressed() -> void:
+	check_box.button_pressed = not check_box.button_pressed
+
+func _on_check_box_toggled(toggled_on: bool) -> void:
+	if toggled_on:
+		print('Plugin<toggle_external_editor>: enable external editor')
+		settings.set(USE_EXTERNAL_EDITOR_SETTING_STRING, true)
+	else:
+		print('Plugin<toggle_external_editor>: disable external editor')
+		settings.set(USE_EXTERNAL_EDITOR_SETTING_STRING, false)
+```
+
+This is how we can get a ref to the editor settings so we can get / set certain **editor** settings:
+
+```py
+var settings = EditorInterface.get_editor_settings()
+```
+
+It's used straight away to get the current value of:
+
+```py
+const USE_EXTERNAL_EDITOR_SETTING_STRING: String = "text_editor/external/use_external_editor"
+# ...
+var is_enable_external_editor := settings.get(USE_EXTERNAL_EDITOR_SETTING_STRING)
+```
+
+i.e. it gets whether "use external editor" checkbox mentioned [here](#what-does-this-plugin-do) is on or off.
+
+This path to the setting: `text_editor/external/use_external_editor` is actually not listed in the [EditorSettings](https://docs.godotengine.org/en/stable/classes/class_editorsettings.html) online docs - but seems to work just fine.
+
+To be honest, I'm not sure why the setting is being retrieved at the top level of the script. Seems like it's only needed in `_ready` to init the checkbox's checked state - so this would work just as well:
+
+```py
+func _ready() -> void:
+	check_box.button_pressed = settings.get(USE_EXTERNAL_EDITOR_SETTING_STRING)
+```
+
+A further improvement would be - since setting a value on [button_pressed](https://docs.godotengine.org/en/4.2/classes/class_basebutton.html#class-basebutton-property-button-pressed):
+
+> Note: Setting button_pressed will result in toggled to be emitted. If you want to change the pressed state without emitting that signal, use set_pressed_no_signal().
+
+to:
+
+```py
+func _ready() -> void:
+	check_box.set_pressed_no_signal(settings.get(USE_EXTERNAL_EDITOR_SETTING_STRING))
+```
+
+This avoids triggering the `toggled` signal on ready of node which avoids running the `_on_check_box_toggled` method for no reason.
+
+This, on the other hand, makes sense:
+
+```py
+func _on_link_button_pressed() -> void:
+	check_box.button_pressed = not check_box.button_pressed
+```
+
+i.e. we want to emit the `toggled` signal and run `_on_check_box_toggled`  when the label is clicked. That handler method just sets the setting based on the checkbox's state.
+
+### One small improvement
+
+The plugin works fine if you onlly set this setting via the dock it creates. If you mix setting / unsetting from both it's dock and Godot's editor settings, though, the checkbox in the plugin's dock is not kept up to date. To remedy this, on `_ready`:
+
+
+```py
+func _ready() -> void:
+	check_box.set_pressed_no_signal(settings.get(USE_EXTERNAL_EDITOR_SETTING_STRING))
+	settings.settings_changed.connect(_on_settings_changed)
+```
+
+… and then add the `_on_settings_changed` method:
+
+```py
+func _on_settings_changed() -> void:
+	check_box.set_pressed_no_signal(settings.get(USE_EXTERNAL_EDITOR_SETTING_STRING))
+```
+
+That way we listen to any setting change made in the editor settings and react by setting the checkbox's state to the current value of `text_editor/external/use_external_editor` - which would pick up the changes if the change made to the editor settings happens to be the one we're interested in.
+
+<Note prefix="Note">
+  As we've changed the `_ready` method, make sure to disable / re-enable the plugin for these changes to take effect in your running instance of Godot.
+</Note>
