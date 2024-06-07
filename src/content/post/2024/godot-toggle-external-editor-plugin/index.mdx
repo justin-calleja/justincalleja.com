@@ -1,5 +1,6 @@
 ---
 publishDate: 2024-05-23
+updateDate: 2024-06-07
 slug: /godot-toggle-external-editor-plugin
 title: ToggleExternalEditorPlugin for Godot
 image: 'https://raw.githubusercontent.com/justin-calleja/justincalleja.com/host-assets/public/res/blog/2024/godot-toggle-external-editor-plugin/enable-external-editor-godot-plugin.jpg'
@@ -217,3 +218,25 @@ At some point when I was creating it though, I noticed that the settings I usual
 The `QuickSettingsPlugin` extends the original editor setting checkbox with another one for setting the project setting of "Allow HiDPI" - which on a mac at least - avoids the game running in a small window.
 
 Anyway, the project is up on [github](https://github.com/justin-calleja/QuickSettingsPlugin) if you want to refer to it. Maybe you want to have a go at implementing it yourself before comparing solutions.
+
+## Quick hack to set dropdown value with a checkbox
+
+### Getting the property path
+
+E.g. say I want a checkbox to set Project Settings -> Rendering -> Textures -> Canvas Textures -> Default Texture Fitler to `Nearest` (which is usually the case when working with pixel art). First of all, I'd need to get the property path. To do that, find the setting in Godot; right click on it; and "Copy Property Path". This gives the path:
+
+`rendering/textures/canvas_textures/default_texture_filter`
+
+![Right click to copy property path](https://raw.githubusercontent.com/justin-calleja/justincalleja.com/host-assets/public/res/blog/2024/godot-toggle-external-editor-plugin/copy_property_path.png)
+
+There's also the option to "Open Documentation", from which the `[default: 1]` value for the dropdown is documented. This hints that maybe setting it to `0` would select the previous value in the dropdown - which would be the desired `Nearest` setting.
+
+### Extending the existing script
+
+Instead of implementing a dropdown - a quick way to get this done using the existing checkbox would be something like that shown in this script:
+
+[set_dropdown_with_checkbox.gd](https://github.com/justin-calleja/QuickSettingsPlugin/blob/29c6fcccd760275521d68a4574de41ad8a309d90/addons/quick_settings/checkbox/set_dropdown_with_checkbox.gd)
+
+The idea being that we specify which index in the dropdown to choose when the checkbox is toggeled on and which to choose when it's toggled off (and setting the dropdown from Godot editor will untoggle if value is not `Nearest` and toggle the checkbox if it is `Nearest`).
+
+Then, when adding the `checkbox.tsc` as a child of the `VBoxContainer` in `dock.tsc` - the script it comes with (`checkbox.gd`) can be removed and `set_dropdown_with_checkbox.gd` can be set instead.
