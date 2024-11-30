@@ -24,7 +24,7 @@ Create a new scene e.g. `tweening.tscn`, and pull in a `card.tscn` node and a `B
 
 The `CardTween` node is just a custom script I made that `extends Tween`. Add a `card_tween.gd` script with this for now:
 
-```py
+```gdscript
 extends Tween
 class_name CardTween
 
@@ -48,7 +48,7 @@ This makes it a little easier to move a Card and keeps things consistent (i.e. w
 
 Anyway, back to the `tweening.gd` script, we can create a new function to handle clicking the "Deal" button:
 
-```py
+```gdscript
 func _on_deal_pressed():
 	deal_btn.disabled = true
 	deal_cards(3)
@@ -60,7 +60,7 @@ We disable the button and deal 3 cards on click, but we still need to map the si
 
 The `deal_cards` function takes a number of cards to deal; creates a card at the deck's position; tweens the card i.e. moves it to the target position; and calls itself with one less card to deal, obviously breaking the recursion when there's no more cards to deal:
 
-```py
+```gdscript
 func add_card_to_tree(card: Card) -> void:
 	deal_pos.add_child(card)
 	card.rect_global_position = deck.rect_global_position
@@ -115,7 +115,7 @@ At this point, we are able to change a texture's raw value for a color channel t
 
 To do this, we'll get started with the `select_card_by_index` function which is called with an argument of `0` when the cards are done being dealt:
 
-```py
+```gdscript
 var is_glow_high = false
 var selected_card: Card = null
 
@@ -150,7 +150,7 @@ With regards to glowing, as seen from the code below, I'm basically changing the
 
 Back to where we left off after selecting a card; at the end of `select_card_by_index`, we call `start_glow_card` which basically just starts glowing at a high value and sets a flag to keep track of this:
 
-```py
+```gdscript
 func start_glow_card(card: Card):
 	is_glow_high = true
 	tween.glow_high(card)
@@ -173,7 +173,7 @@ When the tween completes (something we have yet to hook up), `_on_tween_complete
 
 Finally, we can add a `_input` function to handle user input of `"ui_right"` to select the card to the right of the currently selected one (move right) and loop back; `"ui_left"` to move left and loop back; and `"ui_select"` (space bar key) to just `flip` the card - a feature we added in the: ["Card flipping" post](../godot-card-flipping):
 
-```py
+```gdscript
 func _input(event):
 	if selected_card == null:
 		return

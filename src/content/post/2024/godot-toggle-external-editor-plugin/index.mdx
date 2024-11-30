@@ -72,7 +72,7 @@ script="toggle_external_editor.gd"
 
 ##### toggle_external_editor.gd
 
-```py
+```gdscript
 @tool
 extends EditorPlugin
 
@@ -112,7 +112,7 @@ It's rooted with a [Control](https://docs.godotengine.org/en/4.2/classes/class_c
 
 This is the script attached to the root node of [toggle_external_editor_dock.tscn](#toggle_external_editor_docktscn):
 
-```py
+```gdscript
 @tool
 extends Control
 
@@ -140,13 +140,13 @@ func _on_check_box_toggled(toggled_on: bool) -> void:
 
 This is how we can get a ref to the editor settings so we can get / set certain **editor** settings:
 
-```py
+```gdscript
 var settings = EditorInterface.get_editor_settings()
 ```
 
 It's used straight away to get the current value of:
 
-```py
+```gdscript
 const USE_EXTERNAL_EDITOR_SETTING_STRING: String = "text_editor/external/use_external_editor"
 # ...
 var is_enable_external_editor := settings.get(USE_EXTERNAL_EDITOR_SETTING_STRING)
@@ -158,7 +158,7 @@ This path to the setting: `text_editor/external/use_external_editor` is actually
 
 To be honest, I'm not sure why the setting is being retrieved at the top level of the script. Seems like it's only needed in `_ready` to init the checkbox's checked state - so this would work just as well:
 
-```py
+```gdscript
 func _ready() -> void:
 	check_box.button_pressed = settings.get(USE_EXTERNAL_EDITOR_SETTING_STRING)
 ```
@@ -169,7 +169,7 @@ A further improvement would be - since setting a value on [button_pressed](https
 
 to:
 
-```py
+```gdscript
 func _ready() -> void:
 	check_box.set_pressed_no_signal(settings.get(USE_EXTERNAL_EDITOR_SETTING_STRING))
 ```
@@ -178,7 +178,7 @@ This avoids triggering the `toggled` signal on ready of node which avoids runnin
 
 This, on the other hand, makes sense:
 
-```py
+```gdscript
 func _on_link_button_pressed() -> void:
 	check_box.button_pressed = not check_box.button_pressed
 ```
@@ -189,7 +189,7 @@ i.e. we want to emit the `toggled` signal and run `_on_check_box_toggled` when t
 
 The plugin works fine if you only set this setting via the dock it creates. If you mix setting / unsetting from both it's dock and Godot's editor settings, though, the checkbox in the plugin's dock is not kept up to date. To remedy this, on `_ready`:
 
-```py
+```gdscript
 func _ready() -> void:
 	check_box.set_pressed_no_signal(settings.get(USE_EXTERNAL_EDITOR_SETTING_STRING))
 	settings.settings_changed.connect(_on_settings_changed)
@@ -197,7 +197,7 @@ func _ready() -> void:
 
 … and then add the `_on_settings_changed` method:
 
-```py
+```gdscript
 func _on_settings_changed() -> void:
 	check_box.set_pressed_no_signal(settings.get(USE_EXTERNAL_EDITOR_SETTING_STRING))
 ```

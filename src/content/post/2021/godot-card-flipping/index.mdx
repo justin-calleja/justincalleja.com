@@ -42,7 +42,7 @@ Next, for the `AnimationPlayer`:
 
 Now add a script on the root `TextureRect` node:
 
-```py
+```gdscript
 extends TextureRect
 
 onready var ap: AnimationPlayer = $AnimationPlayer
@@ -73,7 +73,7 @@ On `_ready`, we `set_texture()`.
 
 Next we add a way to `flip_texture` (which is what will be attached to the `0.1` time on the AnimationPlayer), and a `flip` function which can be used to start the animation programmatically - such that calling `flip` will call `flip_texture` 0.1 seconds later:
 
-```py
+```gdscript
 func flip_texture():
 	is_face_up = !is_face_up
 	set_texture()
@@ -95,7 +95,7 @@ Next add a button somewhere and give it some text like "Flip" (feel free to incr
 
 ![Button in tmp scene](/res/blog/2021/godot-card-flipping/button-in-tmp-scene.png)
 
-```py
+```gdscript
 extends Node2D
 
 # Attach this to the button's pressed signal:
@@ -117,7 +117,7 @@ That's all we need to do here; we'll attach the `pressed` signal elsewhere.
 
 At this point, you can go back to `tmp.tscn`, add a `clickableCard` scene instance and give it a front and back texture. Add the following to `tmp.gd` script:
 
-```py
+```gdscript
 func _ready():
 	$Diamond10/Button.connect('pressed', self, '_on_diamond10_pressed')
 
