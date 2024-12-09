@@ -23,6 +23,9 @@ export default [
       parserOptions: {
         parser: "@typescript-eslint/parser",
         extraFileExtensions: [".astro"],
+        // ecmaFeatures: {
+        //   jsx: true,
+        // },
       },
     },
   },
@@ -36,6 +39,7 @@ export default [
   {
     rules: {
       "@typescript-eslint/no-unused-expressions": "off",
+      "@typescript-eslint/ban-ts-comment": "off",
     },
   },
   {

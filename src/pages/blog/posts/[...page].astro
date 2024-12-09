@@ -6,11 +6,21 @@ import { getCollection } from "astro:content";
 import getSortedPosts from "@utils/getSortedPosts";
 
 export const getStaticPaths = (async ({ paginate }) => {
-  const posts = await getCollection("blog", ({ data }) => !data.draft);
+  const posts = await getCollection(
+    "blog",
+    ({
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
+      data,
+    }) => !data.draft
+  );
+
+  // console.log("🚀 ~ getStaticPaths ~ posts:", posts);
   return paginate(getSortedPosts(posts), { pageSize: SITE.postPerPage });
 }) satisfies GetStaticPaths;
 
 const { page } = Astro.props;
+console.log("🚀 ~ page in src/pages/blog/posts/[...page]:", Object.keys(page))
 ---
 
 <Posts {page} />

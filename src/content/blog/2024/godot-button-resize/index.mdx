@@ -1,0 +1,31 @@
+---
+publishDate: 2024-05-23
+updateDate: 2024-06-07
+slug: godot-button-resize
+title: Button with textures resizes with different text content
+image: "https://raw.githubusercontent.com/justin-calleja/justincalleja.com/host-assets/public/res/blog/2024/godot-toggle-external-editor-plugin/enable-external-editor-godot-plugin.jpg"
+tags: ["godot"]
+excerpt: "Using Button with built-in support for resizing based on text content but also adding textures like you would with TextureButton"
+---
+
+## TextureButton?
+
+If you add a `TextureButton` to a scene and try filtering out it's properties for "text"… you won't find anything.
+
+If you don't need the button to resize i.e. if you don't have dynamic text content (e.g. changing text translation etc…), then using a `TextureButton` with a `MarginContainer` + `Label` inside it is an alternative to the approach below. That was how I initially attempted to solve this problem (not having "text" in a `TextureButton`) but I spent too much time trying to get the resizing to work and wasn't happy with adding custom code for something which seems like too common a use-case to not have a better approach.
+
+## Button
+
+Using a [Button](https://docs.godotengine.org/en/stable/classes/class_button.html) instead of a [TextureButton](https://docs.godotengine.org/en/stable/classes/class_texturebutton.html) gives us a "text" property to work with… built-in to the `Button` and - when changing this "text" property - the `Button` will resize itself.
+
+The problem then is how to get back these convenient textures per button state:
+
+![TextureButton Textures in property inspector](https://raw.githubusercontent.com/justin-calleja/justincalleja.com/host-assets/public/res/blog/2024/godot-button-resize/texturebutton-textures.png)
+
+### Theme
+
+To add these Textures properties (found in `TextureButton`) to the `Button` node, create a new `Theme` resource and attach it to the `Button`. In the property inspector tab (with `Button` selected), go to `Theme` -> `New Theme`. If you intend to re-use this on other nodes (and not just this `Button`), then also "Save As" this theme.
+
+Regardless of whether or not the Theme is saved as a re-usable file or kept embedded in the scene, this is where to look next (i.e. new "Theme" tab in dock of Godot editor):
+
+![Theme manage items](https://raw.githubusercontent.com/justin-calleja/justincalleja.com/host-assets/public/res/blog/2024/godot-button-resize/theme-manage-items.png)

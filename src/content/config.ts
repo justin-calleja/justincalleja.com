@@ -2,15 +2,28 @@ import { SITE } from "@config";
 import { glob } from "astro/loaders";
 import { defineCollection, z } from "astro:content";
 
+const myGlob = () => {
+  const x = glob({ pattern: "**/*.mdx", base: "./src/data/blog" });
+  // x.load
+  return x;
+};
+
 const blog = defineCollection({
-  type: "content_layer",
-  loader: glob({ pattern: "**/*.md", base: "./src/content/blog" }),
+  type: "content",
+  // type: "content_layer",
+  // By default the ID is a slug generated from
+  // the path of the file relative to `base`
+  // loader: glob({ pattern: "**/*.mdx", base: "./src/data/blog" }),
+  // loader: myGlob(),
+
+  // loader: glob({ pattern: "**/*.mdx", base: "./src/data/blog" }),
   schema: ({ image }) =>
     z.object({
-      author: z.string().default(SITE.author),
-      pubDatetime: z.date(),
-      modDatetime: z.date().optional().nullable(),
+      author: z.string().default(SITE.author).optional(),
+      publishDate: z.date(),
+      lastUpdateDate: z.date().optional().nullable(),
       title: z.string(),
+      // slug: z.string(),
       featured: z.boolean().optional(),
       draft: z.boolean().optional(),
       tags: z.array(z.string()).default(["others"]),
@@ -20,7 +33,7 @@ const blog = defineCollection({
         })
         .or(z.string())
         .optional(),
-      description: z.string(),
+      description: z.string().optional(),
       canonicalURL: z.string().optional(),
       editPost: z
         .object({

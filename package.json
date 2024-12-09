@@ -1,5 +1,6 @@
 {
-  "name": "",
+  "name": "justincalleja",
+  "private": true,
   "version": "4.7.0",
   "scripts": {
     "dev": "astro dev",
@@ -14,6 +15,7 @@
   },
   "dependencies": {
     "@astrojs/check": "^0.9.4",
+    "@astrojs/mdx": "^3.1.9",
     "@astrojs/rss": "^4.0.7",
     "@resvg/resvg-js": "^2.6.2",
     "astro": "^4.16.3",
