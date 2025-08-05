@@ -1,0 +1,181 @@
+## Goal
+
+Set up Google sign-in in a Next.js project.
+
+Also, requirement is that of "known users using our app" e.g. an app for internal purposes i.e. there will be a separate entry in some kind of users table listing all the valid emails which have access. This means, there will be no signup process. Only sign-in (with google).
+
+## Get required env vars
+
+Let's start by getting required values from [console.cloud.google.com](https://console.cloud.google.com/)
+
+- Create new project (call it what you want) and select it after it's done being created.
+- From sidebar hamburger menu; go to "APIs & Services" -> "OAuth Consent Screen". Click the "get started" button and fill in the form.
+- Again from sidebar hamburger menu; go to "APIs & Services" -> Credentials; Then add an OAuth Client Id
+  - Select "web application" for app type and name it something.
+  - For "Authorized JavaScript origins", we don't have a deployed app with a domain name yet so put something like `http://localhost:3000` for now.
+  - For "Authorized redirect URIs", same situation re the domain but we'll need a path our Next.js app will handle soon. Let's say this will be: `http://localhost:3000/api/signin/google`
+- After clicking create, copy / paste the given client id and secret in your next.js app's `.env` file:
+
+```
+GOOGLE_CLIENT_ID="copy this over"
+GOOGLE_CLIENT_SECRET="copy this over"
+```
+
+## Setup drizzle
+
+### Install drizzle
+
+```
+pnpm add drizzle-orm pg dotenv
+pnpm add -D drizzle-kit tsx @types/pg
+```
+
+### Run postgres
+
+To run postgres locally, I'll use `docker-compose` with this `docker-compose.yml` file:
+
+```
+services:
+  postgres:
+    image: postgres:15.1
+    environment:
+      POSTGRES_DB: postgres
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: pass234
+    ports:
+      - '5432:5432'
+    volumes:
+      - next-google-auth-db:/data/blog-next-google-auth-db
+      - ./init-db.sql:/docker-entrypoint-initdb.d/init-db.sql
+
+volumes:
+  next-google-auth-db:
+```
+
+The `next-google-auth-db` volume is so the data is persisted after stopping the container and the addition of `init-db.sql` is just so I create a new db to work with:
+
+```sql
+-- init-db.sql
+CREATE DATABASE "next-google-auth-db";
+```
+
+That way with postgres running with `docker-compose up`, I can connect to the db with:
+
+```
+psql -h localhost -p 5432 -U admin -d next-google-auth-db
+# pass234
+
+next-google-auth-db=# \l
+                                                      List of databases
+        Name         | Owner | Encoding | Locale Provider |  Collate   |   Ctype    | Locale | ICU Rules | Access privileges
+---------------------+-------+----------+-----------------+------------+------------+--------+-----------+-------------------
+ next-google-auth-db | admin | UTF8     | libc            | en_US.utf8 | en_US.utf8 |        |           |
+ postgres            | admin | UTF8     | libc            | en_US.utf8 | en_US.utf8 |        |           |
+```
+
+That's a separate db for drizzle - we can safely drop and re-create it. The `postgres` db may or may not be something we want to drop so casually.
+
+### Define table schemas
+
+Next, I'll define a `tmp_user` and `tmp_session` table:
+
+```ts
+import { index, pgTable, serial, text, timestamp } from 'drizzle-orm/pg-core';
+
+export const users = pgTable('tmp_user', {
+  id: serial('id').primaryKey(),
+  email: text('email').unique(),
+});
+
+export const sessions = pgTable(
+  'tmp_session',
+  {
+    id: text('id').primaryKey(),
+    userId: serial('userId')
+      .notNull()
+      .references(() => users.id, { onDelete: 'cascade' }),
+    expiresAt: timestamp('expires_at', {
+      withTimezone: true,
+      mode: 'date',
+    }).notNull(),
+  },
+  (table) => [index('sessions_user_id_idx').on(table.userId)]
+);
+```
+
+When a user in `tmp_user` is deleted, we're telling the db to delete all sessions with the deleted user's id (that's what the "onDelete cascade" part is doing) and, I'm preemptively expecting searches on the session by the user's id (e.g. logging out on one device / browser means we'll want to log the user out of all session they have open) - so I'm giving it an index.
+
+### Make the db reflect the schema
+
+To do this, drizzle needs our db connection info so add this to the `.env`:
+
+```
+DATABASE_URL="postgresql://admin:pass234@localhost:5432/next-google-auth-db"
+```
+
+Then run `drizzle-kit generate` to generate a migrationn (DDL scripts) and `drizzle-kit migrate` to run the migration which should result in a db structure as defined in our `schema.ts`
+
+```sh
+pnpm exec drizzle-kit generate
+# or: npx drizzle-kit generate
+# or: ./node_modules/.bin/drizzle-kit generate
+
+pnpm exec drizzle-kit migrate
+```
+
+```
+next-google-auth-db=# \d tmp_user;
+                            Table "public.tmp_user"
+ Column |  Type   | Collation | Nullable |               Default
+--------+---------+-----------+----------+--------------------------------------
+ id     | integer |           | not null | nextval('tmp_user_id_seq'::regclass)
+ email  | text    |           |          |
+Indexes:
+    "tmp_user_pkey" PRIMARY KEY, btree (id)
+    "tmp_user_email_unique" UNIQUE CONSTRAINT, btree (email)
+Referenced by:
+    TABLE "tmp_session" CONSTRAINT "tmp_session_userId_tmp_user_id_fk" FOREIGN KEY ("userId") REFERENCES tmp_user(id) ON DELETE CASCADE
+
+next-google-auth-db=# \d tmp_session;
+                                          Table "public.tmp_session"
+   Column   |           Type           | Collation | Nullable |                    Default
+------------+--------------------------+-----------+----------+-----------------------------------------------
+ id         | text                     |           | not null |
+ userId     | integer                  |           | not null | nextval('"tmp_session_userId_seq"'::regclass)
+ expires_at | timestamp with time zone |           | not null |
+Indexes:
+    "tmp_session_pkey" PRIMARY KEY, btree (id)
+    "sessions_user_id_idx" btree ("userId")
+Foreign-key constraints:
+    "tmp_session_userId_tmp_user_id_fk" FOREIGN KEY ("userId") REFERENCES tmp_user(id) ON DELETE CASCADE
+```
+
+## Some Next.js setup
+
+With all that db legwork out of the way, lets switch to some Next.js prep work and set up `shadcn`.
+
+Delete the contents of `globals.css` except for the tailwind import at the top; and then run:
+
+```sh
+pnpm dlx shadcn@latest init
+```
+
+… or the equivalent for your package manager - see https://ui.shadcn.com/docs/installation/next
+
+Then add the button component with `pnpm dlx shadcn@latest add button`. Now, use this component in a page - I'll introduce a `(auth)` route group and put the button in: `src/app/(auth)/sign-in/page.tsx`:
+
+```tsx
+import Link from 'next/link';
+import React from 'react';
+import { Button } from '@/components/ui/button';
+
+export default function SignInPage() {
+  return (
+    <>
+      <Link href="/api/login/google">
+        <Button className="cursor-pointer m-4">Continue with Google</Button>
+      </Link>
+    </>
+  );
+}
+```

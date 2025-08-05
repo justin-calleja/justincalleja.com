@@ -1,0 +1,124 @@
+---
+publishDate: 2025-05-23
+updateDate: 2025-05-07
+slug: /typed-phaser-data-manager-access
+title: Typed Phaser.js data manager access
+tags: ['phaser']
+layout: '~/layouts/TocLayout.astro'
+excerpt: '.... todo'
+---
+
+## The problem
+
+In a `Scene` - e.g. one responsible for allowing the user to set settings like whether the game's background music should be on or not - using `this.registry.set("isBgMusicEnabled", true)` works well:
+
+```ts
+create() {
+  this.registry.set("isBgMusicEnabled", true);
+}
+```
+
+However, it would be a better developer experience if setting and getting data from the [data manager](https://docs.phaser.io/phaser/concepts/data-manager) were typed. That would allow me to know all possible keys I can set there (or get from there) and what values the keys actually take.
+
+Unfortunately, this is how these methods are typed (as of Phaser `3.88.2`):
+
+```ts
+  /**
+   * ...
+   * @param key The key to set the value for. Or an object of key value pairs. If an object the `data` argument is ignored.
+   * @param data The value to set for the given key. If an object is provided as the key this argument is ignored.
+   */
+  set<T extends any>(key: (string|T), data?: any): this;
+
+  /**
+   * ...
+   * @param key The key of the value to retrieve, or an array of keys.
+   */
+  get(key: string | string[]): any;
+```
+
+I remember having issues trying to get the results I wanted in the past because of this. I can't remember everything I tried and the issues with each approach but I did end up using the approach described below.
+
+### Some e.g. problems
+
+```ts
+type RegistryData = {
+  isBgMusicEnabled: boolean;
+};
+// ...
+
+// No assits when filling in the key (as `T extends any` and even trying to overwrite this rule will...
+// TS will simply fallback to it if type-checking does not match your extension to this definition).
+// And no error when using `number` instead of `boolean` for the value.
+this.registry.set<keyof RegistryData>('isWhatWasItAgain', 123);
+```
+
+## A solution
+
+Instead of trying to extends the `.d.ts` definitions in Phaser - define your own scene class extending `Phaser.Scene`:
+
+```ts
+import Phaser from 'phaser';
+// See code snippet below this one
+import type { RegistryData } from '../types';
+
+export class Scene extends Phaser.Scene {
+  setInRegistry<K extends keyof RegistryData>(key: K, value: RegistryData[K]): void {
+    this.registry.set(key, value);
+  }
+
+  getFromRegistry<K extends keyof RegistryData>(key: K): RegistryData[K] {
+    const value = this.registry.get(key);
+    // Decide if you want to error or not if the key is not there
+    if (value === undefined) {
+      throw new Error(`Cannot get value of "${key}" before setting it`);
+    }
+    return value;
+  }
+}
+```
+
+This uses a description of what I intend to store in the global data manager:
+
+```ts
+export type RegistryData = {
+  isBgMusicEnabled: boolean;
+  bgMusicLvl: number;
+};
+```
+
+Now, instead of extending `Phaser.Scene`, extend this one to use `setInRegistry` and `getFromRegistry` which are aware of what kind of keys can make it in and out of our data manager and the type of values associated with each key.
+
+---
+
+When listening to events on the data manager:
+
+```ts
+  this.registry.events.on(
+    Phaser.Data.Events.CHANGE_DATA,
+    (
+      _parent: unknown,
+      key: keyof RegistryData,
+      value: unknown,
+      // previousValue
+    ) => {
+      // ...
+    }
+```
+
+Which isn't great but is better than nothing re the `key` at least.
+
+---
+
+TODO: Phaer by example pdf has:
+
+```js
+class CustomDataManager extends Phaser.Data.DataManager {
+  constructor() {
+    super(this, new Phaser.Events.EventEmitter());
+  }
+}
+const myData = new CustomDataManager();
+```
+
+Probably you should extend this not `Scene`.
