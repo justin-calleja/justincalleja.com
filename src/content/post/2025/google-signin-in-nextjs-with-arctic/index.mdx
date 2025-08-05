@@ -13,7 +13,7 @@ Let's start by getting required values from [console.cloud.google.com](https://c
 - Again from sidebar hamburger menu; go to "APIs & Services" -> Credentials; Then add an OAuth Client Id
   - Select "web application" for app type and name it something.
   - For "Authorized JavaScript origins", we don't have a deployed app with a domain name yet so put something like `http://localhost:3000` for now.
-  - For "Authorized redirect URIs", same situation re the domain but we'll need a path our Next.js app will handle soon. Let's say this will be: `http://localhost:3000/api/signin/google`
+  - For "Authorized redirect URIs", same situation re the domain but we'll need a path our Next.js app will handle soon. Let's say this will be: `http://localhost:3000/api/sign-in/google/callback`
 - After clicking create, copy / paste the given client id and secret in your next.js app's `.env` file:
 
 ```
@@ -150,7 +150,9 @@ Foreign-key constraints:
     "tmp_session_userId_tmp_user_id_fk" FOREIGN KEY ("userId") REFERENCES tmp_user(id) ON DELETE CASCADE
 ```
 
-## Some Next.js setup
+## Next.js setup
+
+### A button to sign in with
 
 With all that db legwork out of the way, lets switch to some Next.js prep work and set up `shadcn`.
 
@@ -162,7 +164,7 @@ pnpm dlx shadcn@latest init
 
 … or the equivalent for your package manager - see https://ui.shadcn.com/docs/installation/next
 
-Then add the button component with `pnpm dlx shadcn@latest add button`. Now, use this component in a page - I'll introduce a `(auth)` route group and put the button in: `src/app/(auth)/sign-in/page.tsx`:
+Then add the button component with `pnpm dlx shadcn@latest add button`. Now, use this component in a page - I'll introduce an `(auth)` route group and put the button in: `src/app/(auth)/sign-in/page.tsx`:
 
 ```tsx
 import Link from 'next/link';
@@ -172,10 +174,29 @@ import { Button } from '@/components/ui/button';
 export default function SignInPage() {
   return (
     <>
-      <Link href="/api/login/google">
+      <Link href="/api/sign-in/google">
         <Button className="cursor-pointer m-4">Continue with Google</Button>
       </Link>
     </>
   );
 }
 ```
+
+### OAuth 2.0
+
+Finally, we get to the meat of this exercise. However, I do not intend to write an OAuth 2.0 client by hand. Instead, I'll install [arctic](https://arcticjs.dev/) with `pnpm add arctic`. That way, I don't have to deal with the minutiae of OAuth 2.0 - nor the differences in requirements if I decide to support other providers in the future (e.g. login with Github). You can find the list of providers it supports on its website.
+
+We'll be adding 2 endpoints to make this work.
+
+1. The endpoint our button is linking to i.e. `/api/sign-in/google`. This will use `arctic` to create an authorization URL which we will redirect users to. In it, we'll add our intent to access the user's profile and email (technically, for this post I only need email but you may want e.g. profile pic). See https://developers.google.com/identity/protocols/oauth2/scopes for more on Google scopes.
+   1. In this endpoint we'll also set secure HTTP-only cookies for the state and code verifier we used when generating the authorization URL. These will be used by our 2nd (callback) endpoint to verify the callback request made by Google to us.
+2. After the user is redirected to Google, they will sign in there with one of their emails. Google will then redirect them to another endpoint on our Next.js server - the one we configured at the start in the Google console: `api/sign-in/google/callback`
+
+
+
+This is step 1 of the OAuth flow:
+User visits this endpoint → Gets redirected to Google
+User authorizes on Google → Google redirects back with an authorization code
+Your callback endpoint → Exchanges the code for an access token
+Your app → Uses the token to get user info and create a session
+The state and codeVerifier cookies ensure the callback is legitimate and secure.
