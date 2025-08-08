@@ -190,21 +190,18 @@ Finally, we get to the meat of this exercise. However, I do not intend to write 
 
 We'll be adding 2 endpoints to make this work.
 
-1. The endpoint our button is linking to i.e. `/api/sign-in/google`. This endpoint will use `arctic` to create an authorization URL which we will redirect users to. In the URL, we'll add our intent to access the user's profile and email (technically, for this post I only need email but you may want e.g. profile pic). See https://developers.google.com/identity/protocols/oauth2/scopes for more on Google scopes.
-   - This endpoint will also take care of setting secure HTTP-only cookies for the state and code verifier used when generating the authorization URL. These will be used by our 2nd (callback) endpoint to verify the callback request made by Google to us.
-2. After the user is redirected to Google, they will choose an account to sign in with and then Google will redirect them back to us - to another endpoint on our Next.js server - the one we configured at the start in the Google console: `api/sign-in/google/callback`
+1. The endpoint our button is linking to i.e. `/api/sign-in/google`. This endpoint will use `arctic` to create an authorization URL which we will redirect users to (i.e. we will redirect them to Google with this URL). In this URL, we'll add our intent to access the user's profile and email (technically, for this post I only need email but you may want e.g. profile pic). See https://developers.google.com/identity/protocols/oauth2/scopes for more on Google scopes.
+   - This (Next.js) endpoint - apart from generating an authroization URL and redirecting to it - will also take care of setting secure HTTP-only cookies for the state and code verifier used when generating the authorization URL. These will be used by our 2nd (callback) endpoint to verify the callback request made by Google to us.
+2. After the user is redirected to Google, they will choose an account to sign in with and then Google will redirect them back to us - to a "callback" endpoint on our Next.js server - the one we configured at the start in the Google console: `api/sign-in/google/callback`
+   - In this callback Google makes to us, Google adds some URL params - one of which is a `code` we need to validate using the code verifier we stored in a cookie in the previous endpoint of ours.
+   - Validating the code gives us back an access token we can use to request the info we're after (we specified this via the scopes we requested). This Bearer access token needs to be added as an `Authorization` header to a request to: `https://openidconnect.googleapis.com/v1/userinfo`
 
-- In this callback Google makes to us, Google adds some URL params - one of which is a `code` we need to validate using the code verifier we stored in a cookie in the previous endpoint of ours.
-- Validating the code gives us back an access token we can use to request the info we're after (we specified this via the scopes we requested). This Bearer access token needs to be added as an `Authorization` header to a request to: `https://openidconnect.googleapis.com/v1/userinfo`
+In summary:
 
-- we'll use the cookies we set before and some URL parameters Google adds on the request it makes to our callback endpoint - one of which is a code we need to validate.
-
-This is step 1 of the OAuth flow:
-User visits this endpoint → Gets redirected to Google
-User authorizes on Google → Google redirects back with an authorization code
-Your callback endpoint → Exchanges the code for an access token
-Your app → Uses the token to get user info and create a session
-The state and codeVerifier cookies ensure the callback is legitimate and secure.
+- Sign-in button click goes to a route which generates a URL to Google and redirects user there.
+- User signs in with Google and is then redirected back to us with a code.
+- We verify this code with some info we kept in cookies
+- We get back an access token in exchange for verifing the code and we can finally use this access token to get what we want - user details from Google's OpenID Connect API.
 
 The sub field is part of the OpenID Connect standard - it's the canonical way to identify users across OAuth providers.
 
